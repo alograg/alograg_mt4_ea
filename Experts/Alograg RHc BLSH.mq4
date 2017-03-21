@@ -518,6 +518,7 @@ void OnDeinit(const int reason) {
 void OnTick() {
   totalOrders = OrdersTotal();
   InitGlobals();
+  SendReport();
   ///////////////////////////////////////////////////
   // If closing switch is true, close all open trades
   ///////////////////////////////////////////////////
@@ -716,7 +717,6 @@ void OnTick() {
       }
     }
   }
-  SendReport();
 }
 
 //+------------------------------------------------------------------+
