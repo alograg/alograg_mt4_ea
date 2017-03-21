@@ -425,7 +425,9 @@ void EvaluatinIfProfitIsPositive() {
 void SendReport() {
   string subject, report;
   bool canSend = Hour()==23 && Minute()==00;
-  if (!canSend) return;
+  if (!canSend) {
+    return;
+  } 
   subject = "MT4 Report " + TimeToString(TimeCurrent());
   report = "Report";
   report += StringFormat("The name of the broker; %s", AccountInfoString(ACCOUNT_COMPANY));
@@ -491,7 +493,8 @@ void SendReport() {
   report += "\n";
   report += StringFormat("MARGIN SO SO   = %G", AccountInfoDouble(ACCOUNT_MARGIN_SO_SO));
   report += "\nAttm, EA";
-  SendMail(subject, report);
+  //SendMail(subject, report);
+  SendNotification(report);
 }
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
