@@ -8,6 +8,10 @@
 #property version   "1.00"
 #property strict
 
+/*
+Para EURGBP se menor a dia, recomendado M30
+*/
+
 /////////////////////////
 // External Definitions;
 /////////////////////////
@@ -417,6 +421,78 @@ void EvaluatinIfProfitIsPositive() {
   }
 }
 
+
+void SendReport() {
+  string subject, report;
+  bool canSend = Hour()==23 && Minute()==00;
+  if (!canSend) return;
+  subject = "MT4 Report " + TimeToString(TimeCurrent());
+  report = "Report";
+  report += StringFormat("The name of the broker; %s", AccountInfoString(ACCOUNT_COMPANY));
+  report += "\n";
+  report += StringFormat("Deposit currency; %s", AccountInfoString(ACCOUNT_CURRENCY));
+  report += "\n";
+  report += StringFormat("Client name; %s ", AccountInfoString(ACCOUNT_NAME));
+  report += "\n";
+  report += StringFormat("The name of the trade server; %s", AccountInfoString(ACCOUNT_SERVER));
+  report += "\n";
+  report += StringFormat("LOGIN =  %d", AccountInfoInteger(ACCOUNT_LOGIN));
+  report += "\n";
+  report += StringFormat("LEVERAGE =  %d", AccountInfoInteger(ACCOUNT_LEVERAGE));
+  report += "\n";
+  bool thisAccountTradeAllowed = AccountInfoInteger(ACCOUNT_TRADE_ALLOWED);
+  bool EATradeAllowed = AccountInfoInteger(ACCOUNT_TRADE_EXPERT);
+  ENUM_ACCOUNT_TRADE_MODE tradeMode = (ENUM_ACCOUNT_TRADE_MODE) AccountInfoInteger(ACCOUNT_TRADE_MODE);
+  ENUM_ACCOUNT_STOPOUT_MODE stopOutMode=(ENUM_ACCOUNT_STOPOUT_MODE) AccountInfoInteger(ACCOUNT_MARGIN_SO_MODE);
+  //--- Inform about the possibility to perform a trade operation 
+  report += "Trade for this account is ";
+  report += thisAccountTradeAllowed ? "permitted" : "prohibited";
+  report += "\n";
+  //--- Find out if it is possible to trade on this account by Expert Advisors 
+  report += "Trade by Expert Advisors is ";
+  report += EATradeAllowed ? "permitted" : "prohibited";
+  report += "\n";
+  //--- Find out the account type 
+  switch(tradeMode) {
+    case(ACCOUNT_TRADE_MODE_DEMO):
+      report += "This is a demo account";
+      break; 
+    case(ACCOUNT_TRADE_MODE_CONTEST):
+      report += "This is a competition account";
+      break;
+    default:
+      report += "This is a real account!"; 
+  }
+  report += "\n";
+  //--- Find out the StopOut level setting mode 
+  switch(stopOutMode) {
+    case(ACCOUNT_STOPOUT_MODE_PERCENT):
+      report += "The StopOut level is specified percentage";
+      break;
+    default:
+      report += "The StopOut level is specified in monetary terms";
+  }
+  report += "\n";
+  report += StringFormat("BALANCE        = %G", AccountInfoDouble(ACCOUNT_BALANCE)); 
+  report += "\n";
+  report += StringFormat("CREDIT         = %G", AccountInfoDouble(ACCOUNT_CREDIT)); 
+  report += "\n";
+  report += StringFormat("PROFIT         = %G", AccountInfoDouble(ACCOUNT_PROFIT)); 
+  report += "\n";
+  report += StringFormat("EQUITY         = %G", AccountInfoDouble(ACCOUNT_EQUITY)); 
+  report += "\n";
+  report += StringFormat("MARGIN         = %G", AccountInfoDouble(ACCOUNT_MARGIN)); 
+  report += "\n";
+  report += StringFormat("MARGIN FREE    = %G", AccountInfoDouble(ACCOUNT_FREEMARGIN)); 
+  report += "\n";
+  report += StringFormat("MARGIN LEVEL   = %G", AccountInfoDouble(ACCOUNT_MARGIN_LEVEL)); 
+  report += "\n";
+  report += StringFormat("MARGIN SO CALL = %G", AccountInfoDouble(ACCOUNT_MARGIN_SO_CALL)); 
+  report += "\n";
+  report += StringFormat("MARGIN SO SO   = %G", AccountInfoDouble(ACCOUNT_MARGIN_SO_SO));
+  report += "\nAttm, EA";
+  SendMail(subject, report);
+}
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
@@ -426,7 +502,7 @@ int OnInit() {
   canOpenNewOrder = true;
   takeProfitTotalLabel = StringFormat("%i_%s_%d_ProfitTotal",AccountNumber(), Symbol(), Period());
   GlobalVariableSet(takeProfitTotalLabel, (int)TimeCurrent());
-  Print("Inicio: ",(int)TimeCurrent());
+  StringFormat("Inicio: ",(int)TimeCurrent());
   return(INIT_SUCCEEDED);
 }
 
@@ -640,6 +716,7 @@ void OnTick() {
       }
     }
   }
+  SendReport();
 }
 
 //+------------------------------------------------------------------+
