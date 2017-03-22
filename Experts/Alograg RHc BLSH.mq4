@@ -54,6 +54,12 @@ extern double ProfitTarget     =   4.0; // Used for Bombshell mode
 
 extern int MaxOrders           =   100;
 
+//Gap
+extern double GapRange         =     5;
+extern double SL_Factor        =     2;
+extern double TP_Factor        =     1;
+extern double MM_Risk          =     2;
+
 ////////////
 // Variables
 ////////////
@@ -496,6 +502,86 @@ void SendReport() {
   SendMail(subject, report);
   SendNotification(report);
 }
+
+//+------------------------------------------------------------------+
+//+ Check Open Trades                                                |
+//+------------------------------------------------------------------+
+int COT(int BS, int MN) {
+  int Buys = 0, Sells = 0, hasOrder;
+  for(int cnt_COT = 0; cnt_COT < totalOrders; cnt_COT++) {
+    hasOrder = OrderSelect(cnt_COT, SELECT_BY_POS, MODE_TRADES);
+    if(OrderSymbol() == Symbol() && OrderMagicNumber() == MN && OrderType() == OP_BUY) Buys++;
+    if(OrderSymbol() == Symbol() && OrderMagicNumber() == MN && OrderType() == OP_SELL) Sells++;
+  }
+  if(BS == 1) return(Buys);
+  if(BS == 2) return(Sells);
+  return 0;
+}
+
+//+------------------------------------------------------------------+
+//| LotSize                                                          |
+//+------------------------------------------------------------------+
+double LotSize(double Risk, double SL) {
+  double MaxLot = MarketInfo(Symbol(), MODE_MAXLOT);
+  double MinLot = MarketInfo(Symbol(), MODE_MINLOT);
+  double StopLoss = SL / Point / 10;
+  double Size = Risk / 100 * AccountBalance() / 10 / StopLoss;
+  if(Size <= MinLot) Size = MinLot;
+  if(Size >= MaxLot) Size = MaxLot;
+  return(NormalizeDouble(Size, 2));
+}
+
+//+------------------------------------------------------------------+
+//| New Bar                                                          |
+//+------------------------------------------------------------------+
+bool NewDayBar() {
+  static int PrevDayBar;
+  if(PrevDayBar != TimeDayOfWeek(Time[0])) {
+    PrevDayBar = TimeDayOfWeek(Time[0]);
+    return true;
+  }
+  return false;
+}
+
+void TryGap() {
+  if(!NewDayBar()) {
+    return;
+  }
+  double MyPoint = Digits == 3 || Digits == 5 ? Point * 10 : Point;
+  int MagicSell = 760384;
+  int MagicBuy  = 760367;
+  static bool ToTrade = COT(1, 760367) == 0 && COT(2, 760384) == 0;
+  double CurrOpen = iOpen(Symbol(), PERIOD_D1, 0);
+  double PrevClose = iClose(Symbol(), PERIOD_D1, 1);
+  double Range = NormalizeDouble(MathAbs(PrevClose - CurrOpen), Digits);
+  bool GAP = Range >= GapRange * MyPoint;
+  //Print(ToTrade);
+  //Print(GAP);
+  //Print(Range);
+  //Print(GapRange * MyPoint);
+  //---- TP / SL
+  double ATR = iATR(Symbol(), PERIOD_D1, 13, 1);
+  double Spread = MarketInfo(Symbol(), MODE_SPREAD) * Point;
+  double TakeProfit = ATR * TP_Factor;
+  double StopLoss = (ATR * SL_Factor) + Spread;
+  double RealStopLoos = LotSize(MM_Risk, StopLoss);
+  //---- TRADE
+  int Ticket;
+  if(ToTrade == true && GAP == true) {
+    //Print("Gap");
+    if(CurrOpen < PrevClose) {
+      Ticket = OrderSend(Symbol(), OP_BUY, LotSize(MM_Risk, StopLoss), Ask, 3, Ask - StopLoss, Ask + TakeProfit, "Gap.B", MagicBuy, 0, Blue);
+      //if(Ticket < 0) Print("Error in GAP OrderSend : ", GetLastError());
+      ToTrade = false;
+    }
+    if(CurrOpen > PrevClose) {
+      Ticket = OrderSend(Symbol(), OP_SELL, LotSize(MM_Risk, StopLoss), Bid, 3, Bid + StopLoss, Bid - TakeProfit, "Gap.S", MagicSell, 0, Red);
+      //if(Ticket < 0) Print("Error in GAP OrderSend : ", GetLastError());
+      ToTrade = false;
+    }
+  }
+}
+
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
@@ -520,6 +606,12 @@ void OnDeinit(const int reason) {
 //+------------------------------------------------------------------+
 void OnTick() {
   totalOrders = OrdersTotal();
+  TryGap();
+  RHcBLSH();
+  return;
+}
+
+void RHcBLSH() {
   InitGlobals();
   SendReport();
   ///////////////////////////////////////////////////
@@ -594,17 +686,19 @@ void OnTick() {
         GlobalVariableSet(GravyProfit, 0);
         GlobalVariableSet(CurrBalance, AccountBalance());
         canOpenNewOrder = OrderSend(Symbol(),OP_BUY,UseLots,Ask,Slippage,0,0,"RHc_BLSH",0,0,Blue);
-        if(!canOpenNewOrder) Print("Max opening orders reach");
+        //if(!canOpenNewOrder) Print("Max opening orders reach");
         ResetLastError();
         return;
       }
       if (NumSells == 0 && canOpenNewOrder) {
         Comment("Opening the first sell trade...");
         canOpenNewOrder = OrderSend(Symbol(),OP_SELL,UseLots,Bid,Slippage,0,0,"RHc_BLSH",0,0,Red);
-        if(!canOpenNewOrder) Print("Max opening orders reach");
+        //if(!canOpenNewOrder) Print("Max opening orders reach");
         ResetLastError();
         return;
       }
+      int OpenBuys = NumBuys/(MaxOrders+1) < 0.5;
+      int OpenSells = NumSells/(MaxOrders+1) < 0.5;
       //////////////////////////////
       // Open additional grid trades
       //////////////////////////////
@@ -614,9 +708,9 @@ void OnTick() {
           SymbolPL < 0      &&
           canOpenNewOrder) {
         Comment("Adding a RobinHood_c buy trade...");
-        if(NumBuys/MaxOrders < 0.75 )
+        if(OpenBuys)
           canOpenNewOrder = OrderSend(Symbol(),OP_BUY,UseLots,Ask,Slippage,0,0,"RHc_BLSH",0,0,Blue);
-        if(!canOpenNewOrder) Print("Max opening orders reach");
+        //if(!canOpenNewOrder) Print("Max opening orders reach");
         ResetLastError();
         SetB = 0;
         return;
@@ -627,9 +721,9 @@ void OnTick() {
           SymbolPL < 0      &&
           canOpenNewOrder) {
         Comment("Adding a RobinHood_c sell trade...");
-        if(NumSells/MaxOrders < 0.75 )
+        if(OpenSells)
           canOpenNewOrder = OrderSend(Symbol(),OP_SELL,UseLots,Bid,Slippage,0,0,"RHc_BLSH",0,0,Red);
-        if(!canOpenNewOrder) Print("Max opening orders reach");
+        //if(!canOpenNewOrder) Print("Max opening orders reach");
         ResetLastError();
         SetS = 0; 
         return;
@@ -639,9 +733,9 @@ void OnTick() {
           SymbolPL < 0     &&
           canOpenNewOrder) {
         Comment("Adding a RobinHood_c buy trade...");
-        if(NumBuys/MaxOrders < 0.75 )
+        if(OpenBuys)
           canOpenNewOrder = OrderSend(Symbol(),OP_BUY,UseLots,Ask,Slippage,0,0,"RHc_BLSH",0,0,Blue);
-        if(!canOpenNewOrder) Print("Max opening orders reach");
+        //if(!canOpenNewOrder) Print("Max opening orders reach");
         ResetLastError();
         return;
       }
@@ -650,9 +744,9 @@ void OnTick() {
           SymbolPL < 0       &&
           canOpenNewOrder) {
         Comment("Adding a RobinHood_c sell trade...");
-        if(NumSells/MaxOrders < 0.75 )
+        if(OpenSells)
           canOpenNewOrder = OrderSend(Symbol(),OP_SELL,UseLots,Bid,Slippage,0,0,"RHc_BLSH",0,0,Red);
-        if(!canOpenNewOrder) Print("Max opening orders reach");
+        //if(!canOpenNewOrder) Print("Max opening orders reach");
         ResetLastError();
         return;
       }
@@ -668,7 +762,7 @@ void OnTick() {
           Comment("Taking Bombshell gravy pips...");
           canOpenNewOrder = OrderClose(OrderTicket(),OrderLots(),Bid,Slippage,LightBlue);
           GlobalVariableSet(GravyFlag, 1);
-          Print ("Errors Closing *in profit* BUY order = ",GetLastError());
+          //Print ("Errors Closing *in profit* BUY order = ",GetLastError());
           return;
         }
       }
@@ -684,7 +778,7 @@ void OnTick() {
           Comment("Taking Bombshell gravy pips...");
           canOpenNewOrder = OrderClose(OrderTicket(),OrderLots(),Ask,Slippage,LightPink);
           GlobalVariableSet(GravyFlag, 1);
-          Print ("Errors Closing *in profit* SELL order = ",GetLastError()); 
+          //Print ("Errors Closing *in profit* SELL order = ",GetLastError()); 
           return;
         }
       }
@@ -695,11 +789,11 @@ void OnTick() {
         Anchor = LastPrice;
         if (Bid < LowestBuy) {
           Comment("Adding a Bombshell sell trade...");
-          if(NumSells/MaxOrders < 0.75 )
+          if(OpenSells)
             canOpenNewOrder = OrderSend(Symbol(),OP_SELL,BLSHLots,Bid,Slippage,0,0,"RHc_BLSH",0,0,Red);
-          if(!canOpenNewOrder) Print("Max opening orders reach");
+          //if(!canOpenNewOrder) Print("Max opening orders reach");
           ResetLastError();
-          Print ("Errors opening SELL order = ",GetLastError()); 
+          //Print ("Errors opening SELL order = ",GetLastError()); 
           return; 
         }
       }
@@ -710,11 +804,11 @@ void OnTick() {
         Anchor = LastPrice; 
         if (Ask > HighestSell) {
           Comment("Adding a Bombshell buy trade...");
-          if(NumBuys/MaxOrders < 0.75 )
+          if(OpenBuys)
             canOpenNewOrder = OrderSend(Symbol(),OP_BUY,BLSHLots,Ask,Slippage,0,0,"RHc_BLSH",0,0,Blue);
-          if(!canOpenNewOrder) Print("Max opening orders reach");
+          //if(!canOpenNewOrder) Print("Max opening orders reach");
           ResetLastError();
-          Print ("Errors opening BUY order = ",GetLastError()); 
+          //Print ("Errors opening BUY order = ",GetLastError()); 
           return;
         }
       }

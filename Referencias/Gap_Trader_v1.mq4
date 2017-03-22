@@ -5,17 +5,40 @@
 #property copyright "doshur"
 #property link      "http://www.doshur.com"
 /*
-El Expert Advisor Gap Trading coge los precios de cierre del Viernes y de apertura del Lunes para generar señales. Dado que sólo trabaja con esos valores, este experto genera muy pocas operaciones.
+El Expert Advisor Gap Trading coge los precios de cierre del Viernes y
+de apertura del Lunes para generar señales. Dado que sólo trabaja con
+esos valores, este experto genera muy pocas operaciones.
 
-Este Expert Advisor está diseñado para identificar y operar con huecos en el mercado, siempre y cuando se defina un número mínimo de pips para ello. A pesar de que el parámetro por defecto es de 10 pips, recomendaría en primer lugar cambiar ese valor a un mínimo de 15 pips, ya que debe considerarse la horquilla también, algo que el Expert no está considerando. Utiliza el ATR para definir el stop de pérdidas, una elección bastante adecuada.
+Este Expert Advisor está diseñado para identificar y operar con huecos
+en el mercado, siempre y cuando se defina un número mínimo de pips para
+ello. A pesar de que el parámetro por defecto es de 10 pips,
+recomendaría en primer lugar cambiar ese valor a un mínimo de 15 pips,
+ya que debe considerarse la horquilla también, algo que el Expert no
+está considerando. Utiliza el ATR para definir el stop de pérdidas,
+una elección bastante adecuada.
 
-Sin embargo, los huecos no se producen muy a menudo, por lo que podría ser sólo una estrategia de negociación secundaria, para obtener algunos pips adicionales.
+Sin embargo, los huecos no se producen muy a menudo, por lo que podría
+ser sólo una estrategia de negociación secundaria, para obtener algunos
+pips adicionales.
 
-Hay algunas cosas sobre los huecos que el experto no puede tener en cuenta, así que recuerde este consejo, si está dispuesto a utilizar esta EA:
+Hay algunas cosas sobre los huecos que el experto no puede tener en cuenta,
+así que recuerde este consejo, si está dispuesto a utilizar esta EA:
 
-Los huecos se producen por lo general en las aperturas del Domingo, o durante la publicación de importantes datos fundamentales, provocando una fuerte aceleración de los precios. Con respecto a las aperturas de los Domingos, tenga en cuenta que si el mercado no cierra ese hueco en las primeras 3 horas de negociación, las posibilidades de que se cierre rápidamente se reducen mucho, y lo más probable es que nos salte el stop de pérdidas con este experto. Cuando se trata de datos fundamentales, los Majors tienden a cerrar el hueco rápidamente, por lo que requieren menos atención por parte del trader.
+Los huecos se producen por lo general en las aperturas del Domingo, o
+durante la publicación de importantes datos fundamentales, provocando
+una fuerte aceleración de los precios. Con respecto a las aperturas de
+los Domingos, tenga en cuenta que si el mercado no cierra ese hueco en
+las primeras 3 horas de negociación, las posibilidades de que se cierre
+rápidamente se reducen mucho, y lo más probable es que nos salte el
+stop de pérdidas con este experto. Cuando se trata de datos fundamentales,
+los Majors tienden a cerrar el hueco rápidamente, por lo que requieren
+menos atención por parte del trader.
 
-No olvide que diferentes pares tienen diferentes comportamientos ante los huecos: mientras que USD/CHF tiende a cerrarlos todos, el USD/CAD tiende a ser el menos fiable cuando se trata de cerrar huecos; se puede usar también con EUR/USD o AUD/USD, pero debemos evitar los huecos en USD/CAD y GBP/USD.
+No olvide que diferentes pares tienen diferentes comportamientos ante
+los huecos: mientras que USD/CHF tiende a cerrarlos todos, el USD/CAD
+tiende a ser el menos fiable cuando se trata de cerrar huecos;
+se puede usar también con EUR/USD o AUD/USD, pero debemos evitar los
+huecos en USD/CAD y GBP/USD.
 */
 extern double GapRange = 10;
 extern double SL_Factor = 2;
