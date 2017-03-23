@@ -24,7 +24,7 @@ void OnStart()
     {
         if (!OrderSelect(indexToClose, SELECT_BY_POS))
             continue;
-        profit = OrderProfit() + OrderCommission() + OrderSwap();
+        profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.01, 2);
         if (OrderSymbol() == Symbol())
         {
             if (OrderType() == OP_BUY && profit > 0)
