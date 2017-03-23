@@ -5,7 +5,7 @@
 //+------------------------------------------------------------------+
 #property copyright "Copyright 2017, Alograg"
 #property link "https://www.alograg.me"
-#property version "1.11"
+#property version "1.12"
 #property strict
 
 //#include <SummaryReport.mqh>
@@ -153,7 +153,7 @@ void InitVars()
     hasOrder = OrderSelect(i, SELECT_BY_POS, MODE_TRADES);
     if (OrderSymbol() == Symbol())
     {
-      SymbolPL += OrderProfit() + OrderCommission() + OrderSwap();
+      SymbolPL += NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap(), 2);
       if(MagicNumber != OrderMagicNumber()) continue;
       if (OrderType() == OP_BUY)
       {
@@ -190,11 +190,10 @@ void CloseAllOrders()
     hasOrder = OrderSelect(i, SELECT_BY_POS, MODE_TRADES);
     if (OrderSymbol() == Symbol())
     {
-      profit = OrderProfit() + OrderCommission() + OrderSwap();
+      profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap(), 2);
       closePrice = OrderType() == OP_BUY ? Bid : Ask;
       if (OrderMagicNumber() != MagicNumber)
       {
-        profit = OrderProfit() + OrderCommission() + OrderSwap();
         if (profit > 0)
         {
           orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Green);
@@ -221,7 +220,7 @@ bool hasSTUCK()
     if (OrderSymbol() == Symbol())
     {
       closePrice = OrderType() == OP_BUY ? Bid : Ask;
-      profit = OrderProfit() + OrderCommission() + OrderSwap();
+      profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap(), 2);
       if (OrderMagicNumber() != MagicNumber)
       {
         if (profit > 0)
@@ -313,7 +312,7 @@ bool hasSTUCK()
 ////////////////////////////
 void SetChartInfo()
 {
-  Comment("Symbol's total trades: ", NumBuys + NumSells, ", Buy trades: ", NumBuys, ", Sell trades: ", NumSells,
+  Comment("v1.12 - Symbol's total trades: ", NumBuys + NumSells, ", Buy trades: ", NumBuys, ", Sell trades: ", NumSells,
           "\nCurValue: ", CurValue,
           "\nGridSize: ", (HighestBuy - LowestSell) / Point, " pips",
           "\nBalance: ", AccountBalance(), ", Equity: ", AccountEquity(), ", TotalProfit: ", AccountProfit(),
@@ -718,6 +717,7 @@ void RHcBLSH()
   InitVars();
   if (hasSTUCK())
   {
+    Print("STUCK");
     return;
   }
   ////////////////////////////////////////////////////////////////////
@@ -876,7 +876,7 @@ void RHcBLSH()
         closePrice = OrderType() == OP_BUY ? Bid : Ask;
         if (OrderMagicNumber() != MagicNumber)
         {
-          profit = OrderProfit() + OrderCommission() + OrderSwap();
+          profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap(), 2);
           if (profit > 0)
           {
             orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Green);
@@ -892,7 +892,7 @@ void RHcBLSH()
           canOpenNewOrder = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, LightBlue);
           GlobalVariableSet(GravyFlag, 1);
           //Print ("Errors Closing *in profit* BUY order = ",GetLastError());
-          break;
+          return;
         }
       }
       //+------------------------------------------------------------------+
@@ -904,7 +904,7 @@ void RHcBLSH()
         closePrice = OrderType() == OP_BUY ? Bid : Ask;
         if (OrderMagicNumber() != MagicNumber)
         {
-          profit = OrderProfit() + OrderCommission() + OrderSwap();
+          profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap(), 2);
           if (profit > 0)
           {
             orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Green);
@@ -920,7 +920,7 @@ void RHcBLSH()
           canOpenNewOrder = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, LightPink);
           GlobalVariableSet(GravyFlag, 1);
           //Print ("Errors Closing *in profit* SELL order = ",GetLastError());
-          break;
+          return;
         }
       }
       //+------------------------------------------------------------------+
