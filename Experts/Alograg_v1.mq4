@@ -3,7 +3,7 @@
 //|                                          Copyright 2017, Alograg |
 //|                                           https://www.alograg.me |
 //+------------------------------------------------------------------+
-#define propVersion     "1.15"
+#define propVersion "1.20"
 
 #property copyright "Copyright 2017, Alograg"
 #property link "https://www.alograg.me"
@@ -155,8 +155,9 @@ void InitVars()
     hasOrder = OrderSelect(i, SELECT_BY_POS, MODE_TRADES);
     if (OrderSymbol() == Symbol())
     {
-      SymbolPL += NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.01, 2);
-      if(MagicNumber != OrderMagicNumber()) continue;
+      SymbolPL += NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.05, 2);
+      if (MagicNumber != OrderMagicNumber())
+        continue;
       if (OrderType() == OP_BUY)
       {
         NumBuys++;
@@ -185,26 +186,40 @@ void CloseAllOrders()
 {
   bool hasOrder;
   int orderClosed;
-  double profit, closePrice;
+  double profit;
   Print("Closs All Orders");
   for (i = totalOrders - 1; 0 <= 0; i--)
   {
     hasOrder = OrderSelect(i, SELECT_BY_POS, MODE_TRADES);
     if (OrderSymbol() == Symbol())
     {
-      profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.01, 2);
-      closePrice = OrderType() == OP_BUY ? Bid : Ask;
+      profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.05, 2);
       if (OrderMagicNumber() != MagicNumber)
       {
         if (profit > 0)
         {
-          orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Green);
+          if (OrderType() == OP_BUY)
+          {
+            orderClosed = OrderClose(OrderTicket(), OrderLots(), Bid, Slippage, White);
+          }
+          if (OrderType() == OP_SELL)
+          {
+            orderClosed = OrderClose(OrderTicket(), OrderLots(), Ask, Slippage, White);
+          }
         }
         continue;
       }
-      if (profit >= 0)
+      if (OrderType() == OP_BUY && OrderProfit() >= 0)
+      {
         Sleep(PauseSeconds * 1000);
-      canOpenNewOrder = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Red);
+        Comment("In grid closure mode.  Closing a winner...");
+        canOpenNewOrder = OrderClose(OrderTicket(), OrderLots(), Bid, Slippage, White);
+      }
+      if (OrderType() == OP_SELL && OrderProfit() >= 0)
+      {
+        Sleep(PauseSeconds * 1000);
+        canOpenNewOrder = OrderClose(OrderTicket(), OrderLots(), Ask, Slippage, White);
+      }
     }
   }
 }
@@ -215,19 +230,25 @@ void CloseAllOrders()
 bool hasSTUCK()
 {
   bool hasOrder, orderClosed;
-  double profit, closePrice;
+  double profit;
   for (i = 0; i < totalOrders; i++)
   {
     hasOrder = OrderSelect(i, SELECT_BY_POS, MODE_TRADES);
     if (OrderSymbol() == Symbol())
     {
-      closePrice = OrderType() == OP_BUY ? Bid : Ask;
-      profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.01, 2);
+      profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.05, 2);
       if (OrderMagicNumber() != MagicNumber)
       {
         if (profit > 0)
         {
-          orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Green);
+          if (OrderType() == OP_BUY)
+          {
+            orderClosed = OrderClose(OrderTicket(), OrderLots(), Bid, Slippage, White);
+          }
+          if (OrderType() == OP_SELL)
+          {
+            orderClosed = OrderClose(OrderTicket(), OrderLots(), Ask, Slippage, White);
+          }
         }
         continue;
       }
@@ -238,7 +259,7 @@ bool hasSTUCK()
             LowestBuy <= Bid)
         {
           //Comment("Taking RobinHood_c gravy pips...");
-          orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Magenta);
+          orderClosed = OrderClose(OrderTicket(), OrderLots(), Bid, Slippage, Magenta);
           GlobalVariableSet(GravyFlag, 1);
           SetS = 1;
           return true;
@@ -248,7 +269,7 @@ bool hasSTUCK()
             HighestSell >= Ask)
         {
           //Comment("Taking RobinHood_c gravy pips...");
-          orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Yellow);
+          orderClosed = OrderClose(OrderTicket(), OrderLots(), Ask, Slippage, Yellow);
           GlobalVariableSet(GravyFlag, 1);
           SetB = 1;
           return true;
@@ -264,7 +285,7 @@ bool hasSTUCK()
               OrderType() == OP_SELL)
           {
             //Comment("Taking RobinHood_c gravy pips...");
-            orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Yellow);
+            orderClosed = OrderClose(OrderTicket(), OrderLots(), Ask, Slippage, Yellow);
             GlobalVariableSet(GravyFlag, 1);
             SetB = 1;
             return true;
@@ -274,7 +295,7 @@ bool hasSTUCK()
               OrderType() == OP_BUY)
           {
             //Comment("Taking RobinHood_c gravy pips...");
-            orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Orange);
+            orderClosed = OrderClose(OrderTicket(), OrderLots(), Bid, Slippage, Orange);
             GlobalVariableSet(GravyFlag, 1);
             SetS = 1;
             return true;
@@ -287,7 +308,7 @@ bool hasSTUCK()
                 OrderType() == OP_BUY)
             {
               //Comment("Taking RobinHood_c gravy pips...");
-              orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Purple);
+              orderClosed = OrderClose(OrderTicket(), OrderLots(), Bid, Slippage, Purple);
               GlobalVariableSet(GravyFlag, 1);
               SetS = 1;
               return true;
@@ -296,7 +317,7 @@ bool hasSTUCK()
                 OrderType() == OP_SELL)
             {
               //Comment("Taking RobinHood_c gravy pips...");
-              orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Purple);
+              orderClosed = OrderClose(OrderTicket(), OrderLots(), Ask, Slippage, Purple);
               GlobalVariableSet(GravyFlag, 1);
               SetB = 1;
               return true;
@@ -314,8 +335,7 @@ bool hasSTUCK()
 ////////////////////////////
 void SetChartInfo()
 {
-  Comment("v", propVersion," - Symbol's total trades: ", NumBuys + NumSells, ", Buy trades: ", NumBuys, ", Sell trades: ", NumSells,
-          "\nCurValue: ", CurValue,
+  Comment("\nCurValue: ", CurValue,
           "\nGridSize: ", (HighestBuy - LowestSell) / Point, " pips",
           "\nBalance: ", AccountBalance(), ", Equity: ", AccountEquity(), ", TotalProfit: ", AccountProfit(),
           "\nHighestBuy: ", HighestBuy, ", LowestBuy: ", LowestBuy,
@@ -326,7 +346,11 @@ void SetChartInfo()
           "\nGravy + SymbolPL: ", valueGravyProfit + SymbolPL,
           "\nGravy Dollar Target: ", GravyExit,
           "\nLastPrice: ", LastPrice,
-          "\nAnchor: ", Anchor);
+          "\nAnchor: ", Anchor,
+          "\nv", propVersion,
+          " - Symbol's total trades: ", NumBuys + NumSells,
+          ", Buy trades: ", NumBuys,
+          ", Sell trades: ", NumSells);
 }
 
 /////////////////////////
@@ -708,6 +732,8 @@ void OnTick()
 
 void RHcBLSH()
 {
+  if (StopAfterNoTrades)
+    return;
   InitGlobals();
   ///////////////////////////////////////////////////
   // If closing switch is true, close all open trades
@@ -731,8 +757,6 @@ void RHcBLSH()
   if (NumBuys + NumSells == 0)
   {
     //Comment("There are no trades open.");
-    if (StopAfterNoTrades)
-      return;
     SkipMPA = 0;
     EMACounter = 0;
     StopBal = 0;
@@ -871,17 +895,23 @@ void RHcBLSH()
       //+------------------------------------------------------------------+
       //|                      Manage Our Open Bombshell Buy Orders        |
       //+------------------------------------------------------------------+
-      double profit, closePrice;
+      double profit;
       for (i = 0; i < totalOrders; i++)
       {
         hasOrder = OrderSelect(i, SELECT_BY_POS, MODE_TRADES);
-        closePrice = OrderType() == OP_BUY ? Bid : Ask;
+        profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.05, 2);
         if (OrderMagicNumber() != MagicNumber)
         {
-          profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.01, 2);
           if (profit > 0)
           {
-            orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Green);
+            if (OrderType() == OP_BUY)
+            {
+              orderClosed = OrderClose(OrderTicket(), OrderLots(), Bid, Slippage, White);
+            }
+            if (OrderType() == OP_SELL)
+            {
+              orderClosed = OrderClose(OrderTicket(), OrderLots(), Ask, Slippage, White);
+            }
           }
           continue;
         }
@@ -891,7 +921,7 @@ void RHcBLSH()
             Bid - OrderOpenPrice() >= ProfitTarget * Point)
         {
           //Comment("Taking Bombshell gravy pips...");
-          canOpenNewOrder = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, LightBlue);
+          canOpenNewOrder = OrderClose(OrderTicket(), OrderLots(), Bid, Slippage, LightBlue);
           GlobalVariableSet(GravyFlag, 1);
           //Print ("Errors Closing *in profit* BUY order = ",GetLastError());
           return;
@@ -903,13 +933,19 @@ void RHcBLSH()
       for (i = 0; i < OrdersTotal(); i++)
       {
         hasOrder = OrderSelect(i, SELECT_BY_POS, MODE_TRADES);
-        closePrice = OrderType() == OP_BUY ? Bid : Ask;
+        profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.05, 2);
         if (OrderMagicNumber() != MagicNumber)
         {
-          profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.01, 2);
           if (profit > 0)
           {
-            orderClosed = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, Green);
+            if (OrderType() == OP_BUY)
+            {
+              orderClosed = OrderClose(OrderTicket(), OrderLots(), Bid, Slippage, White);
+            }
+            if (OrderType() == OP_SELL)
+            {
+              orderClosed = OrderClose(OrderTicket(), OrderLots(), Ask, Slippage, White);
+            }
           }
           continue;
         }
@@ -919,7 +955,7 @@ void RHcBLSH()
             OrderOpenPrice() - Ask >= ProfitTarget * Point)
         {
           //Comment("Taking Bombshell gravy pips...");
-          canOpenNewOrder = OrderClose(OrderTicket(), OrderLots(), closePrice, Slippage, LightPink);
+          canOpenNewOrder = OrderClose(OrderTicket(), OrderLots(), Ask, Slippage, LightPink);
           GlobalVariableSet(GravyFlag, 1);
           //Print ("Errors Closing *in profit* SELL order = ",GetLastError());
           return;

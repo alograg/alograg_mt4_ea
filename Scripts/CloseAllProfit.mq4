@@ -8,7 +8,7 @@
 #property version "1.00"
 #property strict
 
-#include <SummaryReport.mqh>
+//#include <SummaryReport.mqh>
 
 double ExtInitialDeposit;
 
@@ -17,14 +17,14 @@ double ExtInitialDeposit;
 //+------------------------------------------------------------------+
 void OnStart()
 {
-    int TotalToClose = OrdersTotal(), hasClose, closed;
+    int TotalToClose = OrdersTotal(), hasClose, iClosed = 0;
     double profit;
     Print("Close Start");
-    for (int indexToClose = TotalToClose - 1; 0 <= 0; indexToClose--)
+    for (int indexToClose = TotalToClose - 1; 0 <= indexToClose; indexToClose--)
     {
         if (!OrderSelect(indexToClose, SELECT_BY_POS))
             continue;
-        profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.01, 2);
+        profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.07, 2);
         if (OrderSymbol() == Symbol())
         {
             if (OrderType() == OP_BUY && profit > 0)
@@ -35,9 +35,9 @@ void OnStart()
             {
                 hasClose = OrderClose(OrderTicket(), OrderLots(), Ask, 4, White);
             }
-            closed += hasClose ? 1 : 0;
+            iClosed += hasClose ? 1 : 0;
             Print(OrderTicket(), OrderType(), ": ", profit);
         }
     }
-    Print(closed, " closed of ", TotalToClose);
+    Print(iClosed, " closed of ", TotalToClose);
 }
