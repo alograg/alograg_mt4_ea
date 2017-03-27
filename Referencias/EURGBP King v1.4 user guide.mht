@@ -1,0 +1,401 @@
+From: "Saved by Windows Internet Explorer 8"
+Subject: EURGBP King v1.4 user guide
+Date: Wed, 4 Feb 2009 18:41:45 +0200
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_0005_01C986F8.3ADCF3A0"
+X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7000.0
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0005_01C986F8.3ADCF3A0
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://vomail.net/2.htm
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" =
+"http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML><HEAD><TITLE>EURGBP King v1.4 user guide</TITLE>
+<META content=3D"text/html; charset=3DUTF-8" http-equiv=3Dcontent-type>
+<STYLE type=3Dtext/css>.hdr {
+	FONT-SIZE: 22px; FONT-WEIGHT: bold
+}
+BODY {
+	BACKGROUND-COLOR: #cccccc; FONT-FAMILY: Lucida Bright
+}
+</STYLE>
+
+<META name=3DGENERATOR content=3D"MSHTML 8.00.7000.0"></HEAD>
+<BODY>
+<DIV style=3D"TEXT-ALIGN: center" class=3Dhdr>EURGBP King v1.4 user=20
+guide<BR></DIV><BR>&nbsp; This expert advisor is based on a trading =
+system=20
+introduced by Mr. Madruga at forex-tsd.com forum. In the Asian session =
+it's very=20
+simple to scalp the EURGBP, getting 5 to 15 pips per trade. It's simple, =
+buy at=20
+RSI 30 and sell at RSI 70. Time filter to trade on Asian session only. =
+It's=20
+important to comment that I don=E2=80=99t trade every time the RSI is =
+touched like on=20
+the EA. I usually trade on the highest or lower price of the previous =
+day (Asian=20
+session is a new day) plus when RSI touches 30 or 70 on M5 timeframe. I =
+don=E2=80=99t=20
+use a fixed take profit. I close a trade depending on the volatility of =
+EURGBP.=20
+You can see attached an example of two trades on April 17. Attach this =
+expert=20
+advisor to a M5 EURGBP chart.<BR><BR>
+<DIV style=3D"TEXT-ALIGN: center">&nbsp;<IMG style=3D"WIDTH: 800px; =
+HEIGHT: 600px"=20
+alt=3D"" src=3D"http://vomail.net/2.png"><BR></DIV><BR>
+<DIV style=3D"TEXT-ALIGN: center" class=3Dhdr>Explanation of expert =
+advisor=20
+settings<BR></DIV><BR><SPAN style=3D"FONT-WEIGHT: =
+bold">OriginalTrade:</SPAN> This=20
+is the trade according to the original rules described above. If false =
+it is not=20
+taken.<BR><SPAN style=3D"FONT-WEIGHT: bold">MagicNumber1:</SPAN> Magic =
+number of=20
+the original trade. It should be different than those of the additional =
+and the=20
+hedge trade. If more than one chart of the same pair is opened the magic =
+numbers=20
+should be different. Different pairs can have the same magic =
+number.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">Comment1:</SPAN> The comment of the original =
+trade as=20
+shown at the Metatrader terminal.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">StopLoss1:</SPAN> Stop loss of the original=20
+trade.<BR><SPAN style=3D"FONT-WEIGHT: bold">TakeProfit1:</SPAN> Take =
+profit of the=20
+original trade.<BR><SPAN style=3D"FONT-WEIGHT: =
+bold">HiddenSLandTP:</SPAN> True=20
+means that stop loss and take profit are invisible to the broker. It =
+applies to=20
+additional and hedge trade as well.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">BreakEven1:</SPAN> The stop loss moves to =
+the opening=20
+price after price is in profit for the defined pips.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">TrailingStop1:</SPAN> Trailing stop loss of =
+the=20
+original trade. <BR><SPAN style=3D"FONT-WEIGHT: =
+bold">TrailingStep1:</SPAN>&nbsp;=20
+Modify the trailing stop loss in steps of price moves. <BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">Slippage1:</SPAN> Slippage for market =
+orders.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">LotMultiplier1:</SPAN> The lot size of the =
+original=20
+trade is multiplied by it.<BR><SPAN style=3D"FONT-WEIGHT: =
+bold">StartHour1:</SPAN>=20
+Trades are opened after this hour. It is in hhmm format.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">EndHour1:</SPAN> No trades are opened after =
+this hour.=20
+It is in hhmm format.<SPAN style=3D"FONT-WEIGHT: bold"></SPAN><BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">CloseAllOrders:</SPAN> True means that all =
+open orders=20
+are closed after a defined hour.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">CloseAllHour:</SPAN> All open orders are =
+closed after=20
+this hour. It is in hhmm format.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">FridayNoTradeHour:</SPAN> On Friday no new =
+trades are=20
+opened after this hour. It is in hhmm format.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">ReentryAfterSL:</SPAN> If a trade is opened =
+after=20
+StartHour1 and hits stop loss, no new trades are opened till =
+EndHour1.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">OppositeDirectionAfterSL:</SPAN> If a trade =
+is opened=20
+after StartHour1 and hits stop loss, then untill EndHour1&nbsp;new =
+trades are=20
+opened to the opposite direction only.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">ReentryAfterTP:</SPAN> If a trade is opened =
+after=20
+StartHour1 and hits take profit, no new trades are opened till=20
+EndHour1.<BR><SPAN style=3D"FONT-WEIGHT: =
+bold">OppositeDirectionAfterTP:</SPAN> If=20
+a trade is opened after StartHour1 and hits take profit, then untill=20
+EndHour1&nbsp;new trades are opened to the opposite direction =
+only.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">AdditionalTrade:</SPAN> This is an =
+additional trade to=20
+the same direction of the original one. If false it is not =
+taken.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">MagicNumber2:</SPAN> Magic number of the =
+additional=20
+trade. It should be different than those of the original and the hedge=20
+trade.<BR><SPAN style=3D"FONT-WEIGHT: bold">Comment2:</SPAN> The comment =
+of the=20
+additional trade as shown at the Metatrader terminal.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">UsePendingOrder2:</SPAN> True means that =
+additional=20
+trades are placed as pending orders. If false they are placed as market=20
+orders.<BR><SPAN style=3D"FONT-WEIGHT: bold">Distance2:</SPAN> Distance =
+between=20
+original and additional trade opening price.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">StopLoss2:</SPAN> Stop loss of the =
+additional=20
+trade.<BR><SPAN style=3D"FONT-WEIGHT: bold">TakeProfit2:</SPAN> Take =
+profit of the=20
+additional trade.<BR><SPAN style=3D"FONT-WEIGHT: =
+bold">BreakEven2:</SPAN> The stop=20
+loss moves to the opening price after price is in profit for the defined =
+
+pips.<BR><SPAN style=3D"FONT-WEIGHT: bold">TrailingStop2:</SPAN> =
+Trailing stop=20
+loss of the additional trade. <BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">TrailingStep2:</SPAN>&nbsp; Modify the =
+trailing stop=20
+loss in steps of price moves.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">Slippage2:</SPAN> Slippage for market =
+orders.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">LotMultiplier2:</SPAN> The lot size of the =
+additional=20
+trade is multiplied by it.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">DeleteAfterEndHour2:</SPAN> Pending =
+additional orders=20
+are deleted after EndHour2.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">DeleteIfOriginalClosed:</SPAN> Pending =
+additional=20
+orders are deleted if the original trade is closed in profit or loss. If =
+set to=20
+false pending additional orders are not deleted if the original trade is =
+closed,=20
+they are deleted when RSI reaches RSI_Buy_Reset or RSI_Sell_Reset levels =
+for=20
+long or short orders respectively.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">StartHour2:</SPAN> Trades are opened after =
+this hour.=20
+It is in hhmm format.<BR><SPAN style=3D"FONT-WEIGHT: =
+bold">EndHour2:</SPAN> No=20
+trades are opened after this hour. It is in hhmm format.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">HedgeTrade:</SPAN> This is a hedge trade to =
+the=20
+opposite direction of the original one. It is taken only if there is =
+currently=20
+an open or pending order. If false it is not taken.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">MagicNumber3:</SPAN> Magic number of the =
+hedge trade.=20
+It should be different than those of the original and the additional=20
+trade.<BR><SPAN style=3D"FONT-WEIGHT: bold">Comment3:</SPAN> The comment =
+of the=20
+hedge trade as shown at the Metatrader terminal.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">UsePendingOrder3:</SPAN> True means that =
+hedge trades=20
+are placed as pending orders. If false they are placed as market=20
+orders.<BR><SPAN style=3D"FONT-WEIGHT: bold">Distance3:</SPAN> Distance =
+between=20
+original and hedge trade opening price.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">StopLoss3:</SPAN> Stop loss of the hedge=20
+trade.<BR><SPAN style=3D"FONT-WEIGHT: bold">TakeProfit3:</SPAN> Take =
+profit of the=20
+hedge trade.<BR><SPAN style=3D"FONT-WEIGHT: bold">BreakEven3:</SPAN> The =
+stop loss=20
+moves to the opening price after price is in profit for the defined=20
+pips.<BR><SPAN style=3D"FONT-WEIGHT: bold">TrailingStop3:</SPAN> =
+Trailing stop=20
+loss of the hedge trade. <BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">TrailingStep3:</SPAN> Modify the trailing =
+stop loss in=20
+steps of price moves.<BR><SPAN style=3D"FONT-WEIGHT: =
+bold">Slippage3:</SPAN>=20
+Slippage for market orders.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">LotMultiplier3:</SPAN> The lot size of the =
+hedge trade=20
+is multiplied by it.<BR><SPAN style=3D"FONT-WEIGHT: =
+bold">StartHour3:</SPAN>=20
+Trades are opened after this hour. It is in hhmm format.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">EndHour3:</SPAN> No trades are opened after =
+this hour.=20
+It is in hhmm format.<BR><SPAN style=3D"FONT-WEIGHT: bold">Lots:</SPAN> =
+The lot=20
+size if money management is not used.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">MaxLots:</SPAN> Maximum lot size =
+allowed.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">MoneyManagement:</SPAN> True means that the =
+lot size=20
+is defined by the money management.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">AllowMicro:</SPAN> True means that 0.01 or =
+micro lots=20
+can be used.<BR><SPAN style=3D"FONT-WEIGHT: =
+bold">LeveragePercent:</SPAN> Risk of=20
+each trade.<BR><SPAN style=3D"FONT-WEIGHT: bold">ClosedBarSignal:</SPAN> =
+A closed=20
+bar RSI value is used for an entry signal.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">RSI_Period:</SPAN> Period of RSI =
+indicator.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">RSI_TF:</SPAN> Timeframe of RSI =
+indicator.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">RSI_Buy:</SPAN> A long order is opened if =
+RSI falls=20
+below this level .<BR><SPAN style=3D"FONT-WEIGHT: bold">RSI_Sell:</SPAN> =
+A short=20
+order is opened if RSI rises above this level .<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">RSI_Buy_Reset:</SPAN> If a long order was =
+opened, RSI=20
+should go above this level for the next long order to be =
+enabled.<BR><SPAN=20
+style=3D"FONT-WEIGHT: bold">RSI_Sell_Reset:</SPAN> If a short order was =
+opened,=20
+RSI should go below this level for the next short order to be=20
+enabled.<BR><BR></BODY></HTML>
+
+------=_NextPart_000_0005_01C986F8.3ADCF3A0
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Location: http://vomail.net/2.png
+
+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
+
+------=_NextPart_000_0005_01C986F8.3ADCF3A0--
