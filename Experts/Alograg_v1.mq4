@@ -3,7 +3,7 @@
 //|                                          Copyright 2017, Alograg |
 //|                                           https://www.alograg.me |
 //+------------------------------------------------------------------+
-#define propVersion "1.20"
+#define propVersion "1.21"
 
 #property copyright "Copyright 2017, Alograg"
 #property link "https://www.alograg.me"

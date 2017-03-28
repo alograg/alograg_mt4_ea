@@ -37,19 +37,10 @@ void OnDeinit(const int reason)
 +-----------------------------------------------------------------*/
 void OnTick()
 {
-    totalOrders = OrdersTotal();
-    if (IsTesting()) {
-        Crossing();
-        Gap();
-    }
 }
 /*-----------------------------------------------------------------+
 | Timer function                                                   |
 +-----------------------------------------------------------------*/
 void OnTimer()
 {
-    if (!IsTesting()) {
-        Crossing();
-        Gap();
-    }
 }

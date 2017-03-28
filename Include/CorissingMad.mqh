@@ -42,17 +42,9 @@ bool isToDown()
     double yellowHighOpen = iMA(Symbol(), PERIOD_M15, 10, 0, MODE_SMA, PRICE_HIGH, 0);
     double yellowLowClose = iMA(Symbol(), PERIOD_M15, 10, 0, MODE_EMA, PRICE_LOW, 0);
     bool upDown = greenOpenLast > greenOpen && yellowHighOpenLast > yellowHighOpen;
-    bool goDown = currentClose < greenOpen && currentClose < yellowHighOpen;
+    bool goDown = currentClose > greenOpen && currentClose > yellowHighOpen;
     double size = NormalizeDouble(Open[0] - Close[0], Digits - 1);
     bool doubleSize = size < 0 && NormalizeDouble(MathAbs(Open[1] - Close[1]), Digits) * 2 > size;
-    Print(greenOpenLast);
-    Print(yellowHighOpenLast);
-    Print(greenOpen);
-    Print(yellowHighOpen);
-    Print(upDown);
-    Print(goDown);
-    Print(size);
-    Print(size);
     return (upDown && goDown) || doubleSize;
 }
 
@@ -110,16 +102,16 @@ void exitSell()
 
 void Crossing()
 {
-    /*if (isToUp() && currentBuys == 0)
+    if (isToUp() && currentBuys == 0)
     {
         crossingOrder(OP_BUY, Ask);
         currentBuys++;
-    }*/
+    }
     if (isToDown() && currentSells == 0)
     {
         crossingOrder(OP_SELL, Bid);
         currentSells++;
     }
-    //exitBuys();
+    exitBuys();
     exitSell();
 }

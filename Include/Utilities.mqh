@@ -57,12 +57,13 @@ int COT(int opType, int FilterMagicNumber)
 +-----------------------------------------------------------------*/
 double getLotSize(double Risk = 2, double SL = 0)
 {
-  if(SL == 0)
-    SL = MarketInfo(Symbol(), MODE_SPREAD) * Point;
+  if (SL == 0)
+    SL = (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) + (MarketInfo(Symbol(), MODE_SPREAD) * Point);
   double MaxLot = MarketInfo(Symbol(), MODE_MAXLOT);
   double MinLot = MarketInfo(Symbol(), MODE_MINLOT);
   double StopLoss = SL / Point / 10;
-  double Size = Risk / 100 * AccountFreeMargin() / 10 / StopLoss;
+  Print("AccountFreeMargin: ", AccountBalance(), ":", AccountBalance() * 0.8 , ":", AccountMargin());
+  double Size = Risk / 100 * AccountBalance() / 10 / StopLoss;
   if (Size <= MinLot)
     Size = MinLot;
   if (Size >= MaxLot)
@@ -85,7 +86,8 @@ void TrailingOpenOrders(double TrailingStop = 1, int FilterMagicNumber = MagicNu
     if (OrderType() <= OP_SELL)
     {
       profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - 0.01, 2);
-      if(profit < 0) continue;
+      if (profit < 0)
+        continue;
       if (OrderType() == OP_BUY)
       {
         if (Bid - OrderOpenPrice() > MyPoint * TrailingStop && OrderStopLoss() < Bid - MyPoint * TrailingStop)
@@ -108,7 +110,7 @@ void TrailingOpenOrders(double TrailingStop = 1, int FilterMagicNumber = MagicNu
 
 bool isFornComment(string comment)
 {
-    if(comment == NULL)
-        return true;
-    return OrderComment() == comment;
+  if (comment == NULL)
+    return true;
+  return OrderComment() == comment;
 }
