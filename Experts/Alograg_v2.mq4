@@ -14,14 +14,20 @@
 
 #include "..\Include\OrderReliable_2011.01.07.mqh"
 #include "..\Include\WeekEndGap.mqh"
-#include "..\Include\CorissingMad.mqh"
+#include "..\Include\FreeDayNigth.mqh"
+
+// Externos
+extern int pipsPerDay = 100;       //Meta de pips por dia
+extern double moneyPerDay = 150.0; //Meta de pips por dia
+
+double toDayMoney = 0.0;
 
 /*-----------------------------------------------------------------+
 | Expert initialization function                                   |
 +-----------------------------------------------------------------*/
 int OnInit()
 {
-    totalOrders = OrdersTotal();
+    initUtilsGlobals();
     EventSetTimer(60);
     return (INIT_SUCCEEDED);
 }
@@ -37,10 +43,22 @@ void OnDeinit(const int reason)
 +-----------------------------------------------------------------*/
 void OnTick()
 {
+    if (IsTesting())
+        doStrategies();
 }
 /*-----------------------------------------------------------------+
 | Timer function                                                   |
 +-----------------------------------------------------------------*/
 void OnTimer()
 {
+    if (isNewDay() && !IsTesting())
+        SendReport();
+    if (!IsTesting())
+        doStrategies();
+}
+
+void doStrategies()
+{
+    Gap();
+    FreeDayNigth();
 }

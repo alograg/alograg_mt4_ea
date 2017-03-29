@@ -14,8 +14,6 @@
 
 void CloseAllProfited(string comment = NULL, double minCents = 0.07)
 {
-    if (NewDayBar())
-        return;
     int TotalToClose = OrdersTotal(), hasClose, iClosed = 0;
     double profit;
     for (int indexToClose = totalOrders - 1; 0 <= indexToClose; indexToClose--)
@@ -23,7 +21,7 @@ void CloseAllProfited(string comment = NULL, double minCents = 0.07)
         if (!OrderSelect(indexToClose, SELECT_BY_POS))
             continue;
         profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - minCents, 2);
-        if (OrderSymbol() == Symbol() && isFornComment(comment) && profit > 0)
+        if (OrderSymbol() == Symbol() && isFornComment(comment) && profit > 0.01)
         {
             if (OrderType() == OP_BUY)
             {
@@ -36,5 +34,6 @@ void CloseAllProfited(string comment = NULL, double minCents = 0.07)
             iClosed += hasClose ? 1 : 0;
         }
     }
-    Print("Close: ", iClosed, " closed of ", TotalToClose);
+    if (IsTesting())
+        Print("Close: ", iClosed, " closed of ", TotalToClose);
 }
