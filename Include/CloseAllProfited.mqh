@@ -23,7 +23,7 @@ void CloseAllProfited(string comment = NULL, bool force = false, double minCents
         if (OrderTakeProfit() != 0 && !force)
             continue;
         profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - minCents, 2);
-        if (OrderSymbol() == Symbol() && isFornComment(comment, OrderComment()) && (profit > 0.01 || profit < -500))
+        if (OrderSymbol() == Symbol() && isFornComment(comment, OrderComment()) && (profit > 0.01 || profit < (firstBalance * -0.5)))
         {
             if (OrderType() == OP_BUY)
             {
