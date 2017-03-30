@@ -51,6 +51,8 @@ void FreeDayNigth(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 
   double gls = getLotSize(MM_Risk, 0.2);
   if (gls < 0.01)
     return;
+  if(gls >= 1)
+      StopLoss *= pareto - (gls - pareto);
   if (IsTesting())
     Print("FreeDayNigth");
   if (CurrOpen < PrevClose)

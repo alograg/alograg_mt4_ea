@@ -21,8 +21,8 @@ void Gap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1, double
   string BuyComment = eaName + ": Gap.B";
   if (CheckNewBar())
   {
-    TrailingOpenOrders(5, MagicBuy, SellComment);
-    TrailingOpenOrders(5, MagicSell, BuyComment);
+    //TrailingOpenOrders(5, MagicBuy, SellComment);
+    //TrailingOpenOrders(5, MagicSell, BuyComment);
   }
   if (!isNewDay())
     return;
@@ -55,6 +55,8 @@ void Gap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1, double
     double gls = getLotSize(MM_Risk, 0.2);
     if (gls < 0.01)
       return;
+    if(gls >= 1)
+      StopLoss *= pareto - (gls - pareto);
     if (IsTesting())
       Print("Gap");
     if (CurrOpen < PrevClose)
