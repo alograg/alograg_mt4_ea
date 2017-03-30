@@ -14,28 +14,36 @@
 
 void CloseAllProfited(string comment = NULL, bool force = false, double minCents = 0.07)
 {
-    int TotalToClose = OrdersTotal(), hasClose, iClosed = 0;
-    double profit;
+    int TotalToClose = OrdersTotal(), iClosed = 0;
     for (int indexToClose = totalOrders - 1; 0 <= indexToClose; indexToClose--)
     {
-        if (!OrderSelect(indexToClose, SELECT_BY_POS))
-            continue;
-        if (OrderTakeProfit() != 0 && !force)
-            continue;
-        profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - minCents, 2);
-        if (OrderSymbol() == Symbol() && isFornComment(comment, OrderComment()) && (profit > 0.01 || profit < (firstBalance * -0.5)))
-        {
-            if (OrderType() == OP_BUY)
-            {
-                hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
-            }
-            if (OrderType() == OP_SELL)
-            {
-                hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Ask, 4, White);
-            }
-            iClosed += hasClose ? 1 : 0;
-        }
+        iClosed += CloseOneIfProfit(indexToClose, SELECT_BY_POS, comment, force);
     }
     //if (IsTesting())
     //Print("Close: ", iClosed, " closed of ", TotalToClose);
+}
+
+int CloseOneIfProfit(int id, int by = SELECT_BY_POS, string comment = NULL, bool force = false, double minCents = 0.07)
+{
+    if (!OrderSelect(id, by))
+        return 0;
+    if (OrderSymbol() == Symbol() && isFornComment(comment, OrderComment()))
+        return 0;
+    if (OrderTakeProfit() != 0 && !force)
+        return 0;
+    int hasClose;
+    double profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - minCents, 2);
+    if (profit > 0.01 || profit < maxLost)
+    {
+        if (OrderType() == OP_BUY)
+        {
+            hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
+        }
+        if (OrderType() == OP_SELL)
+        {
+            hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Ask, 4, White);
+        }
+        return hasClose ? 1 : 0;
+    }
+    return 0;
 }

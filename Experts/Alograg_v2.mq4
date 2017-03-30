@@ -16,12 +16,15 @@
 #include "..\Include\WeekEndGap.mqh"
 #include "..\Include\FreeDayNigth.mqh"
 #include "..\Include\SummaryReport.mqh"
+#include "..\Include\MorningWork.mqh"
 #include "..\Include\Alograg_v2_tester.mqh"
 
 // Externos
 extern int pipsPerDay = 100;          //Meta de pips por dia
 extern double moneyPerDay = 150.0;    //Meta de pips por dia
 extern double firstBalance = 1000.00; //Inversion inicial
+
+// Constantes
 
 double pareto = 0.8;
 double toDayMoney = 0.0;
@@ -72,6 +75,7 @@ void OnTimer()
 
 void doStrategies()
 {
-    Gap();
-    FreeDayNigth();
+    //Gap();
+    //FreeDayNigth();
+    MorningWork();
 }
