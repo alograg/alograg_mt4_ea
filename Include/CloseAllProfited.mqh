@@ -37,11 +37,17 @@ int CloseOneIfProfit(int id, int by = SELECT_BY_POS, string comment = NULL, bool
     {
         if (OrderType() == OP_BUY)
         {
-            hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
+            if (!IsTesting())
+                hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
+            else
+                hasClose = OrderClose(OrderTicket(), OrderLots(), Bid, 4, White);
         }
         if (OrderType() == OP_SELL)
         {
-            hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Ask, 4, White);
+            if (!IsTesting())
+                hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Ask, 4, White);
+            else
+                hasClose = OrderClose(OrderTicket(), OrderLots(), Ask, 4, White);
         }
         return hasClose ? 1 : 0;
     }

@@ -119,7 +119,6 @@ bool isNewDay()
 
   if (TimeDayOfYear(Time[0]) == yearDay)
     return false;
-  yearDay = TimeDayOfYear(Time[0]);
   return true;
 }
 
