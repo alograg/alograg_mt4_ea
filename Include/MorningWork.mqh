@@ -13,7 +13,7 @@
 #include "OrderReliable_2011.01.07.mqh"
 #include "CloseAllProfited.mqh"
 
-string MorningWorkSellComment = eaName + ": MorningWork";
+string MorningWorkComment = eaName + ": MorningWork";
 int morningWorkOperations = -1;
 int morningWorkOperationsType = NULL;
 double morningWorkPoint = 0.0;
@@ -22,7 +22,7 @@ double morningWorkStopLoss = 0.0;
 
 void MorningWork()
 {
-    if (0 == morningWorkOperations)
+    if (0 == morningWorkOperations || !CheckNewBar())
         return;
     if (morningWorkOperations > 0)
     {
@@ -33,19 +33,24 @@ void MorningWork()
     if (hour >= 22)
         return;
     if (hour == 5 || hour == 17)
+    {
         morningWorkPoint = Close[1];
+        return;
+    }
     if (morningWorkPoint == 0)
         return;
     double Spread = MarketInfo(Symbol(), MODE_SPREAD) * Point,
            movePoints = (50 * Point);
+    if (IsTesting())
+        Print("MorningWork");
     if (Ask >= morningWorkPoint + movePoints)
     {
-        Print("Comprar: ", Ask, ">=", morningWorkPoint, "+", movePoints, "=", morningWorkPoint + movePoints);
         MorningWorkOpen(OP_BUY);
     }
-    if (Bid <= morningWorkPoint - movePoints + Spread)
-        Print("Vender: ", Bid, "<=", morningWorkPoint, "-", movePoints, "+", Spread, "=", morningWorkPoint - movePoints + Spread);
-    MorningWorkOpen(OP_SELL);
+    else if (Bid <= morningWorkPoint - movePoints + Spread)
+    {
+        MorningWorkOpen(OP_SELL);
+    }
     return;
 }
 
@@ -54,16 +59,14 @@ void MorningWorkOpen(int type)
     double gls = getLotSize(2, 0.2);
     if (gls < 0.01)
         return;
-    if (IsTesting())
-        Print("MorningWork");
     morningWorkOperationsType = type;
     if (OP_BUY == type)
     {
         morningWorkOperations = 0;
         if (!IsTesting())
-            morningWorkOperations = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, 0, 0, MorningWorkSellComment, MagicNumber, 0, Blue);
+            morningWorkOperations = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, 0, 0, MorningWorkComment, MagicNumber, 0, Blue);
         else
-            morningWorkOperations = OrderSend(Symbol(), OP_BUY, gls, Ask, 3, 0, 0, MorningWorkSellComment, MagicNumber, 0, Blue);
+            morningWorkOperations = OrderSend(Symbol(), OP_BUY, gls, Ask, 3, 0, 0, MorningWorkComment, MagicNumber, 0, Blue);
         morningWorkClose = Ask + (25 * Point);
         morningWorkStopLoss = Ask - (25 * Point);
     }
@@ -72,9 +75,9 @@ void MorningWorkOpen(int type)
         morningWorkOperations = 0;
         double Spread = MarketInfo(Symbol(), MODE_SPREAD) * Point;
         if (!IsTesting())
-            morningWorkOperations = OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, 0, 0, MorningWorkSellComment, MagicNumber, 0, Red);
+            morningWorkOperations = OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, 0, 0, MorningWorkComment, MagicNumber, 0, Red);
         else
-            morningWorkOperations = OrderSend(Symbol(), OP_SELL, gls, Bid, 3, 0, 0, MorningWorkSellComment, MagicNumber, 0, Red);
+            morningWorkOperations = OrderSend(Symbol(), OP_SELL, gls, Bid, 3, 0, 0, MorningWorkComment, MagicNumber, 0, Red);
         morningWorkClose = Bid - (25 * Point) + Spread;
         morningWorkStopLoss = Bid + (25 * Point) + Spread;
     }
@@ -88,7 +91,6 @@ void MorningWorkClose(int ticket)
     {
         stopLoss = Ask <= morningWorkStopLoss;
         close = Ask >= morningWorkClose;
-        Print("Close Test: ", stopLoss, "&&", close);
         if (!stopLoss && close)
         {
             morningWorkClose += Point;
@@ -100,7 +102,6 @@ void MorningWorkClose(int ticket)
         double Spread = MarketInfo(Symbol(), MODE_SPREAD) * Point;
         stopLoss = Bid <= morningWorkStopLoss;
         close = Bid >= morningWorkClose;
-        Print("Close Test: ", stopLoss, "&&", close);
         if (!stopLoss && close)
         {
             morningWorkClose -= Point;
@@ -109,8 +110,10 @@ void MorningWorkClose(int ticket)
     }
     if (stopLoss)
     {
-        Print("Close");
-        CloseOneIfProfit(ticket, SELECT_BY_TICKET);
-        morningWorkOperations = 0;
+        if (CloseOneIfProfit(ticket, SELECT_BY_TICKET, MorningWorkComment, true))
+        {
+            morningWorkOperations = -1;
+            //morningWorkPoint = 0;
+        }
     }
 }

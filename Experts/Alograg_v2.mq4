@@ -79,4 +79,5 @@ void doStrategies()
     //FreeDayNigth();
     MorningWork();
     yearDay = TimeDayOfYear(Time[0]);
+    time0 = Time[0];
 }

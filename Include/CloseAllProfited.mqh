@@ -27,9 +27,11 @@ int CloseOneIfProfit(int id, int by = SELECT_BY_POS, string comment = NULL, bool
 {
     if (!OrderSelect(id, by))
         return 0;
-    if (OrderSymbol() == Symbol() && isFornComment(comment, OrderComment()))
+    if (OrderSymbol() != Symbol())
         return 0;
-    if (OrderTakeProfit() != 0 && !force)
+    if (!isFornComment(comment, OrderComment()))
+        return 0;
+    if (OrderTakeProfit() <= 0 && force)
         return 0;
     int hasClose;
     double profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - minCents, 2);
@@ -49,6 +51,7 @@ int CloseOneIfProfit(int id, int by = SELECT_BY_POS, string comment = NULL, bool
             else
                 hasClose = OrderClose(OrderTicket(), OrderLots(), Ask, 4, White);
         }
+        
         return hasClose ? 1 : 0;
     }
     return 0;

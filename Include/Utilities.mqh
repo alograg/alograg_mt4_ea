@@ -105,10 +105,7 @@ double getLotSize(double Risk = 2, double SL = 0)
 
 bool CheckNewBar()
 {
-  if (Time[0] == time0)
-    return false;
-  time0 = Time[0];
-  return true;
+  return Time[0] == time0;
 }
 
 /*-----------------------------------------------------------------+
@@ -117,9 +114,7 @@ bool CheckNewBar()
 bool isNewDay()
 {
 
-  if (TimeDayOfYear(Time[0]) == yearDay)
-    return false;
-  return true;
+  return TimeDayOfYear(Time[0]) == yearDay;
 }
 
 bool isFornComment(string comment, string orderComment)

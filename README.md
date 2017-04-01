@@ -50,3 +50,6 @@ Take-profit — 25 points.
 Warrants, which were not open during the day — are removed and installed new ones.
 Template for «forex strategy for USDCHF» for Metatrader 4 I do not spread, because its just not …
 
+## Otra
+
+https://www.tradingview.com/chart/EURUSD/vvazQHn5-EURUSD-Daily-Chart-very-simple-trend-following-strategy/
