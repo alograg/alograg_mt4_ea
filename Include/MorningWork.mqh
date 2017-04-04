@@ -32,7 +32,7 @@ void MorningWork()
     int hour = TimeHour(Time[0]);
     if (hour >= 22)
         return;
-    if (hour == 17)
+    if (hour == 17 && morningWorkPoint == 0)
     {
         morningWorkPoint = Close[1];
         return;
@@ -63,58 +63,58 @@ void MorningWorkOpen(int type)
     if (OP_BUY == type)
     {
         morningWorkOperations = 0;
-        if (!IsTesting())
-            morningWorkOperations = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, 0, 0, MorningWorkComment, MagicNumber, 0, Blue);
-        else
-            morningWorkOperations = OrderSend(Symbol(), OP_BUY, gls, Ask, 3, 0, 0, MorningWorkComment, MagicNumber, 0, Blue);
         morningWorkClose = Ask + (25 * Point);
         morningWorkStopLoss = Ask - (25 * Point);
+        morningWorkOperations = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, 0, 0, MorningWorkComment, MagicNumber, 0, Blue);
     }
     if (OP_SELL == type)
     {
         morningWorkOperations = 0;
         double Spread = MarketInfo(Symbol(), MODE_SPREAD) * Point;
-        if (!IsTesting())
-            morningWorkOperations = OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, 0, 0, MorningWorkComment, MagicNumber, 0, Red);
-        else
-            morningWorkOperations = OrderSend(Symbol(), OP_SELL, gls, Bid, 3, 0, 0, MorningWorkComment, MagicNumber, 0, Red);
-        morningWorkClose = Bid - (25 * Point) + Spread;
-        morningWorkStopLoss = Bid + (25 * Point) + Spread;
+        morningWorkClose = NormalizeDouble(Bid - (25 * Point), Digits);
+        morningWorkStopLoss = NormalizeDouble(Bid + (25 * Point), Digits);
+        morningWorkOperations = OrderSendReliable(Symbol(), OP_SELL, gls*0.2, Bid, 3, 0, 0, MorningWorkComment, MagicNumber, 0, Red);
     }
 }
 
 void MorningWorkClose(int ticket)
 {
     bool stopLoss = false, close = false;
-    int orderTicket = OrderSelect(ticket, SELECT_BY_TICKET);
+    int orderTicket;
     if (OP_BUY == morningWorkOperationsType)
     {
         stopLoss = Ask <= morningWorkStopLoss;
         close = Ask >= morningWorkClose;
-        if (!stopLoss && close)
-        {
-            morningWorkClose += Point;
-            morningWorkStopLoss = Ask - Point;
-        }
     }
     if (OP_SELL == morningWorkOperationsType)
     {
         double Spread = MarketInfo(Symbol(), MODE_SPREAD) * Point;
         stopLoss = Bid >= morningWorkStopLoss;
         close = Bid <= morningWorkClose;
-        if (!stopLoss && close)
-        {
-            //morningWorkClose += Point;
-            //morningWorkStopLoss = Bid + Point + Spread;
-        }
     }
-    Print("MorningWork; ", close, " - ", stopLoss, " - ", Bid, " - ", morningWorkClose, " - ", morningWorkStopLoss);
     if (close)
     {
-        if (CloseOneIfProfit(ticket, SELECT_BY_TICKET, MorningWorkComment, true))
+        if (CloseOneIfProfit(ticket, SELECT_BY_TICKET, MorningWorkComment))
         {
             morningWorkOperations = -1;
-            //morningWorkPoint = 0;
+            morningWorkPoint = 0.0;
         }
     }
+    /*else
+    {
+        orderTicket = OrderSelect(ticket, SELECT_BY_TICKET);
+        if (TimeDayOfYear(OrderOpenTime()) < TimeDayOfYear(Time[0]))
+        {
+            if (OrderType() == OP_BUY)
+            {
+                close = OrderCloseReliable(ticket, OrderLots(), Bid, 4, White);
+            }
+            if (OrderType() == OP_SELL)
+            {
+                close = OrderCloseReliable(ticket, OrderLots(), Ask, 4, White);
+            }
+            morningWorkOperations = -1;
+            morningWorkPoint = 0.0;
+        }
+    }*/
 }

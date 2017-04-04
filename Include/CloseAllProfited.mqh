@@ -60,3 +60,27 @@ int CloseOneIfProfit(int id, int by = SELECT_BY_POS, string comment = NULL, bool
     }
     return 0;
 }
+
+void CloseAll(string comment = NULL)
+{
+    int TotalToClose = OrdersTotal(), iClosed = 0, hasClose = 0;
+    for (int indexToClose = totalOrders - 1; 0 <= indexToClose; indexToClose--)
+    {
+        if (OrderSymbol() != Symbol() && !isFornComment(comment, OrderComment()))
+            continue;
+        if (OrderType() == OP_BUY)
+        {
+            if (!IsTesting())
+                hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
+            else
+                hasClose = OrderClose(OrderTicket(), OrderLots(), Bid, 4, White);
+        }
+        if (OrderType() == OP_SELL)
+        {
+            if (!IsTesting())
+                hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Ask, 4, White);
+            else
+                hasClose = OrderClose(OrderTicket(), OrderLots(), Ask, 4, White);
+        }
+    }
+}

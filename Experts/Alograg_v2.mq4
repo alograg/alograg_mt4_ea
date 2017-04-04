@@ -13,10 +13,11 @@
 #property strict
 
 #include "..\Include\OrderReliable_2011.01.07.mqh"
+#include "..\Include\Utilities.mqh"
 #include "..\Include\WeekEndGap.mqh"
 #include "..\Include\FreeDayNigth.mqh"
 #include "..\Include\SummaryReport.mqh"
-#include "..\Include\MorningWork.mqh"
+//#include "..\Include\MorningWork.mqh"
 #include "..\Include\Alograg_v2_tester.mqh"
 
 // Externos
@@ -75,9 +76,9 @@ void OnTimer()
 
 void doStrategies()
 {
-    //Gap();
+    Gap();
     //FreeDayNigth();
-    MorningWork();
+    //MorningWork();
     yearDay = TimeDayOfYear(Time[0]);
     time0 = Time[0];
 }
