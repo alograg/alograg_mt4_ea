@@ -12,7 +12,7 @@
 #include "Utilities.mqh"
 #include "OrderReliable_2011.01.07.mqh"
 
-void CloseAllProfited(string comment = NULL, bool force = false, double minCents = 0.07)
+void CloseAllProfited(string comment = NULL, bool force = false, double minCents = 0.08)
 {
     int TotalToClose = OrdersTotal(), iClosed = 0;
     for (int indexToClose = totalOrders - 1; 0 <= indexToClose; indexToClose--)
@@ -29,14 +29,18 @@ int CloseOneIfProfit(int id, int by = SELECT_BY_POS, string comment = NULL, bool
         return 0;
     if (OrderSymbol() != Symbol())
         return 0;
+        Print("is simbol: ", id);
     if (!isFornComment(comment, OrderComment()))
         return 0;
+        Print("is comment: ", id);
     if (OrderTakeProfit() <= 0 && force)
         return 0;
+        Print("hasProffit: ", id);
     int hasClose;
     double profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - minCents, 2);
     if (profit > 0.01 || profit < maxLost)
     {
+        Print("can close: ", id);
         if (OrderType() == OP_BUY)
         {
             if (!IsTesting())

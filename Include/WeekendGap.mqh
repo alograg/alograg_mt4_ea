@@ -32,6 +32,7 @@ void Gap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1, double
   {
     if (TimeDayOfWeek(time0) != 1)
     {
+      Print("WeekendGap: CloseAllProfited");
       CloseAllProfited(WeekendGapSellComment);
       CloseAllProfited(WeekendGapBuyComment);
     }
@@ -56,10 +57,10 @@ void Gap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1, double
   double gls = getLotSize(MM_Risk, 0.2);
   if (gls < 0.01)
     return;
+  Print("Gap");
   if (gls >= 1)
     StopLoss *= pareto - (gls - pareto);
   //if (IsTesting())
-  Print("Gap");
   if (CurrOpen < PrevClose)
   {
     Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, Ask - StopLoss, Ask + TakeProfit, WeekendGapBuyComment, WeekendGapMagicBuy, 0, Blue);

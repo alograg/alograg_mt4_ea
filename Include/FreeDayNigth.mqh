@@ -26,6 +26,7 @@ void FreeDayNigth(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 
   {
     if (TimeDayOfWeek(time0) != 5)
     {
+      Print("FreeDayNigth: CloseAllProfited");
       CloseAllProfited(FreeDayNigthSellComment);
       CloseAllProfited(FreeDayNigthBuyComment);
     }
@@ -53,8 +54,8 @@ void FreeDayNigth(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 
     return;
   if (gls >= 1)
     StopLoss *= pareto - (gls - pareto);
-  if (IsTesting())
-    Print("FreeDayNigth");
+  //if (IsTesting())
+  Print("FreeDayNigth");
   if (CurrOpen < PrevClose)
   {
     Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, Ask - StopLoss, Ask + TakeProfit, FreeDayNigthBuyComment, FreeDayNigthMagicBuy, 0, Blue);

@@ -32,7 +32,7 @@ void MorningWork()
     int hour = TimeHour(Time[0]);
     if (hour >= 22)
         return;
-    if (hour == 5 || hour == 17)
+    if (hour == 17)
     {
         morningWorkPoint = Close[1];
         return;
@@ -100,15 +100,16 @@ void MorningWorkClose(int ticket)
     if (OP_SELL == morningWorkOperationsType)
     {
         double Spread = MarketInfo(Symbol(), MODE_SPREAD) * Point;
-        stopLoss = Bid <= morningWorkStopLoss;
-        close = Bid >= morningWorkClose;
+        stopLoss = Bid >= morningWorkStopLoss;
+        close = Bid <= morningWorkClose;
         if (!stopLoss && close)
         {
-            morningWorkClose -= Point;
-            morningWorkStopLoss = Bid + Point + Spread;
+            //morningWorkClose += Point;
+            //morningWorkStopLoss = Bid + Point + Spread;
         }
     }
-    if (stopLoss)
+    Print("MorningWork; ", close, " - ", stopLoss, " - ", Bid, " - ", morningWorkClose, " - ", morningWorkStopLoss);
+    if (close)
     {
         if (CloseOneIfProfit(ticket, SELECT_BY_TICKET, MorningWorkComment, true))
         {
