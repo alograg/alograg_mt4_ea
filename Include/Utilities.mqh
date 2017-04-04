@@ -16,10 +16,10 @@ double currentPoint = -1, pip = -1, unBlocked, blocked, maxLost = 0.0;
 void initUtilsGlobals()
 {
   totalOrders = OrdersTotal();
-  time0 = TimeCurrent();
+  time0 = Time[0];
+  yearDay = TimeDayOfYear(time0);
   pip = getPip();
   currentPoint = getCurrentPoint();
-  yearDay = TimeDayOfYear(TimeCurrent());
   maxLost = getMaxLost();
   Print("firstBalance: ", firstBalance);
 }
@@ -105,7 +105,7 @@ double getLotSize(double Risk = 2, double SL = 0)
 
 bool CheckNewBar()
 {
-  return Time[0] == time0;
+  return Time[0] != time0;
 }
 
 /*-----------------------------------------------------------------+
@@ -114,7 +114,7 @@ bool CheckNewBar()
 bool isNewDay()
 {
 
-  return TimeDayOfYear(Time[0]) == yearDay;
+  return TimeDayOfYear(Time[0]) != yearDay;
 }
 
 bool isFornComment(string comment, string orderComment)

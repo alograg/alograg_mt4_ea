@@ -56,7 +56,7 @@ void OnTick()
     if (IsTesting())
     {
         doStrategies();
-        CloseAllProfited(eaName + "-641075158");
+        //CloseAllProfited(eaName + "-641075158");
     }
 }
 /*-----------------------------------------------------------------+
@@ -71,14 +71,17 @@ void OnTimer()
     }
     if (!IsTesting())
         doStrategies();
-    CloseAllProfited(eaName + "-641075158");
+    //CloseAllProfited(eaName + "-641075158");
 }
 
 void doStrategies()
 {
     Gap();
-    //FreeDayNigth();
+    FreeDayNigth();
     //MorningWork();
-    yearDay = TimeDayOfYear(Time[0]);
-    time0 = Time[0];
+    if (IsTesting())
+        time0 = Time[0];
+    else
+        time0 = TimeCurrent();
+    yearDay = TimeDayOfYear(time0);
 }
