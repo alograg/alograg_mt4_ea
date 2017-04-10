@@ -7,7 +7,7 @@
 #define eaName "Alograg"
 #define MagicNumber 17808158
 
-#property copyright "Copyright 2017, Alograg"
+#property copyright "Copyright 2017, " + eaName
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict

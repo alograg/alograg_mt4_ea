@@ -4,7 +4,7 @@
 |                                           https://www.alograg.me |
 +-----------------------------------------------------------------*/
 
-#property copyright "Copyright 2017, Alograg"
+#property copyright "Copyright 2017, " + eaName
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict
