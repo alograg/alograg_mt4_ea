@@ -17,45 +17,38 @@
 #include "..\Include\FreeDayNigth.mqh"
 
 // Externos
-extern int pipsPerDay = 100;       //Meta de pips por dia
+extern int pipsPerDay = 100; // Meta de pips por dia
 
 /*-----------------------------------------------------------------+
 | Expert initialization function                                   |
 +-----------------------------------------------------------------*/
-int OnInit()
-{
-    initUtilsGlobals();
-    EventSetTimer(60);
-    return (INIT_SUCCEEDED);
+int OnInit() {
+  initUtilsGlobals();
+  EventSetTimer(60);
+  return (INIT_SUCCEEDED);
 }
 /*-----------------------------------------------------------------+
 | Expert deinitialization function                                 |
 +-----------------------------------------------------------------*/
-void OnDeinit(const int reason)
-{
-    EventKillTimer();
-}
+void OnDeinit(const int reason) { EventKillTimer(); }
 /*-----------------------------------------------------------------+
 | Expert tick function                                             |
 +-----------------------------------------------------------------*/
-void OnTick()
-{
-    if (IsTesting())
-        doStrategies();
+void OnTick() {
+  if (IsTesting())
+    doStrategies();
 }
 /*-----------------------------------------------------------------+
 | Timer function                                                   |
 +-----------------------------------------------------------------*/
-void OnTimer()
-{
-    if (isNewDay() && !IsTesting())
-        SendReport();
-    if (!IsTesting())
-        doStrategies();
+void OnTimer() {
+  if (isNewDay() && !IsTesting())
+    SendReport();
+  if (!IsTesting())
+    doStrategies();
 }
 
-void doStrategies()
-{
-    Gap();
-    FreeDayNigth();
+void doStrategies() {
+  Gap();
+  FreeDayNigth();
 }

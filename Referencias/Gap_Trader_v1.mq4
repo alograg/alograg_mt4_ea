@@ -3,7 +3,7 @@
 //|                                            http://www.doshur.com |
 //+------------------------------------------------------------------+
 #property copyright "doshur"
-#property link      "http://www.doshur.com"
+#property link "http://www.doshur.com"
 /*
 El Expert Advisor Gap Trading coge los precios de cierre del Viernes y
 de apertura del Lunes para generar señales. Dado que sólo trabaja con
@@ -48,141 +48,135 @@ extern double MM_Risk = 2;
 //+------------------------------------------------------------------+
 //| expert initialization function                                   |
 //+------------------------------------------------------------------+
-int init()
-  {
-//----
-   
-//----
-   return(0);
-  }
+int init() {
+  //----
+
+  //----
+  return (0);
+}
 //+------------------------------------------------------------------+
 //| expert deinitialization function                                 |
 //+------------------------------------------------------------------+
-int deinit()
-  {
-//----
-   
-//----
-   return(0);
-  }
+int deinit() {
+  //----
+
+  //----
+  return (0);
+}
 //+------------------------------------------------------------------+
 //| expert start function                                            |
 //+------------------------------------------------------------------+
-int start()
-  {
-//---- ONE TRADE PER BAR
+int start() {
+  //---- ONE TRADE PER BAR
 
-   static bool ToTrade;
+  static bool ToTrade;
 
-   if(NewBar() == true)
-   {
-      if(COT(1, 101187) == 0 && COT(2, 201187) == 0) ToTrade = true;
-   }
-
-//---- GAP
-
-   bool GAP;
-
-   double CurrOpen = iOpen(NULL, 0, 0);
-   double PrevClose = iClose(NULL, 0, 1);
-   double Range = MathAbs(PrevClose - CurrOpen);
-
-   if(Range >= GapRange * Point * 10) GAP = true;
-
-//---- TP / SL
-   
-   double ATR = iATR(NULL, 0, 13, 1);
-   double Spread = MarketInfo(Symbol(), MODE_SPREAD) * Point;
-
-   double TakeProfit = ATR * TP_Factor;
-   double StopLoss = (ATR * SL_Factor) + Spread;
-
-//---- TRADE
-
-   int Ticket;
-
-   if(ToTrade == true && GAP == true)
-   {
-      if(CurrOpen < PrevClose)
-      {
-         Ticket = OrderSend(Symbol(), OP_BUY, LotSize(MM_Risk, StopLoss), Ask, 3, Ask - StopLoss, Ask + TakeProfit, "Gap_Trader.B", 101187, 0, Blue);
-
-         if(Ticket < 0)
-         {
-            Print("Error in OrderSend : ", GetLastError());
-         }
-         else
-         {
-            ToTrade = false;
-         }
-      }
-
-      if(CurrOpen > PrevClose)
-      {
-         Ticket = OrderSend(Symbol(), OP_SELL, LotSize(MM_Risk, StopLoss), Bid, 3, Bid + StopLoss, Bid - TakeProfit, "Gap_Trader.S", 201187, 0, Red);
-
-         if(Ticket < 0)
-         {
-            Print("Error in OrderSend : ", GetLastError());
-         }
-         else
-         {
-            ToTrade = false;
-         }
-      }
-   }
-
-//----
-   return(0);
+  if (NewBar() == true) {
+    if (COT(1, 101187) == 0 && COT(2, 201187) == 0)
+      ToTrade = true;
   }
+
+  //---- GAP
+
+  bool GAP;
+
+  double CurrOpen = iOpen(NULL, 0, 0);
+  double PrevClose = iClose(NULL, 0, 1);
+  double Range = MathAbs(PrevClose - CurrOpen);
+
+  if (Range >= GapRange * Point * 10)
+    GAP = true;
+
+  //---- TP / SL
+
+  double ATR = iATR(NULL, 0, 13, 1);
+  double Spread = MarketInfo(Symbol(), MODE_SPREAD) * Point;
+
+  double TakeProfit = ATR * TP_Factor;
+  double StopLoss = (ATR * SL_Factor) + Spread;
+
+  //---- TRADE
+
+  int Ticket;
+
+  if (ToTrade == true && GAP == true) {
+    if (CurrOpen < PrevClose) {
+      Ticket = OrderSend(Symbol(), OP_BUY, LotSize(MM_Risk, StopLoss), Ask, 3,
+                         Ask - StopLoss, Ask + TakeProfit, "Gap_Trader.B",
+                         101187, 0, Blue);
+
+      if (Ticket < 0) {
+        Print("Error in OrderSend : ", GetLastError());
+      } else {
+        ToTrade = false;
+      }
+    }
+
+    if (CurrOpen > PrevClose) {
+      Ticket = OrderSend(Symbol(), OP_SELL, LotSize(MM_Risk, StopLoss), Bid, 3,
+                         Bid + StopLoss, Bid - TakeProfit, "Gap_Trader.S",
+                         201187, 0, Red);
+
+      if (Ticket < 0) {
+        Print("Error in OrderSend : ", GetLastError());
+      } else {
+        ToTrade = false;
+      }
+    }
+  }
+
+  //----
+  return (0);
+}
 //+------------------------------------------------------------------+
 //+ Check Open Trades                                                |
 //+------------------------------------------------------------------+
-int COT(int BS, int MN)
-{
-   int Buys = 0, Sells = 0;
+int COT(int BS, int MN) {
+  int Buys = 0, Sells = 0;
 
-   for(int cnt_COT = 0; cnt_COT < OrdersTotal(); cnt_COT++)
-   {
-      OrderSelect(cnt_COT, SELECT_BY_POS, MODE_TRADES);
+  for (int cnt_COT = 0; cnt_COT < OrdersTotal(); cnt_COT++) {
+    OrderSelect(cnt_COT, SELECT_BY_POS, MODE_TRADES);
 
-      if(OrderSymbol() == Symbol() && OrderMagicNumber() == MN && OrderType() == OP_BUY) Buys++;
-      if(OrderSymbol() == Symbol() && OrderMagicNumber() == MN && OrderType() == OP_SELL) Sells++;
-   }
+    if (OrderSymbol() == Symbol() && OrderMagicNumber() == MN &&
+        OrderType() == OP_BUY)
+      Buys++;
+    if (OrderSymbol() == Symbol() && OrderMagicNumber() == MN &&
+        OrderType() == OP_SELL)
+      Sells++;
+  }
 
-   if(BS == 1) return(Buys);
-   if(BS == 2) return(Sells);
+  if (BS == 1)
+    return (Buys);
+  if (BS == 2)
+    return (Sells);
 }
 //+------------------------------------------------------------------+
 //| LotSize                                                          |
 //+------------------------------------------------------------------+
-double LotSize(double Risk, double SL)
-{
-   double MaxLot = MarketInfo(Symbol(), MODE_MAXLOT);
-   double MinLot = MarketInfo(Symbol(), MODE_MINLOT);
+double LotSize(double Risk, double SL) {
+  double MaxLot = MarketInfo(Symbol(), MODE_MAXLOT);
+  double MinLot = MarketInfo(Symbol(), MODE_MINLOT);
 
-   double StopLoss = SL / Point / 10;
-   double Size = Risk / 100 * AccountBalance() / 10 / StopLoss;
+  double StopLoss = SL / Point / 10;
+  double Size = Risk / 100 * AccountBalance() / 10 / StopLoss;
 
-   if(Size < MinLot) Size = MinLot;
-   if(Size > MaxLot) Size = MaxLot;
+  if (Size < MinLot)
+    Size = MinLot;
+  if (Size > MaxLot)
+    Size = MaxLot;
 
-   return(NormalizeDouble(Size, 2));
+  return (NormalizeDouble(Size, 2));
 }
 //+------------------------------------------------------------------+
 //| New Bar                                                          |
 //+------------------------------------------------------------------+
-bool NewBar()
-{
-   static datetime PrevBar;
+bool NewBar() {
+  static datetime PrevBar;
 
-   if(PrevBar < Time[0])
-   {
-      PrevBar = Time[0];
-      return(true);
-   }
-   else
-   {
-      return(false);
-   }
+  if (PrevBar < Time[0]) {
+    PrevBar = Time[0];
+    return (true);
+  } else {
+    return (false);
+  }
 }
