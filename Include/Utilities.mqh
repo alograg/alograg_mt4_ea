@@ -20,7 +20,7 @@ void initUtilsGlobals()
   time0 = Time[0];
   pip = getPip();
   currentPoint = getCurrentPoint();
-  yearDay = TimeDayOfYear(Time[0]);
+  yearDay = TimeDayOfYear(time0);
 }
 
 double pipPrice(double price)

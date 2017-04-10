@@ -18,9 +18,6 @@
 
 // Externos
 extern int pipsPerDay = 100;       //Meta de pips por dia
-extern double moneyPerDay = 150.0; //Meta de pips por dia
-
-double toDayMoney = 0.0;
 
 /*-----------------------------------------------------------------+
 | Expert initialization function                                   |
