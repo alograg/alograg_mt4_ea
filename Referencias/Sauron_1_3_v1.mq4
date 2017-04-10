@@ -180,7 +180,7 @@ int Analyzer() {
 //| FILTER BLOCK MODULES
 //+------------------------------------------------------------------+
 bool BlockTradingFilter1() { // Original code Contributed by Wackena
-  bool BlockTrade = false; // trade by default
+  bool BlockTrade = false;   // trade by default
   if (UseHourTrade) {
     if (!(Hour() >= FromHourTrade && Hour() <= ToHourTrade && Minute() <= 3)) {
       //  Comment("Non-Trading Hours!");

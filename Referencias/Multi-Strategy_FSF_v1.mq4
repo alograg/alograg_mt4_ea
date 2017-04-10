@@ -17,7 +17,7 @@ extern string MA_Cross2 = "--------Moving Average Cross---------";
 extern string MA_Cross3 = "--------Ma Mode:1 to 5-------";
 extern bool USE_MA = true; // option 4
 extern bool USE_Last_MA_Signal = true;
-extern int MA_MODE = 5; // option 4
+extern int MA_MODE = 5;      // option 4
 extern int MA_TIMEFRAME = 3; // 1,2,3,4,5,6
 extern int FastMa_Period = 5;
 extern int MidMa_Period = 13;
@@ -624,8 +624,8 @@ int start() {
             OPENORDER("Sell");
 
           } // if (open opposite)
-        } // if close signal ==2
-      } // if order type == buy
+        }   // if close signal ==2
+      }     // if order type == buy
       if (OrderType() == OP_SELL && OrderMagicNumber() == MagicNumber) {
         if (USE_NOISE_CLOSING) {
           if ((signalTRIX() == 1 && OrderProfit() >= 0) ||
@@ -649,9 +649,9 @@ int start() {
           } // if opposite
 
         } // if close signal = 1
-      } // if oreder type=sell
-    } // if order select
-  } // for
+      }   // if oreder type=sell
+    }     // if order select
+  }       // for
 
   // check for new
   // bar===========================================================
@@ -1036,7 +1036,7 @@ void calculate() {
 
   if (USE_MACD_CLOSING) {
     //--------------------CLOSING
-    //VARIABLES---------------------------------------
+    // VARIABLES---------------------------------------
     if (Zerolag_MACD && !Classic_MACD) {
       CMACD_Main_0 = iCustom(Symbol(), gettimeframe(MACD_TIMEFRAME_CLOSING),
                              "ZeroLag MACD", MACD_Fast, MACD_Slow,
@@ -1338,7 +1338,7 @@ int MACD3() {
     return (MACDTrend);
 }
 //==MACD Singal Crossing
-//zero==========================================================
+// zero==========================================================
 int MACD4() {
   int MACDTrend = 0; // 1=Buy , 2= Sell
 
@@ -2295,7 +2295,7 @@ int CMACD3() {
   return (CMACDTrend);
 }
 //==CMACD Singal Crossing
-//zero==========================================================
+// zero==========================================================
 int CMACD4() {
   int CMACDTrend = 0; // 1=Buy , 2= Sell
 

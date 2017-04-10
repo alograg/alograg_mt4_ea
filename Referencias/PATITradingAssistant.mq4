@@ -244,7 +244,7 @@ void HeartBeat(int TimeFrame = PERIOD_H1) {
             TimeToStr(TimeLocal(), TIME_DATE | TIME_MINUTES));
       LastHeartBeat = CurrentTime;
     } // if(CurrentTime > ...
-  } // if(HeartBeat)
+  }   // if(HeartBeat)
 
 } // HeartBeat()
 //------------------------------------------------------
@@ -664,7 +664,7 @@ void HandleTradeEntry(bool wasPending, bool savedTrade = false) {
 void SetStopAndProfitLevels(Position *trade, bool wasPending) {
 
   if //(trade.OrderType == OP_BUY || trade.OrderType == OP_BUYLIMIT ||
-     //trade.OrderType == OP_BUYSTOP))
+      // trade.OrderType == OP_BUYSTOP))
       ((trade.OrderType & 0x0001) == 0) // All BUY order types are even
   {
     if (trade.StopPrice == 0 ||

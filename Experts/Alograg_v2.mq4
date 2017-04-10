@@ -23,7 +23,7 @@ extern int pipsPerDay = 100; // Meta de pips por dia
 | Expert initialization function                                   |
 +-----------------------------------------------------------------*/
 int OnInit() {
-  initUtilsGlobals();
+  initUtilsGlobals(true);
   EventSetTimer(60);
   return (INIT_SUCCEEDED);
 }
@@ -51,4 +51,5 @@ void OnTimer() {
 void doStrategies() {
   Gap();
   FreeDayNigth();
+  initUtilsGlobals();
 }

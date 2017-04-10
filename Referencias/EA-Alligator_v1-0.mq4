@@ -29,7 +29,7 @@ extern double LotSize = 0.1; // Position size
 
 extern bool UseEntryToExit =
     true; // Use next entry to close the trade (if false uses take profit)
-extern double StopLoss = 20; // Stop loss in pips
+extern double StopLoss = 20;   // Stop loss in pips
 extern double TakeProfit = 50; // Take profit in pips
 
 extern int Slippage = 2; // Slippage in pips
@@ -39,13 +39,13 @@ extern bool TradeEnabled = true; // Enable trade
 // Functional variables
 double ePoint; // Point normalized
 
-bool CanOrder; // Check for risk management
-bool CanOpenBuy; // Flag if there are buy orders open
+bool CanOrder;    // Check for risk management
+bool CanOpenBuy;  // Flag if there are buy orders open
 bool CanOpenSell; // Flag if there are sell orders open
 
 int OrderOpRetry = 10; // Number of attempts to perform a trade operation
-int SleepSecs = 3; // Seconds to sleep if can't order
-int MinBars = 60; // Minimum bars in the graph to enable trading
+int SleepSecs = 3;     // Seconds to sleep if can't order
+int MinBars = 60;      // Minimum bars in the graph to enable trading
 
 datetime LastOpenOrder; // Used to order only once per bar
 
@@ -163,12 +163,12 @@ void OpenNew(int Command) {
 }
 
 // Technical analysis of the indicators
-extern int JawPeriod = 13; // Period of the Alligator Jaw
-extern int JawShift = 8; // Shift of the Alligator Jaw
+extern int JawPeriod = 13;  // Period of the Alligator Jaw
+extern int JawShift = 8;    // Shift of the Alligator Jaw
 extern int TeethPeriod = 8; // Period of the Alligator Teeth
-extern int TeethShift = 5; // Shift of the Alligator Teeth
-extern int LipsPeriod = 5; // Period of the Alligator Lips
-extern int LipsShift = 3; // Shift of the Alligator Lips
+extern int TeethShift = 5;  // Shift of the Alligator Teeth
+extern int LipsPeriod = 5;  // Period of the Alligator Lips
+extern int LipsShift = 3;   // Shift of the Alligator Lips
 double JawCurr;
 double TeethCurr;
 double LipsCurr;

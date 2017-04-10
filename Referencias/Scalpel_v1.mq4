@@ -40,7 +40,7 @@ extern int StopLoss = 340;
 extern int TrailingStop = 25;
 extern int cciPeriod = 14;
 extern double cciLimit = 75;
-extern int MaxPos = 1; // open positions allowed in one dir.
+extern int MaxPos = 1;   // open positions allowed in one dir.
 extern int Interval = 0; // Minutes before adding a position (0=not used)
 extern int Reduce = 600; // Minutes before reducing TP by one pip (0=not used)
 extern int Live =

@@ -13,24 +13,21 @@
 #include "CloseAllProfited.mqh"
 #include "OrderReliable_2011.01.07.mqh"
 
-void Gap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1, double MM_Risk = 2)
-{
+void Gap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1,
+         double MM_Risk = 2) {
   int MagicSell = 7603841;
   int MagicBuy = 7603671;
   string SellComment = eaName + ": Gap.S";
   string BuyComment = eaName + ": Gap.B";
-  if (CheckNewBar())
-  {
+  if (CheckNewBar()) {
     TrailingOpenOrders(5, MagicBuy, SellComment);
     TrailingOpenOrders(5, MagicSell, BuyComment);
   }
   if (!isNewDay())
     return;
   bool ToTrade = COT(OP_BUY, MagicBuy) == 0 && COT(OP_SELL, MagicSell) == 0;
-  if (!ToTrade)
-  {
-    if (TimeDayOfWeek(time0) != 1)
-    {
+  if (!ToTrade) {
+    if (TimeDayOfWeek(time0) != 1) {
       CloseAllProfited(SellComment);
       CloseAllProfited(BuyComment);
     }
@@ -50,21 +47,22 @@ void Gap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1, double
   double StopLoss = (ATR * SL_Factor) + Spread;
   //---- TRADE
   int Ticket;
-  if (GAP == true)
-  {
+  if (GAP == true) {
     double gls = getLotSize(MM_Risk, 0.2);
     if (gls < 0.01)
       return;
     if (IsTesting())
       Print("Gap");
-    if (CurrOpen < PrevClose)
-    {
-      Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, Ask - StopLoss, Ask + TakeProfit, BuyComment, MagicBuy, 0, Blue);
+    if (CurrOpen < PrevClose) {
+      Ticket =
+          OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, Ask - StopLoss,
+                            Ask + TakeProfit, BuyComment, MagicBuy, 0, Blue);
     }
-    if (CurrOpen > PrevClose)
-    {
+    if (CurrOpen > PrevClose) {
       StopLoss = (ATR * SL_Factor / 3) + Spread;
-      Ticket = OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, Bid + StopLoss, Bid - TakeProfit, SellComment, MagicSell, 0, Red);
+      Ticket =
+          OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, Bid + StopLoss,
+                            Bid - TakeProfit, SellComment, MagicSell, 0, Red);
     }
   }
 }

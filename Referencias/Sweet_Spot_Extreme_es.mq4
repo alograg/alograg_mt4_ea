@@ -1,7 +1,7 @@
 //+-----------------------------------------------------------------------------------------------------------+
 //| Sweet_Spot_Extreme.mq4 |
 //|Copyright © 2006, Safari Traders,
-//http://finance.groups.yahoo.com/group/MetaTrader_Experts_and_Indicators/ |
+// http://finance.groups.yahoo.com/group/MetaTrader_Experts_and_Indicators/ |
 //+-----------------------------------------------------------------------------------------------------------+
 #property copyright                                                            \
     "Copyright © 2006, Safari Traders , chopped and optimized by transport_david "
@@ -98,14 +98,14 @@ int start() {
         if ((MA <= MAprevious) && (OrderMagicNumber() == MAGIC_NUMBER)) {
           OrderClose(OrderTicket(), OrderLots(), OrderClosePrice(), 0,
                      Aqua); // close position
-          // return(0);
+                            // return(0);
         }
         // check for stop
         if ((Stop > 0) && (OrderMagicNumber() == MAGIC_NUMBER)) {
           if ((OrderClosePrice() - OrderOpenPrice()) > Stop * Point) {
             OrderClose(OrderTicket(), OrderLots(), OrderClosePrice(), 0,
                        Aqua); // close position
-            // return(0);
+                              // return(0);
           }
         }
       } else { // OrderType() == OP_SELL
@@ -114,20 +114,20 @@ int start() {
           if ((MA >= MAprevious) && (OrderMagicNumber() == MAGIC_NUMBER)) {
             OrderClose(OrderTicket(), OrderLots(), OrderClosePrice(), 0,
                        Coral); // close position
-            // return(0); // exit
+                               // return(0); // exit
           }
           // check for stop
           if ((Stop > 0) && (OrderMagicNumber() == MAGIC_NUMBER)) {
             if ((OrderOpenPrice() - OrderClosePrice()) > Stop * Point) {
               OrderClose(OrderTicket(), OrderLots(), OrderClosePrice(), 0,
                          Coral); // close position
-              // return(0);
+                                 // return(0);
             }
           }
         }
       }
     } // close -->  if(OrderType() <= OP_SELL){
-  } // close -->  if(OrderType() == OP_BUY){
+  }   // close -->  if(OrderType() == OP_BUY){
   // Comment("");
   return (0);
 }

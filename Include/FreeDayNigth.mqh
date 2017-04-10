@@ -15,24 +15,21 @@
 
 bool hasOne = false;
 
-void FreeDayNigth(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1, double MM_Risk = 2)
-{
+void FreeDayNigth(double GapRange = 5, double SL_Factor = 1,
+                  double TP_Factor = 1, double MM_Risk = 2) {
   int MagicSell = 7603845;
   int MagicBuy = 7603675;
   string SellComment = eaName + ": FreeDay.S";
   string BuyComment = eaName + ": FreeDay.B";
   bool ToTrade = COT(OP_BUY, MagicBuy) == 0 && COT(OP_SELL, MagicSell) == 0;
-  if (!ToTrade || hasOne)
-  {
-    if (TimeDayOfWeek(time0) != 5)
-    {
+  if (!ToTrade || hasOne) {
+    if (TimeDayOfWeek(time0) != 5) {
       CloseAllProfited(SellComment);
       CloseAllProfited(BuyComment);
     }
     return;
   }
-  if (TimeDayOfWeek(time0) != 5)
-  {
+  if (TimeDayOfWeek(time0) != 5) {
     hasOne = false;
     return;
   }
@@ -53,14 +50,15 @@ void FreeDayNigth(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 
     return;
   if (IsTesting())
     Print("FreeDayNigth");
-  if (CurrOpen < PrevClose)
-  {
-    Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, Ask - StopLoss, Ask + TakeProfit, BuyComment, MagicBuy, 0, Blue);
+  if (CurrOpen < PrevClose) {
+    Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, Ask - StopLoss,
+                               Ask + TakeProfit, BuyComment, MagicBuy, 0, Blue);
   }
-  if (CurrOpen > PrevClose)
-  {
+  if (CurrOpen > PrevClose) {
     StopLoss = (ATR * SL_Factor / 3) + Spread;
-    Ticket = OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, Bid + StopLoss, Bid - TakeProfit, SellComment, MagicSell, 0, Red);
+    Ticket =
+        OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, Bid + StopLoss,
+                          Bid - TakeProfit, SellComment, MagicSell, 0, Red);
   }
   hasOne = true;
 }
