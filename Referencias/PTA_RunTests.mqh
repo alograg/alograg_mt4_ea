@@ -342,7 +342,7 @@ bool CanDetectPendingTradeNowDeleted() {
   GlobalVariableSet(gvName, (double)testBroker.OrdersToReturn[0].TicketId);
   testBroker.OrdersToReturn[0].OrderType = OP_BUYLIMIT;
 
-  OnTick(); // Now set up with one trade previously.
+  OnTick();                     // Now set up with one trade previously.
   GlobalVariableSet(gvName, 0); // Delete pending order
   OnTick();
   if (!Assert(totalActiveTrades == 0, "Number of Active Orders is not 0"))

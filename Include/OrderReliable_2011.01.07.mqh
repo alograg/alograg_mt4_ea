@@ -33,34 +33,36 @@
 //
 //		OrderSendReliable()
 //			This is intended to be a drop-in replacement for
-//OrderSend()
+// OrderSend()
 //			which, one hopes is more resistant to various forms of
-//errors
+// errors
 //			prevalent with MetaTrader.
 //
 //		OrderModifyReliable
 //			A replacement for OrderModify with more error handling,
-//similar
+// similar
 //			to OrderSendReliable()
 //
 //		OrderModifyReliableSymbol()
-//			Adds a "symbol" field to OrderModifyReliable (not drop in
-//any
-//			more) so that it can fix problems with stops/take profits
-//which
+//			Adds a "symbol" field to OrderModifyReliable (not drop
+//in
+// any
+//			more) so that it can fix problems with stops/take
+//profits
+// which
 //			are too close to market, as well as normalization
-//problems.
+// problems.
 //
 //		OrderCloseReliable
 //			A replacement for OrderClose with more error handling,
-//similar
+// similar
 //			to OrderSendReliable()
 //
 //		OrderReliableLastErr()
 //			Returns the last error seen by an Order*Reliable() call.
 //			NOTE: GetLastError()  WILL NOT WORK to return the error
 //			after a call.  This is a flaw in Metatrader design, in
-//that
+// that
 //			GetLastError() also clears it.  Hence in this way
 //			this library cannot be a total drop-in replacement.
 //
@@ -68,24 +70,28 @@
 //  History:
 //
 //	2006-07-19: 0.2.5:	Modified by Derk Wehler
-//						Cleaned up commenting and code, to make
-//more
+//						Cleaned up commenting and code, to
+//make
+// more
 //						readable; added additional
-//comments
-//						Added OrderCloseReliable(), modeling
-//largely
+// comments
+//						Added OrderCloseReliable(),
+//modeling
+// largely
 //						after OrderModifyReliable()
 //
 //	2006-07-14: 0.2.4:	ERR_TRADE_TIMEOUT now a retryable error for
-//modify
-//						only.  Unclear about what to do for
-//send.
+// modify
+//						only.  Unclear about what to do
+//for
+// send.
 //						Adds OrderReliableLastErr()
 //
 //	2006-06-07: 0.2.3:	Version number now in log comments.  Docs
-//updated.
-//						OP_BUYLIMIT/OP_SELLLIMIT added. Increase
-//retry time
+// updated.
+//						OP_BUYLIMIT/OP_SELLLIMIT added.
+//Increase
+// retry time
 //
 //	2006-06-07: 0.2.2:	Fixed int/bool type mismatch compiler ignored
 //
@@ -96,7 +102,7 @@
 //	2006-06-05: 0.1.2:	Fixed idiotic typographical bug.
 //
 //	2006-06-05:	0.1.1:	Added ERR_TRADE_CONTEXT_BUSY to retryable
-//errors.
+// errors.
 //
 //	2006-05-29: 0.1:	Created.  Only OrderSendReliable() implemented.
 //
@@ -863,7 +869,7 @@ bool OrderCloseReliable(int ticket, double lots, double price, int slippage,
 //=============================================================================
 //=============================================================================
 //								Utility
-//Functions
+// Functions
 //=============================================================================
 //=============================================================================
 
