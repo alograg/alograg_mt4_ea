@@ -41,17 +41,17 @@ int AvgConLosers;
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void CalculateSummary(double initial_deposit)
-{
+void CalculateSummary(double initial_deposit) {
   int sequence = 0, profitseqs = 0, lossseqs = 0;
-  double sequential = 0.0, prevprofit = EMPTY_VALUE, drawdownpercent, drawdown, profit;
-  double maxpeak = initial_deposit, minpeak = initial_deposit, balance = initial_deposit;
+  double sequential = 0.0, prevprofit = EMPTY_VALUE, drawdownpercent, drawdown,
+         profit;
+  double maxpeak = initial_deposit, minpeak = initial_deposit,
+         balance = initial_deposit;
   int trades_total = HistoryTotal();
   //---- initialize summaries
   InitializeSummaries(initial_deposit);
   //----
-  for (int i = 0; i < trades_total; i++)
-  {
+  for (int i = 0; i < trades_total; i++) {
     if (!OrderSelect(i, SELECT_BY_POS, MODE_HISTORY))
       continue;
     int type = OrderType();
@@ -62,20 +62,16 @@ void CalculateSummary(double initial_deposit)
     profit = OrderProfit() + OrderCommission() + OrderSwap();
     balance += profit;
     //---- drawdown check
-    if (maxpeak < balance)
-    {
+    if (maxpeak < balance) {
       drawdown = maxpeak - minpeak;
-      if (maxpeak != 0.0)
-      {
+      if (maxpeak != 0.0) {
         drawdownpercent = drawdown / maxpeak * 100.0;
-        if (RelDrawdownPercent < drawdownpercent)
-        {
+        if (RelDrawdownPercent < drawdownpercent) {
           RelDrawdownPercent = drawdownpercent;
           RelDrawdown = drawdown;
         }
       }
-      if (MaxDrawdown < drawdown)
-      {
+      if (MaxDrawdown < drawdown) {
         MaxDrawdown = drawdown;
         if (maxpeak != 0.0)
           MaxDrawdownPercent = MaxDrawdown / maxpeak * 100.0;
@@ -101,24 +97,20 @@ void CalculateSummary(double initial_deposit)
     else
       ShortTrades++;
     //---- loss trades
-    if (profit < 0)
-    {
+    if (profit < 0) {
       LossTrades++;
       GrossLoss += profit;
       if (MinProfit > profit)
         MinProfit = profit;
       //---- fortune changed
-      if (prevprofit != EMPTY_VALUE && prevprofit >= 0)
-      {
+      if (prevprofit != EMPTY_VALUE && prevprofit >= 0) {
         if (ConProfitTrades1 < sequence ||
-            (ConProfitTrades1 == sequence && ConProfit2 < sequential))
-        {
+            (ConProfitTrades1 == sequence && ConProfit2 < sequential)) {
           ConProfitTrades1 = sequence;
           ConProfit1 = sequential;
         }
         if (ConProfit2 < sequential ||
-            (ConProfit2 == sequential && ConProfitTrades1 < sequence))
-        {
+            (ConProfit2 == sequential && ConProfitTrades1 < sequence)) {
           ConProfit2 = sequential;
           ConProfitTrades2 = sequence;
         }
@@ -129,8 +121,7 @@ void CalculateSummary(double initial_deposit)
       }
     }
     //---- profit trades (profit>=0)
-    else
-    {
+    else {
       ProfitTrades++;
       if (type == OP_BUY)
         WinLongTrades++;
@@ -140,17 +131,14 @@ void CalculateSummary(double initial_deposit)
       if (MaxProfit < profit)
         MaxProfit = profit;
       //---- fortune changed
-      if (prevprofit != EMPTY_VALUE && prevprofit < 0)
-      {
+      if (prevprofit != EMPTY_VALUE && prevprofit < 0) {
         if (ConLossTrades1 < sequence ||
-            (ConLossTrades1 == sequence && ConLoss2 > sequential))
-        {
+            (ConLossTrades1 == sequence && ConLoss2 > sequential)) {
           ConLossTrades1 = sequence;
           ConLoss1 = sequential;
         }
         if (ConLoss2 > sequential ||
-            (ConLoss2 == sequential && ConLossTrades1 < sequence))
-        {
+            (ConLoss2 == sequential && ConLossTrades1 < sequence)) {
           ConLoss2 = sequential;
           ConLossTrades2 = sequence;
         }
@@ -167,17 +155,14 @@ void CalculateSummary(double initial_deposit)
   }
   //---- final drawdown check
   drawdown = maxpeak - minpeak;
-  if (maxpeak != 0.0)
-  {
+  if (maxpeak != 0.0) {
     drawdownpercent = drawdown / maxpeak * 100.0;
-    if (RelDrawdownPercent < drawdownpercent)
-    {
+    if (RelDrawdownPercent < drawdownpercent) {
       RelDrawdownPercent = drawdownpercent;
       RelDrawdown = drawdown;
     }
   }
-  if (MaxDrawdown < drawdown)
-  {
+  if (MaxDrawdown < drawdown) {
     MaxDrawdown = drawdown;
     if (maxpeak != 0)
       MaxDrawdownPercent = MaxDrawdown / maxpeak * 100.0;
@@ -185,37 +170,29 @@ void CalculateSummary(double initial_deposit)
       MaxDrawdownPercent = 100.0;
   }
   //---- consider last trade
-  if (prevprofit != EMPTY_VALUE)
-  {
+  if (prevprofit != EMPTY_VALUE) {
     profit = prevprofit;
-    if (profit < 0)
-    {
+    if (profit < 0) {
       if (ConLossTrades1 < sequence ||
-          (ConLossTrades1 == sequence && ConLoss2 > sequential))
-      {
+          (ConLossTrades1 == sequence && ConLoss2 > sequential)) {
         ConLossTrades1 = sequence;
         ConLoss1 = sequential;
       }
       if (ConLoss2 > sequential ||
-          (ConLoss2 == sequential && ConLossTrades1 < sequence))
-      {
+          (ConLoss2 == sequential && ConLossTrades1 < sequence)) {
         ConLoss2 = sequential;
         ConLossTrades2 = sequence;
       }
       lossseqs++;
       AvgConLosers += sequence;
-    }
-    else
-    {
+    } else {
       if (ConProfitTrades1 < sequence ||
-          (ConProfitTrades1 == sequence && ConProfit2 < sequential))
-      {
+          (ConProfitTrades1 == sequence && ConProfit2 < sequential)) {
         ConProfitTrades1 = sequence;
         ConProfit1 = sequential;
       }
       if (ConProfit2 < sequential ||
-          (ConProfit2 == sequential && ConProfitTrades1 < sequence))
-      {
+          (ConProfit2 == sequential && ConProfitTrades1 < sequence)) {
         ConProfit2 = sequential;
         ConProfitTrades2 = sequence;
       }
@@ -249,8 +226,7 @@ void CalculateSummary(double initial_deposit)
     avgprofit = GrossProfit / ProfitTrades;
   if (LossTrades > 0)
     avgloss = GrossLoss / LossTrades;
-  if (SummaryTrades > 0)
-  {
+  if (SummaryTrades > 0) {
     profitkoef = 1.0 * ProfitTrades / SummaryTrades;
     losskoef = 1.0 * LossTrades / SummaryTrades;
     ExpectedPayoff = profitkoef * avgprofit - losskoef * avgloss;
@@ -261,8 +237,7 @@ void CalculateSummary(double initial_deposit)
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void InitializeSummaries(double initial_deposit)
-{
+void InitializeSummaries(double initial_deposit) {
   InitialDeposit = initial_deposit;
   MaxLoss = initial_deposit;
   SummaryProfit = 0.0;
@@ -298,20 +273,17 @@ void InitializeSummaries(double initial_deposit)
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-double CalculateInitialDeposit()
-{
+double CalculateInitialDeposit() {
   double initial_deposit = AccountBalance();
   //----
-  for (int i = HistoryTotal() - 1; i >= 0; i--)
-  {
+  for (int i = HistoryTotal() - 1; i >= 0; i--) {
     if (!OrderSelect(i, SELECT_BY_POS, MODE_HISTORY))
       continue;
     int type = OrderType();
     //---- initial balance not considered
     if (i == 0 && type == OP_BALANCE)
       break;
-    if (type == OP_BUY || type == OP_SELL)
-    {
+    if (type == OP_BUY || type == OP_SELL) {
       //---- calculate profit
       double profit = OrderProfit() + OrderCommission() + OrderSwap();
       //---- and decrease balance
@@ -326,8 +298,7 @@ double CalculateInitialDeposit()
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void WriteReport(string report_name)
-{
+void WriteReport(string report_name) {
   int handle = FileOpen(report_name, FILE_CSV | FILE_WRITE, '\t');
   if (handle < 1)
     return;
@@ -340,17 +311,26 @@ void WriteReport(string report_name)
     FileWrite(handle, "Profit factor             ", ProfitFactor);
   FileWrite(handle, "Expected payoff           ", ExpectedPayoff);
   FileWrite(handle, "Absolute drawdown         ", AbsoluteDrawdown);
-  FileWrite(handle, "Maximal drawdown          ", MaxDrawdown, StringConcatenate("(", MaxDrawdownPercent, "%)"));
-  FileWrite(handle, "Relative drawdown         ", StringConcatenate(RelDrawdownPercent, "%"), StringConcatenate("(", RelDrawdown, ")"));
+  FileWrite(handle, "Maximal drawdown          ", MaxDrawdown,
+            StringConcatenate("(", MaxDrawdownPercent, "%)"));
+  FileWrite(handle, "Relative drawdown         ",
+            StringConcatenate(RelDrawdownPercent, "%"),
+            StringConcatenate("(", RelDrawdown, ")"));
   FileWrite(handle, "Trades total                 ", SummaryTrades);
   if (ShortTrades > 0)
-    FileWrite(handle, "Short positions(won %)    ", ShortTrades, StringConcatenate("(", 100.0 * WinShortTrades / ShortTrades, "%)"));
+    FileWrite(
+        handle, "Short positions(won %)    ", ShortTrades,
+        StringConcatenate("(", 100.0 * WinShortTrades / ShortTrades, "%)"));
   if (LongTrades > 0)
-    FileWrite(handle, "Long positions(won %)     ", LongTrades, StringConcatenate("(", 100.0 * WinLongTrades / LongTrades, "%)"));
+    FileWrite(handle, "Long positions(won %)     ", LongTrades,
+              StringConcatenate("(", 100.0 * WinLongTrades / LongTrades, "%)"));
   if (ProfitTrades > 0)
-    FileWrite(handle, "Profit trades (% of total)", ProfitTrades, StringConcatenate("(", 100.0 * ProfitTrades / SummaryTrades, "%)"));
+    FileWrite(
+        handle, "Profit trades (% of total)", ProfitTrades,
+        StringConcatenate("(", 100.0 * ProfitTrades / SummaryTrades, "%)"));
   if (LossTrades > 0)
-    FileWrite(handle, "Loss trades (% of total)  ", LossTrades, StringConcatenate("(", 100.0 * LossTrades / SummaryTrades, "%)"));
+    FileWrite(handle, "Loss trades (% of total)  ", LossTrades,
+              StringConcatenate("(", 100.0 * LossTrades / SummaryTrades, "%)"));
   FileWrite(handle, "Largest profit trade      ", MaxProfit);
   FileWrite(handle, "Largest loss trade        ", -MinProfit);
   if (ProfitTrades > 0)
@@ -359,10 +339,14 @@ void WriteReport(string report_name)
     FileWrite(handle, "Average loss trade        ", -GrossLoss / LossTrades);
   FileWrite(handle, "Average consecutive wins  ", AvgConWinners);
   FileWrite(handle, "Average consecutive losses", AvgConLosers);
-  FileWrite(handle, "Maximum consecutive wins (profit in money)", ConProfitTrades1, StringConcatenate("(", ConProfit1, ")"));
-  FileWrite(handle, "Maximum consecutive losses (loss in money)", ConLossTrades1, StringConcatenate("(", -ConLoss1, ")"));
-  FileWrite(handle, "Maximal consecutive profit (count of wins)", ConProfit2, StringConcatenate("(", ConProfitTrades2, ")"));
-  FileWrite(handle, "Maximal consecutive loss (count of losses)", -ConLoss2, StringConcatenate("(", ConLossTrades2, ")"));
+  FileWrite(handle, "Maximum consecutive wins (profit in money)",
+            ConProfitTrades1, StringConcatenate("(", ConProfit1, ")"));
+  FileWrite(handle, "Maximum consecutive losses (loss in money)",
+            ConLossTrades1, StringConcatenate("(", -ConLoss1, ")"));
+  FileWrite(handle, "Maximal consecutive profit (count of wins)", ConProfit2,
+            StringConcatenate("(", ConProfitTrades2, ")"));
+  FileWrite(handle, "Maximal consecutive loss (count of losses)", -ConLoss2,
+            StringConcatenate("(", ConLossTrades2, ")"));
   //----
   FileClose(handle);
 }

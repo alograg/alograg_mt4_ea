@@ -4,7 +4,7 @@
 //|                                http://nohypeforexrobotreview.com |
 //+------------------------------------------------------------------+
 #property copyright "Dave Hanna"
-#property link      "http://nohypeforexrobotreview.com"
+#property link "http://nohypeforexrobotreview.com"
 
 //+------------------------------------------------------------------+
 //| defines                                                          |
@@ -27,31 +27,28 @@
 //   string ErrorDescription(int error_code);
 // #import
 //+------------------------------------------------------------------+
-void RunTests()
-{
+void RunTests() {
 
-   int totalTests = 0;
-   int testsPassed = 0;
-   
-   Print("Beginning Unit Tests");
-   // Run the individual tests
+  int totalTests = 0;
+  int testsPassed = 0;
 
-//   if (CanCalculateBrokerStartTime())
-//      testsPassed++;
-//   totalTests++;
-//   if (CanCalculateBrokerEndTime())
-//      testsPassed++;
-//   totalTests++;  
-   
-   Print("Completed tests. ", testsPassed, " of ", totalTests, " passed.");
-   
- 
+  Print("Beginning Unit Tests");
+  // Run the individual tests
+
+  //   if (CanCalculateBrokerStartTime())
+  //      testsPassed++;
+  //   totalTests++;
+  //   if (CanCalculateBrokerEndTime())
+  //      testsPassed++;
+  //   totalTests++;
+
+  Print("Completed tests. ", testsPassed, " of ", totalTests, " passed.");
 }
 
-//bool CanCalculateBrokerStartTime()
+// bool CanCalculateBrokerStartTime()
 //{
 //   Print("Starting CanCalculateBrokerStartTime()");
 //   SetupBrokerTestTimes();
-//   return (Assert(TimeToStr(brokerQTStart, TIME_MINUTES) == "15:00", "Wrong start time"));   
+//   return (Assert(TimeToStr(brokerQTStart, TIME_MINUTES) == "15:00", "Wrong
+// start time"));
 //}
-

@@ -7,7 +7,7 @@
 #define eaName "Alograg"
 #define MagicNumber 17808158
 
-#property copyright "Copyright 2017, Alograg"
+#property copyright "Copyright 2017, " + eaName
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict
@@ -21,67 +21,51 @@
 #include "..\Include\Alograg_v2_tester.mqh"
 
 // Externos
-extern int pipsPerDay = 100;          //Meta de pips por dia
-extern double moneyPerDay = 150.0;    //Meta de pips por dia
-extern double firstBalance = 1000.00; //Inversion inicial
+extern int pipsPerDay = 100; // Meta de pips por dia
+extern double moneyPerDay = 150.0; // Meta de pips por dia
+extern double firstBalance = 1000.00; // Inversion inicial
 
 // Constantes
-
 double pareto = 0.8;
 double toDayMoney = 0.0;
 
 /*-----------------------------------------------------------------+
 | Expert initialization function                                   |
 +-----------------------------------------------------------------*/
-int OnInit()
-{
-    GlobalVariableSet(eaName + "_block_profit", firstBalance * 0.2);
-    initUtilsGlobals();
-    EventSetTimer(60);
-    return (INIT_SUCCEEDED);
+<< << << < HEAD int OnInit() {
+  GlobalVariableSet(eaName + "_block_profit", firstBalance * 0.2);
+  initUtilsGlobals();
+  EventSetTimer(60);
+  return (INIT_SUCCEEDED);
 }
 /*-----------------------------------------------------------------+
 | Expert deinitialization function                                 |
 +-----------------------------------------------------------------*/
-void OnDeinit(const int reason)
-{
-    EventKillTimer();
-    GlobalVariableDel(eaName + "_block_profit");
+void OnDeinit(const int reason) {
+  EventKillTimer();
+  GlobalVariableDel(eaName + "_block_profit");
 }
 /*-----------------------------------------------------------------+
 | Expert tick function                                             |
 +-----------------------------------------------------------------*/
-void OnTick()
-{
-    if (IsTesting())
-    {
-        doStrategies();
-        //CloseAllProfited(eaName + "-641075158");
-    }
+void OnTick() {
+  if (IsTesting()) {
+    doStrategies();
+    // CloseAllProfited(eaName + "-641075158");
+  }
 }
 /*-----------------------------------------------------------------+
 | Timer function                                                   |
 +-----------------------------------------------------------------*/
-void OnTimer()
-{
-    if (isNewDay() && !IsTesting())
-    {
-        SendReport();
-        WriteReport(TimeToString(time0));
-    }
-    if (!IsTesting())
-        doStrategies();
-    //CloseAllProfited(eaName + "-641075158");
+void OnTimer() {
+  if (isNewDay() && !IsTesting())
+    SendReport();
+  if (!IsTesting())
+    doStrategies();
 }
 
-void doStrategies()
-{
-    Gap();
-    FreeDayNigth();
-    //MorningWork();
-    if (IsTesting())
-        time0 = Time[0];
-    else
-        time0 = TimeCurrent();
-    yearDay = TimeDayOfYear(time0);
+void doStrategies() {
+  Gap();
+  FreeDayNigth();
+  initUtilsGlobals();
 }
