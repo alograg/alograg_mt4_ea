@@ -12,26 +12,75 @@
 #include "Utilities.mqh"
 #include "OrderReliable_2011.01.07.mqh"
 
-void CloseAllProfited(string comment = NULL, double minCents = 0.07) {
-  int TotalToClose = OrdersTotal(), hasClose, iClosed = 0;
-  double profit;
-  for (int indexToClose = totalOrders - 1; 0 <= indexToClose; indexToClose--) {
-    if (!OrderSelect(indexToClose, SELECT_BY_POS))
-      continue;
-    profit = NormalizeDouble(
-        OrderProfit() + OrderCommission() + OrderSwap() - minCents, 2);
-    if (OrderSymbol() == Symbol() && isFornComment(comment) && profit > 0.01) {
-      if (OrderType() == OP_BUY) {
-        hasClose =
-            OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
-      }
-      if (OrderType() == OP_SELL) {
-        hasClose =
-            OrderCloseReliable(OrderTicket(), OrderLots(), Ask, 4, White);
-      }
-      iClosed += hasClose ? 1 : 0;
+void CloseAllProfited(string comment = NULL, bool force = false, double minCents = 0.08)
+{
+    int TotalToClose = OrdersTotal(), iClosed = 0;
+    for (int indexToClose = totalOrders - 1; 0 <= indexToClose; indexToClose--)
+    {
+        iClosed += CloseOneIfProfit(indexToClose, SELECT_BY_POS, comment, force);
     }
-  }
-  if (IsTesting())
-    Print("Close: ", iClosed, " closed of ", TotalToClose);
+    //if (IsTesting())
+    //Print("Close: ", iClosed, " closed of ", TotalToClose);
+}
+
+int CloseOneIfProfit(int id, int by = SELECT_BY_POS, string comment = NULL, bool force = false, double minCents = 0.07)
+{
+    if (!OrderSelect(id, by))
+        return 0;
+    if (OrderSymbol() != Symbol())
+        return 0;
+        Print("is simbol: ", id);
+    if (!isFornComment(comment, OrderComment()))
+        return 0;
+        Print("is comment: ", id);
+    if (OrderTakeProfit() <= 0 && force)
+        return 0;
+        Print("hasProffit: ", id);
+    int hasClose;
+    double profit = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap() - minCents, 2);
+    if (profit > 0.01 || profit < maxLost)
+    {
+        Print("can close: ", id);
+        if (OrderType() == OP_BUY)
+        {
+            if (!IsTesting())
+                hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
+            else
+                hasClose = OrderClose(OrderTicket(), OrderLots(), Bid, 4, White);
+        }
+        if (OrderType() == OP_SELL)
+        {
+            if (!IsTesting())
+                hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Ask, 4, White);
+            else
+                hasClose = OrderClose(OrderTicket(), OrderLots(), Ask, 4, White);
+        }
+
+        return hasClose ? 1 : 0;
+    }
+    return 0;
+}
+
+void CloseAll(string comment = NULL)
+{
+    int TotalToClose = OrdersTotal(), iClosed = 0, hasClose = 0;
+    for (int indexToClose = totalOrders - 1; 0 <= indexToClose; indexToClose--)
+    {
+        if (OrderSymbol() != Symbol() && !isFornComment(comment, OrderComment()))
+            continue;
+        if (OrderType() == OP_BUY)
+        {
+            if (!IsTesting())
+                hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
+            else
+                hasClose = OrderClose(OrderTicket(), OrderLots(), Bid, 4, White);
+        }
+        if (OrderType() == OP_SELL)
+        {
+            if (!IsTesting())
+                hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Ask, 4, White);
+            else
+                hasClose = OrderClose(OrderTicket(), OrderLots(), Ask, 4, White);
+        }
+    }
 }
