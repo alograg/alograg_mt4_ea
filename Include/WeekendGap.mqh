@@ -18,20 +18,18 @@ int WeekendGapMagicBuy = 7603671;
 string WeekendGapSellComment = eaName + ": Gap.S";
 string WeekendGapBuyComment = eaName + ": Gap.B";
 
-void Gap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1, double MM_Risk = 2)
-{
-  if (CheckNewBar())
-  {
-    //TrailingOpenOrders(5, MagicBuy, WeekendGapSellComment);
-    //TrailingOpenOrders(5, MagicSell, WeekendGapBuyComment);
+void Gap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1,
+         double MM_Risk = 2) {
+  if (CheckNewBar()) {
+    // TrailingOpenOrders(5, MagicBuy, WeekendGapSellComment);
+    // TrailingOpenOrders(5, MagicSell, WeekendGapBuyComment);
   }
   if (!isNewDay())
     return;
-  bool ToTrade = COT(OP_BUY, WeekendGapMagicBuy) == 0 && COT(OP_SELL, WeekendGapMagicSell) == 0;
-  if (!ToTrade)
-  {
-    if (TimeDayOfWeek(time0) != 1)
-    {
+  bool ToTrade = COT(OP_BUY, WeekendGapMagicBuy) == 0 &&
+                 COT(OP_SELL, WeekendGapMagicSell) == 0;
+  if (!ToTrade) {
+    if (TimeDayOfWeek(time0) != 1) {
       Print("WeekendGap: CloseAllProfited");
       CloseAllProfited(WeekendGapSellComment);
       CloseAllProfited(WeekendGapBuyComment);
@@ -60,14 +58,16 @@ void Gap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1, double
   Print("Gap");
   if (gls >= 1)
     StopLoss *= pareto - (gls - pareto);
-  //if (IsTesting())
-  if (CurrOpen < PrevClose)
-  {
-    Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, Ask - StopLoss, Ask + TakeProfit, WeekendGapBuyComment, WeekendGapMagicBuy, 0, Blue);
+  // if (IsTesting())
+  if (CurrOpen < PrevClose) {
+    Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, Ask - StopLoss,
+                               Ask + TakeProfit, WeekendGapBuyComment,
+                               WeekendGapMagicBuy, 0, Blue);
   }
-  if (CurrOpen > PrevClose)
-  {
+  if (CurrOpen > PrevClose) {
     StopLoss = (ATR * SL_Factor / 3) + Spread;
-    Ticket = OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, Bid + StopLoss, Bid - TakeProfit, WeekendGapSellComment, WeekendGapMagicSell, 0, Red);
+    Ticket = OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, Bid + StopLoss,
+                               Bid - TakeProfit, WeekendGapSellComment,
+                               WeekendGapMagicSell, 0, Red);
   }
 }

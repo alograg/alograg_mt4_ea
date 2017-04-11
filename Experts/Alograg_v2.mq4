@@ -21,9 +21,9 @@
 #include "..\Include\Alograg_v2_tester.mqh"
 
 // Externos
-extern int pipsPerDay = 100;          //Meta de pips por dia
-extern double moneyPerDay = 150.0;    //Meta de pips por dia
-extern double firstBalance = 1000.00; //Inversion inicial
+extern int pipsPerDay = 100; // Meta de pips por dia
+extern double moneyPerDay = 150.0; // Meta de pips por dia
+extern double firstBalance = 1000.00; // Inversion inicial
 
 // Constantes
 double pareto = 0.8;
@@ -32,31 +32,27 @@ double toDayMoney = 0.0;
 /*-----------------------------------------------------------------+
 | Expert initialization function                                   |
 +-----------------------------------------------------------------*/
-<<<<<<< HEAD
-int OnInit() {
-    GlobalVariableSet(eaName + "_block_profit", firstBalance * 0.2);
-    initUtilsGlobals();
-    EventSetTimer(60);
-    return (INIT_SUCCEEDED);
+<< << << < HEAD int OnInit() {
+  GlobalVariableSet(eaName + "_block_profit", firstBalance * 0.2);
+  initUtilsGlobals();
+  EventSetTimer(60);
+  return (INIT_SUCCEEDED);
 }
 /*-----------------------------------------------------------------+
 | Expert deinitialization function                                 |
 +-----------------------------------------------------------------*/
-void OnDeinit(const int reason)
-{
-    EventKillTimer();
-    GlobalVariableDel(eaName + "_block_profit");
+void OnDeinit(const int reason) {
+  EventKillTimer();
+  GlobalVariableDel(eaName + "_block_profit");
 }
 /*-----------------------------------------------------------------+
 | Expert tick function                                             |
 +-----------------------------------------------------------------*/
-void OnTick()
-{
-    if (IsTesting())
-    {
-        doStrategies();
-        //CloseAllProfited(eaName + "-641075158");
-    }
+void OnTick() {
+  if (IsTesting()) {
+    doStrategies();
+    // CloseAllProfited(eaName + "-641075158");
+  }
 }
 /*-----------------------------------------------------------------+
 | Timer function                                                   |

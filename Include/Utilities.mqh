@@ -27,8 +27,7 @@ void initUtilsGlobals(bool isNew = false) {
   Print("firstBalance: ", firstBalance);
 }
 
-double getMaxLost()
-{
+double getMaxLost() {
   if (maxLost < 0)
     return maxLost;
   return MathMax(firstBalance * -0.5, -500);
@@ -52,24 +51,23 @@ double getCurrentPoint() {
   return returnPoint;
 }
 
-double getWeekProfit()
-{
-  return (0.015 * ((TimeDayOfYear(GlobalVariableTime(eaName + "_block_profit")) - yearDay) / 7));
+double getWeekProfit() {
+  return (
+      0.015 *
+      ((TimeDayOfYear(GlobalVariableTime(eaName + "_block_profit")) - yearDay) /
+       7));
 }
 
-double getBlockMoney()
-{
+double getBlockMoney() {
   double evaluated = GlobalVariableGet(eaName + "_block_profit");
   evaluated *= 1 + getWeekProfit();
   return evaluated;
 }
 
-double getUnBlocked()
-{
+double getUnBlocked() {
   blocked = AccountEquity();
   double millards = MathFloor(blocked / firstBalance) - 1;
-  if (millards >= 1)
-  {
+  if (millards >= 1) {
     blocked -= firstBalance * millards;
   }
   blocked -= getBlockMoney();
@@ -80,15 +78,16 @@ double getUnBlocked()
 /*-----------------------------------------------------------------+
 | LotSize                                                          |
 +-----------------------------------------------------------------*/
-double getLotSize(double Risk = 2, double SL = 0)
-{
+double getLotSize(double Risk = 2, double SL = 0) {
   double lastWithDrawal = 0.0;
   if (AccountFreeMargin() < AccountBalance() * 0.2)
     return 0.0;
   if (SL == 0)
-    SL = (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) + (MarketInfo(Symbol(), MODE_SPREAD) * Point);
+    SL = (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) +
+         (MarketInfo(Symbol(), MODE_SPREAD) * Point);
   else
-    SL *= (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) + (MarketInfo(Symbol(), MODE_SPREAD) * Point);
+    SL *= (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) +
+          (MarketInfo(Symbol(), MODE_SPREAD) * Point);
   double MaxLot = MarketInfo(Symbol(), MODE_MAXLOT);
   MaxLot = 1.5;
   double MinLot = MarketInfo(Symbol(), MODE_MINLOT);
@@ -108,8 +107,7 @@ bool CheckNewBar() { return Time[0] != time0; }
 +-----------------------------------------------------------------*/
 bool isNewDay() { return TimeDayOfYear(Time[0]) != yearDay; }
 
-bool isFornComment(string comment, string orderComment)
-{
+bool isFornComment(string comment, string orderComment) {
   if (comment == NULL)
     return true;
   return orderComment == comment;
@@ -125,7 +123,8 @@ int COT(int opType, int FilterMagicNumber, string commnetFilter = NULL) {
   int count = 0, hasOrder;
   for (int cnt_COT = 0; cnt_COT < totalOrders; cnt_COT++) {
     hasOrder = OrderSelect(cnt_COT, SELECT_BY_POS, MODE_TRADES);
-    if (OrderSymbol() == Symbol() && OrderMagicNumber() == FilterMagicNumber && opType == OrderType() && isFornComment(commnetFilter, OrderComment()))
+    if (OrderSymbol() == Symbol() && OrderMagicNumber() == FilterMagicNumber &&
+        opType == OrderType() && isFornComment(commnetFilter, OrderComment()))
       count++;
   }
   return count;
@@ -143,8 +142,10 @@ void TrailingOpenOrders(double TrailingStop = 10,
     currentOrder = OrderSelect(cnt, SELECT_BY_POS, MODE_TRADES);
     if (OrderSymbol() != Symbol() && !currentOrder &&
         OrderMagicNumber() == FilterMagicNumber && isFornComment(commnetFilter))
-    if (OrderSymbol() != Symbol() && !currentOrder && OrderMagicNumber() == FilterMagicNumber && isFornComment(commnetFilter, OrderComment()))
-      continue;
+      if (OrderSymbol() != Symbol() && !currentOrder &&
+          OrderMagicNumber() == FilterMagicNumber &&
+          isFornComment(commnetFilter, OrderComment()))
+        continue;
     if (OrderType() <= OP_SELL) {
       profit =
           NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap(), 2);

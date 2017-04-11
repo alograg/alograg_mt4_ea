@@ -19,13 +19,12 @@ int FreeDayNigthMagicBuy = 7603675;
 string FreeDayNigthSellComment = eaName + ": FreeDay.S";
 string FreeDayNigthBuyComment = eaName + ": FreeDay.B";
 
-void FreeDayNigth(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1, double MM_Risk = 2)
-{
-  bool ToTrade = COT(OP_BUY, FreeDayNigthMagicBuy) == 0 && COT(OP_SELL, FreeDayNigthMagicSell) == 0;
-  if (!ToTrade || hasOne)
-  {
-    if (TimeDayOfWeek(time0) != 5)
-    {
+void FreeDayNigth(double GapRange = 5, double SL_Factor = 1,
+                  double TP_Factor = 1, double MM_Risk = 2) {
+  bool ToTrade = COT(OP_BUY, FreeDayNigthMagicBuy) == 0 &&
+                 COT(OP_SELL, FreeDayNigthMagicSell) == 0;
+  if (!ToTrade || hasOne) {
+    if (TimeDayOfWeek(time0) != 5) {
       Print("FreeDayNigth: CloseAllProfited");
       CloseAllProfited(FreeDayNigthSellComment);
       CloseAllProfited(FreeDayNigthBuyComment);
@@ -53,15 +52,18 @@ void FreeDayNigth(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 
     return;
   if (gls >= 1)
     StopLoss *= pareto - (gls - pareto);
-  //if (IsTesting())
+  // if (IsTesting())
   Print("FreeDayNigth");
-  if (CurrOpen < PrevClose)
-  {
-    Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, Ask - StopLoss, Ask + TakeProfit, FreeDayNigthBuyComment, FreeDayNigthMagicBuy, 0, Blue);
+  if (CurrOpen < PrevClose) {
+    Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, Ask - StopLoss,
+                               Ask + TakeProfit, FreeDayNigthBuyComment,
+                               FreeDayNigthMagicBuy, 0, Blue);
   }
   if (CurrOpen > PrevClose) {
     StopLoss = (ATR * SL_Factor / 3) + Spread;
-    Ticket = OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, Bid + StopLoss, Bid - TakeProfit, FreeDayNigthSellComment, FreeDayNigthMagicSell, 0, Red);
+    Ticket = OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, Bid + StopLoss,
+                               Bid - TakeProfit, FreeDayNigthSellComment,
+                               FreeDayNigthMagicSell, 0, Red);
   }
   hasOne = true;
 }

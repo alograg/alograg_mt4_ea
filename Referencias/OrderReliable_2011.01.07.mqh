@@ -45,10 +45,10 @@
 //
 //		OrderModifyReliableSymbol()
 //			Adds a "symbol" field to OrderModifyReliable (not drop
-//in
+// in
 // any
 //			more) so that it can fix problems with stops/take
-//profits
+// profits
 // which
 //			are too close to market, as well as normalization
 // problems.
@@ -70,27 +70,28 @@
 //  History:
 //
 //	2006-07-19: 0.2.5:	Modified by Derk Wehler
-//						Cleaned up commenting and code, to
-//make
+//						Cleaned up commenting and code,
+//to
+// make
 // more
 //						readable; added additional
 // comments
 //						Added OrderCloseReliable(),
-//modeling
+// modeling
 // largely
 //						after OrderModifyReliable()
 //
 //	2006-07-14: 0.2.4:	ERR_TRADE_TIMEOUT now a retryable error for
 // modify
 //						only.  Unclear about what to do
-//for
+// for
 // send.
 //						Adds OrderReliableLastErr()
 //
 //	2006-06-07: 0.2.3:	Version number now in log comments.  Docs
 // updated.
 //						OP_BUYLIMIT/OP_SELLLIMIT added.
-//Increase
+// Increase
 // retry time
 //
 //	2006-06-07: 0.2.2:	Fixed int/bool type mismatch compiler ignored

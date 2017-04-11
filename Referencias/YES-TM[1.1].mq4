@@ -1,7 +1,8 @@
 //+------------------------------------------------------------------+
 //|                                          YickEnhancedStealth.mq4 |
-//|							               Version: 1.1 Updated
-//20130909 |
+//|							               Version: 1.1
+//Updated
+// 20130909 |
 //|                                       Copyright 2013, GoldlandFX |
 //|                                        http://www.goldlandfx.com |
 //|                                     Contact: info@goldlandfx.com |
@@ -12,15 +13,15 @@
 
 extern int MagicNumber = 0; // 168169;
 extern int NumberofRetry = 3;
-extern double OrderHiddenTP = 90; // In Point, 5 Digit Broker
-extern double OrderHiddenSL = 90; // In Point, 5 Digit Broker
-extern double OrderTS1 = 20; // In Point, 5 Digit Broker
-extern double OrderTS1Trigger = 50; // In Point, 5 Digit Broker
-extern double OrderTS2 = 50; // In Point, 5 Digit Broker
+extern double OrderHiddenTP = 90;    // In Point, 5 Digit Broker
+extern double OrderHiddenSL = 90;    // In Point, 5 Digit Broker
+extern double OrderTS1 = 20;         // In Point, 5 Digit Broker
+extern double OrderTS1Trigger = 50;  // In Point, 5 Digit Broker
+extern double OrderTS2 = 50;         // In Point, 5 Digit Broker
 extern double OrderTS2Trigger = 100; // In Point, 5 Digit Broker
-extern double OrderTS3 = 100; // In Point, 5 Digit Broker
+extern double OrderTS3 = 100;        // In Point, 5 Digit Broker
 extern double OrderTS3Trigger = 200; // In Point, 5 Digit Broker
-extern double OrderTS4 = 200; // In Point, 5 Digit Broker
+extern double OrderTS4 = 200;        // In Point, 5 Digit Broker
 extern double OrderTS4Trigger = 400; // In Point, 5 Digit Broker
 extern bool OrderTS5Jump = FALSE;
 extern bool BreakEven = FALSE;
@@ -127,7 +128,7 @@ int start() {
           OrderArray[FoundZeroIdx][6] = OrderCommission();
           OrderArray[FoundZeroIdx][7] = OrderTakeProfit();
           OrderArray[FoundZeroIdx][8] = OrderStopLoss();
-          OrderArray[FoundZeroIdx][9] = 0; // TS1
+          OrderArray[FoundZeroIdx][9] = 0;  // TS1
           OrderArray[FoundZeroIdx][10] = 0; // TS2
           OrderArray[FoundZeroIdx][11] = 0; // TS3
           OrderArray[FoundZeroIdx][12] = 0; // TS4
@@ -457,7 +458,7 @@ int start() {
       } // Magic Number
       Print("==================================");
     } // Order Select
-  } // For Loop
+  }   // For Loop
 
   //----
   return (0);
