@@ -21,8 +21,8 @@
 #include "..\Include\Alograg_v2_tester.mqh"
 
 // Externos
-extern int pipsPerDay = 100; // Meta de pips por dia
-extern double moneyPerDay = 150.0; // Meta de pips por dia
+extern int pipsPerDay = 100;          // Meta de pips por dia
+extern double moneyPerDay = 150.0;    // Meta de pips por dia
 extern double firstBalance = 1000.00; // Inversion inicial
 
 // Constantes
