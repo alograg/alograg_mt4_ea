@@ -16,8 +16,8 @@
 #include "..\Include\Utilities.mqh"
 // Externos
 // extern int name = value; //Descipción
-extern double firstBalance = 200.00; //Monto inicial
-extern double incrementPerWeek = 1.50; //Incremento de protección
+extern double firstBalance = 200.00;   // Monto inicial
+extern double incrementPerWeek = 1.50; // Incremento de protección
 // Constantes
 double pareto = 0.8;
 double toDayMoney = 0.0;
@@ -44,15 +44,11 @@ void OnDeinit(const int reason) {
 /*-----------+
 | Cada dato  |
 +-----------*/
-void OnTick() {
-  doStrategies();
-}
+void OnTick() { doStrategies(); }
 /*-----------+
 | Al minuto  |
 +-----------*/
-void OnTimer() {
-  initUtilsGlobals();
-}
+void OnTimer() { initUtilsGlobals(); }
 /*-------------------------+
 | Ejecuta las estrategias  |
 +-------------------------*/

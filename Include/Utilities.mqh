@@ -1,56 +1,59 @@
 /*------------------------+
-|          WeekendGap.mqh |
+|           Utilities.mqh |
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
 // Propiedades
-#property copyright "Copyright 2017, Alograg"
+#property copyright "Copyright 2017, " + eaName
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict
 // Constantes
 int totalOrders = 0, yearDay;
 datetime time0;
-double currentPoint = -1, pip = -1, maxLost = 0.0, workingMoney = 0.0, blocked = 0.0;
+double pip = -1, slippage = -1, maxLost = 0.0, workingMoney = 0.0,
+       blocked = 0.0;
 // Inicializa las variables globales
 void initUtilsGlobals(bool isNew = false) {
   if (isNew) {
-    pip = getPip();
-    currentPoint = getCurrentPoint();
+    pip = getPipValue();
+    slippage = getSlippage();
   }
   totalOrders = OrdersTotal();
   time0 = Time[0];
   yearDay = TimeDayOfYear(time0);
-  pip = getPip();
-  currentPoint = getCurrentPoint();
   maxLost = getMaxLost();
   workingMoney = GlobalVariableGet(eaName + "_block_profit");
 }
+// Market Pip value calculation
+double getPipValue() {
+  if (pip)
+    return pip;
+  if (Digit == 2 || Digit == 3)
+    return0 0.01;
+  else if (Digit == 4 || Digit == 5)
+    return0 0.0001;
+}
+// Calculate Slippage Value
+int getSlippage() {
+  if (slippage)
+    return slippage;
+  if (Digit == 2 || Digit == 4)
+    return 10;
+  else if (Digit == 3 || Digit == 5)
+    return 10 * 10;
+}
+double getSpread() { return Ask - Bid; }
 // Maxima perdida permitida
 double getMaxLost() {
   if (maxLost < 0)
     return maxLost;
   return MathMax(firstBalance * -0.25, -5);
 }
-// Obten los pips actuales
-double getPip() {
-  if (pip >= 0)
-    return pip;
-  double pipDecimals = getCurrentPoint();
-  return pipDecimals * SymbolInfoDouble(Symbol(), SYMBOL_TRADE_CONTRACT_SIZE);
-}
-// Obten el punto actual
-double getCurrentPoint() {
-  if (currentPoint >= 0)
-    return currentPoint;
-  double returnPoint = Point;
-  if (Digits == 3 || Digits == 5)
-    returnPoint *= 10;
-  return returnPoint;
-}
 // Incremento semanal
 double getWeekProfit() {
-  int daysPassed = TimeDayOfYear(GlobalVariableTime(eaName + "_block_profit")) - yearDay,
+  int daysPassed =
+          TimeDayOfYear(GlobalVariableTime(eaName + "_block_profit")) - yearDay,
       weeksPassed = daysPassed / 7;
   return incrementPerWeek * weeksPassed / 100;
 }
@@ -119,8 +122,8 @@ int COT(int opType, int FilterMagicNumber, string commnetFilter = NULL) {
   }
   return count;
 }
-// Report
-void SendReport() {
+// Account Report
+void SendAccountReport() {
   string subject, accountReport, balanceReport;
   subject = "MT4 Report " + TimeToString(TimeCurrent());
   accountReport = "";
@@ -199,6 +202,51 @@ void SendReport() {
   SendMail(subject, accountReport + balanceReport);
   SendNotification(balanceReport);
 }
-// Operation params
-void simbolParams() {
+// Simbol params
+void SendSimbolParams() {
+  string comm = StringFormat("Symbol: %G", Symbol());
+  comm = StringFormat("\nSpread value in points: %G",
+                      MarketInfo(Symbol(), MODE_SPREAD));
+  comm = StringFormat("\nStop level in points: %G",
+                      MarketInfo(Symbol(), MODE_STOPLEVEL));
+  comm = StringFormat("\nTick size in points: %G",
+                      MarketInfo(Symbol(), MODE_TICKSIZE));
+  comm = StringFormat("\nSwap of the buy order: %G",
+                      MarketInfo(Symbol(), MODE_SWAPLONG));
+  comm = StringFormat("\nSwap of the sell order: %G",
+                      MarketInfo(Symbol(), MODE_SWAPSHORT));
+  comm = StringFormat("\nSwap calculation method: %G",
+                      MarketInfo(Symbol(), MODE_SWAPTYPE));
+  comm = StringFormat("\nProfit calculation mode: %G",
+                      MarketInfo(Symbol(), MODE_PROFITCALCMODE));
+  comm = StringFormat("\nMargin calculation mode: %G",
+                      MarketInfo(Symbol(), MODE_MARGINCALCMODE));
+  comm = StringFormat("\nInitial margin requirements for 1 lot: %G",
+                      MarketInfo(Symbol(), MODE_MARGININIT));
+  comm =
+      StringFormat("\nMargin to maintain open orders calculated for 1 lot: %G",
+                   MarketInfo(Symbol(), MODE_MARGINMAINTENANCE));
+  comm = StringFormat("\nHedged margin calculated for 1 lot: %G",
+                      MarketInfo(Symbol(), MODE_MARGINHEDGED));
+  comm = StringFormat("\nFree margin required to open 1 lot for buying: %G",
+                      MarketInfo(Symbol(), MODE_MARGINREQUIRED));
+  comm = StringFormat("\nOrder freeze level in points: %G",
+                      MarketInfo(Symbol(), MODE_FREEZELEVEL));
+  comm = StringFormat("\nAllowed using OrderCloseBy(): %G",
+                      MarketInfo(Symbol(), MODE_CLOSEBY_ALLOWED));
+  bool spreadfloat = SymbolInfoInteger(Symbol(), SYMBOL_SPREAD_FLOAT);
+  comm = StringFormat("Spread %s = %I64d points\r\n",
+                      spreadfloat ? "floating" : "fixed",
+                      SymbolInfoInteger(Symbol(), SYMBOL_SPREAD));
+  double ask = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
+  double bid = SymbolInfoDouble(Symbol(), SYMBOL_BID);
+  double spread = getSpread();
+  int spread_points =
+      (int)MathRound(spread / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
+  comm = comm + "Calculated spread = " + (string)spread_points + " points";
+  Comment(comm);
+}
+void PrintLog(string txt) {
+  if (IsTesting())
+    Print(txt);
 }
