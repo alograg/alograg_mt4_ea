@@ -1,18 +1,18 @@
-/*-----------------------------------------------------------------+
-|                                                   WeekendGap.mqh |
-|                                          Copyright 2017, Alograg |
-|                                           https://www.alograg.me |
-+-----------------------------------------------------------------*/
-
+/*------------------------+
+|          WeekendGap.mqh |
+| Copyright 2017, Alograg |
+|  https://www.alograg.me |
++------------------------*/
+// Propiedades
 #property copyright "Copyright 2017, Alograg"
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict
-
+// Constantes
 int totalOrders = 0, yearDay;
 datetime time0;
-double currentPoint = -1, pip = -1, unBlocked, blocked, maxLost = 0.0;
-
+double currentPoint = -1, pip = -1, maxLost = 0.0, workingMoney = 0.0, blocked = 0.0;
+// Inicializa las variables globales
 void initUtilsGlobals(bool isNew = false) {
   if (isNew) {
     pip = getPip();
@@ -24,24 +24,22 @@ void initUtilsGlobals(bool isNew = false) {
   pip = getPip();
   currentPoint = getCurrentPoint();
   maxLost = getMaxLost();
-  Print("firstBalance: ", firstBalance);
+  workingMoney = GlobalVariableGet(eaName + "_block_profit");
 }
-
+// Maxima perdida permitida
 double getMaxLost() {
   if (maxLost < 0)
     return maxLost;
-  return MathMax(firstBalance * -0.5, -500);
+  return MathMax(firstBalance * -0.25, -5);
 }
-
-double pipPrice(double price) { return NormalizeDouble(getPip() / price, 2); }
-
+// Obten los pips actuales
 double getPip() {
   if (pip >= 0)
     return pip;
   double pipDecimals = getCurrentPoint();
   return pipDecimals * SymbolInfoDouble(Symbol(), SYMBOL_TRADE_CONTRACT_SIZE);
 }
-
+// Obten el punto actual
 double getCurrentPoint() {
   if (currentPoint >= 0)
     return currentPoint;
@@ -50,20 +48,19 @@ double getCurrentPoint() {
     returnPoint *= 10;
   return returnPoint;
 }
-
+// Incremento semanal
 double getWeekProfit() {
-  return (
-      0.015 *
-      ((TimeDayOfYear(GlobalVariableTime(eaName + "_block_profit")) - yearDay) /
-       7));
+  int daysPassed = TimeDayOfYear(GlobalVariableTime(eaName + "_block_profit")) - yearDay,
+      weeksPassed = daysPassed / 7;
+  return incrementPerWeek * weeksPassed / 100;
 }
-
+// Dinero bloqueado
 double getBlockMoney() {
   double evaluated = GlobalVariableGet(eaName + "_block_profit");
   evaluated *= 1 + getWeekProfit();
   return evaluated;
 }
-
+// Dinero libre
 double getUnBlocked() {
   blocked = AccountEquity();
   double millards = MathFloor(blocked / firstBalance) - 1;
@@ -75,21 +72,18 @@ double getUnBlocked() {
   unBlocked = AccountFreeMargin() - blocked;
   return NormalizeDouble(unBlocked / 5, 2);
 }
-/*-----------------------------------------------------------------+
-| LotSize                                                          |
-+-----------------------------------------------------------------*/
+// Tamaño del lote según dispocición
 double getLotSize(double Risk = 2, double SL = 0) {
-  double lastWithDrawal = 0.0;
   if (AccountFreeMargin() < AccountBalance() * 0.2)
     return 0.0;
+  double lastWithDrawal = 0.0;
   if (SL == 0)
     SL = (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) +
          (MarketInfo(Symbol(), MODE_SPREAD) * Point);
   else
     SL *= (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) +
           (MarketInfo(Symbol(), MODE_SPREAD) * Point);
-  double MaxLot = MarketInfo(Symbol(), MODE_MAXLOT);
-  MaxLot = 1.5;
+  double MaxLot = 1.5;
   double MinLot = MarketInfo(Symbol(), MODE_MINLOT);
   double StopLoss = SL / Point / 10;
   double Size = Risk / 100 * getUnBlocked() / 10 / StopLoss;
@@ -99,26 +93,22 @@ double getLotSize(double Risk = 2, double SL = 0) {
     Size = MaxLot;
   return (NormalizeDouble(Size, 2));
 }
-
+// Nueva barra
 bool CheckNewBar() { return Time[0] != time0; }
-
-/*-----------------------------------------------------------------+
-| Si es un nuevo dia para el simbolo actual                        |
-+-----------------------------------------------------------------*/
+// Nuevo dia
 bool isNewDay() { return TimeDayOfYear(Time[0]) != yearDay; }
-
+// Si el comentario es el mismo
 bool isFornComment(string comment, string orderComment) {
   if (comment == NULL)
     return true;
   return orderComment == comment;
 }
-
-/*-----------------------------------------------------------------+
-| Count Open Trades                                                |
-|   opType:       Tipo de operacion                                |
-|   MagicNumber:  Numero magico para buscar                        |
-|   commnet:      Comentarios de filtro (opcional)                 |
-+-----------------------------------------------------------------*/
+/*--------------------------------------------------+
+| Count Open Trades                                 |
+|   opType:       Tipo de operacion                 |
+|   MagicNumber:  Numero magico para buscar         |
+|   commnet:      Comentarios de filtro (opcional)  |
++--------------------------------------------------*/
 int COT(int opType, int FilterMagicNumber, string commnetFilter = NULL) {
   int count = 0, hasOrder;
   for (int cnt_COT = 0; cnt_COT < totalOrders; cnt_COT++) {
@@ -129,50 +119,7 @@ int COT(int opType, int FilterMagicNumber, string commnetFilter = NULL) {
   }
   return count;
 }
-
-void TrailingOpenOrders(double TrailingStop = 10,
-                        int FilterMagicNumber = MagicNumber,
-                        string commnetFilter = NULL) {
-  if (TrailingStop <= 0)
-    return;
-  double MyPoint = getCurrentPoint(), profit;
-  int currentOrder;
-  TrailingStop += MarketInfo(Symbol(), MODE_STOPLEVEL);
-  for (int cnt = 0; cnt < totalOrders; cnt++) {
-    currentOrder = OrderSelect(cnt, SELECT_BY_POS, MODE_TRADES);
-    if (OrderSymbol() != Symbol() && !currentOrder &&
-        OrderMagicNumber() == FilterMagicNumber && isFornComment(commnetFilter))
-      if (OrderSymbol() != Symbol() && !currentOrder &&
-          OrderMagicNumber() == FilterMagicNumber &&
-          isFornComment(commnetFilter, OrderComment()))
-        continue;
-    if (OrderType() <= OP_SELL) {
-      profit =
-          NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap(), 2);
-      if (profit < 0.01)
-        continue;
-      if (OrderType() == OP_BUY) {
-        if (Bid - OrderOpenPrice() > MyPoint * TrailingStop &&
-            OrderStopLoss() < Bid - MyPoint * TrailingStop) {
-          currentOrder = OrderModifyReliable(OrderTicket(), OrderOpenPrice(),
-                                             Bid - TrailingStop * MyPoint,
-                                             OrderTakeProfit(), 0, Yellow);
-          continue;
-        }
-      } else {
-        if ((OrderOpenPrice() - Ask) > (MyPoint * TrailingStop) &&
-            ((OrderStopLoss() > (Ask + MyPoint * TrailingStop)) ||
-             (OrderStopLoss() == 0))) {
-          currentOrder = OrderModifyReliable(OrderTicket(), OrderOpenPrice(),
-                                             Ask + MyPoint * TrailingStop,
-                                             OrderTakeProfit(), 0, Yellow);
-          continue;
-        }
-      }
-    }
-  }
-}
-
+// Report
 void SendReport() {
   string subject, accountReport, balanceReport;
   subject = "MT4 Report " + TimeToString(TimeCurrent());
@@ -251,4 +198,7 @@ void SendReport() {
   balanceReport += "\n";
   SendMail(subject, accountReport + balanceReport);
   SendNotification(balanceReport);
+}
+// Operation params
+void simbolParams() {
 }

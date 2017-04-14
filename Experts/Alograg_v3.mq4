@@ -1,53 +1,63 @@
-/*-----------------------------------------------------------------+
-|                                                   Alograg v3.mq4 |
-|                                          Copyright 2017, Alograg |
-|                                           https://www.alograg.me |
-+-----------------------------------------------------------------*/
+/*-------------------------+
+|           Alograg v3.mq4 |
+|  Copyright 2017, Alograg |
+|   https://www.alograg.me |
++-------------------------*/
 #define propVersion "3.00"
 #define eaName "Alograg"
 #define MagicNumber 17808159
-
+// Propiedades
 #property copyright "Copyright 2017, " + eaName
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict
-
+// Incluciones
 #include "..\Include\OrderReliable_2011.01.07.mqh"
 #include "..\Include\Utilities.mqh"
-
 // Externos
-// extern int pipsPerDay = 100;          //Meta de pips por dia
-
+// extern int name = value; //Descipción
+extern double firstBalance = 200.00; //Monto inicial
+extern double incrementPerWeek = 1.50; //Incremento de protección
 // Constantes
 double pareto = 0.8;
 double toDayMoney = 0.0;
-
-/*-----------------------------------------------------------------+
-| Expert initialization function                                   |
-+-----------------------------------------------------------------*/
+/*----------------+
+| Inicialización  |
++----------------*/
 int OnInit() {
+  // Monto para utilizar en transacciones
   GlobalVariableSet(eaName + "_block_profit", firstBalance * 0.2);
-  initUtilsGlobals();
+  // Inicializacion de variables
+  initUtilsGlobals(true);
+  // Registro de evento
   EventSetTimer(60);
   return (INIT_SUCCEEDED);
 }
-/*-----------------------------------------------------------------+
-| Expert deinitialization function                                 |
-+-----------------------------------------------------------------*/
+/*--------+
+| Cierre  |
++--------*/
 void OnDeinit(const int reason) {
   EventKillTimer();
+  // Reseteo del valor bloqueado
   GlobalVariableDel(eaName + "_block_profit");
 }
-/*-----------------------------------------------------------------+
-| Expert tick function                                             |
-+-----------------------------------------------------------------*/
+/*-----------+
+| Cada dato  |
++-----------*/
 void OnTick() {
-  if (IsTesting())
-    doStrategies();
+  doStrategies();
 }
-/*-----------------------------------------------------------------+
-| Timer function                                                   |
-+-----------------------------------------------------------------*/
-void OnTimer() {}
-
+/*-----------+
+| Al minuto  |
++-----------*/
+void OnTimer() {
+  initUtilsGlobals();
+}
+/*-------------------------+
+| Ejecuta las estrategias  |
++-------------------------*/
 void doStrategies() {}
+/*----------------------------+
+| Administra las operaciones  |
++----------------------------*/
+void doManagment() {}
