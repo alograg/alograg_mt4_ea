@@ -12,7 +12,7 @@
 int totalOrders = 0, yearDay;
 datetime time0;
 double pip = -1, slippage = -1, maxLost = 0.0, workingMoney = 0.0,
-       blocked = 0.0;
+       blocked = 0.0, unBlocked = 0.0;
 // Inicializa las variables globales
 void initUtilsGlobals(bool isNew = false) {
   if (isNew) {
@@ -27,21 +27,23 @@ void initUtilsGlobals(bool isNew = false) {
 }
 // Market Pip value calculation
 double getPipValue() {
-  if (pip)
+  if (pip > 0)
     return pip;
-  if (Digit == 2 || Digit == 3)
-    return0 0.01;
-  else if (Digit == 4 || Digit == 5)
-    return0 0.0001;
+  if (Digits == 2 || Digits == 3)
+    return 0.01;
+  else if (Digits == 4 || Digits == 5)
+    return 0.0001;
+  return 0.01;
 }
 // Calculate Slippage Value
 int getSlippage() {
-  if (slippage)
+  if (slippage > 0)
     return slippage;
-  if (Digit == 2 || Digit == 4)
+  if (Digits == 2 || Digits == 4)
     return 10;
-  else if (Digit == 3 || Digit == 5)
+  else if (Digits == 3 || Digits == 5)
     return 10 * 10;
+  return 10;
 }
 double getSpread() { return Ask - Bid; }
 // Maxima perdida permitida
@@ -249,4 +251,16 @@ void SendSimbolParams() {
 void PrintLog(string txt) {
   if (IsTesting())
     Print(txt);
+}
+int OrderSendHidden(string symbol, int cmd, double volume, double price,
+                    int slippage, double stoploss, double takeprofit,
+                    string comment, int magic, datetime expiration = 0,
+                    color arrow_color = CLR_NONE) {
+  int orderNumber =
+      OrderSendReliable(symbol, cmd, volume, price, slippage, 0, 0, comment,
+                        magic, expiration, arrow_color);
+  if (!orderNumber)
+    return orderNumber;
+
+  return orderNumber;
 }

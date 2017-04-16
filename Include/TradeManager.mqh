@@ -12,3 +12,5 @@
 #include "TM\YES.mqh"
 
 // Constantes
+void tmInit() { yesInit(); }
+void tmEvent() { yesProcess(); }

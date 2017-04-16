@@ -14,6 +14,7 @@
 // Incluciones
 #include "..\Include\OrderReliable_2011.01.07.mqh"
 #include "..\Include\Utilities.mqh"
+#include "..\Include\TradeManager.mqh"
 // Externos
 // extern int name = value; //Descipción
 extern double firstBalance = 200.00;   // Monto inicial
@@ -21,6 +22,7 @@ extern double incrementPerWeek = 1.50; // Incremento de protección
 // Constantes
 double pareto = 0.8;
 double toDayMoney = 0.0;
+int tmp = -20;
 /*----------------+
 | Inicialización  |
 +----------------*/
@@ -31,6 +33,7 @@ int OnInit() {
   initUtilsGlobals(true);
   // Registro de evento
   EventSetTimer(60);
+  tmInit();
   return (INIT_SUCCEEDED);
 }
 /*--------+
@@ -44,7 +47,10 @@ void OnDeinit(const int reason) {
 /*-----------+
 | Cada dato  |
 +-----------*/
-void OnTick() { doStrategies(); }
+void OnTick() {
+  doStrategies();
+  //doManagment();
+}
 /*-----------+
 | Al minuto  |
 +-----------*/
@@ -56,4 +62,4 @@ void doStrategies() {}
 /*----------------------------+
 | Administra las operaciones  |
 +----------------------------*/
-void doManagment() {}
+void doManagment() { tmEvent(); }
