@@ -9,7 +9,7 @@
 #property version propVersion
 #property strict
 // Constantes
-int totalOrders = 0, yearDay;
+int totalOrders = 0, yearDay, Spread;
 datetime time0;
 double pip = -1, slippage = -1, maxLost = 0.0, workingMoney = 0.0,
        blocked = 0.0, unBlocked = 0.0;
@@ -20,9 +20,10 @@ void initUtilsGlobals(bool isNew = false) {
     slippage = getSlippage();
   }
   totalOrders = OrdersTotal();
-  time0 = Time[0];
+  time0 = iTime(Symbol(), PERIOD_M15, 0);
   yearDay = TimeDayOfYear(time0);
   maxLost = getMaxLost();
+  Spread = MarketInfo(Symbol(), MODE_SPREAD);
   workingMoney = GlobalVariableGet(eaName + "_block_profit");
 }
 // Market Pip value calculation
@@ -83,11 +84,9 @@ double getLotSize(double Risk = 2, double SL = 0) {
     return 0.0;
   double lastWithDrawal = 0.0;
   if (SL == 0)
-    SL = (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) +
-         (MarketInfo(Symbol(), MODE_SPREAD) * Point);
+    SL = (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) + (Spread * Point);
   else
-    SL *= (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) +
-          (MarketInfo(Symbol(), MODE_SPREAD) * Point);
+    SL *= (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) + (Spread * Point);
   double MaxLot = 1.5;
   double MinLot = MarketInfo(Symbol(), MODE_MINLOT);
   double StopLoss = SL / Point / 10;
@@ -99,7 +98,7 @@ double getLotSize(double Risk = 2, double SL = 0) {
   return (NormalizeDouble(Size, 2));
 }
 // Nueva barra
-bool CheckNewBar() { return Time[0] != time0; }
+bool CheckNewBar() { return iTime(Symbol(), PERIOD_M15, 0) != time0; }
 // Nuevo dia
 bool isNewDay() { return TimeDayOfYear(Time[0]) != yearDay; }
 // Si el comentario es el mismo
@@ -207,8 +206,7 @@ void SendAccountReport() {
 // Simbol params
 void SendSimbolParams() {
   string comm = StringFormat("Symbol: %G", Symbol());
-  comm = StringFormat("\nSpread value in points: %G",
-                      MarketInfo(Symbol(), MODE_SPREAD));
+  comm = StringFormat("\nSpread value in points: %G", Spread);
   comm = StringFormat("\nStop level in points: %G",
                       MarketInfo(Symbol(), MODE_STOPLEVEL));
   comm = StringFormat("\nTick size in points: %G",

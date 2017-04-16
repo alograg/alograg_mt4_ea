@@ -47,7 +47,8 @@ void yesProcess() {
             iMA(NULL, PERIOD_D1, 3, 0, MODE_SMA, PRICE_LOW, 1),
         Digits);
     OrderHiddenTP = round(AvereageCandle / getPipValue());
-    OrderHiddenSL = round(AvereageCandle / getPipValue());
+    OrderHiddenSL = round(AvereageCandle / getPipValue()) + (getSpread() / getPipValue());
+    OrderHiddenSL *=50;
     OrderTS3 = OrderHiddenTP / pareto;
     OrderTS2Trigger = OrderTS3;
     OrderTS2 = OrderTS2Trigger / 2;

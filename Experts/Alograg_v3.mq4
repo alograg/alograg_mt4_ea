@@ -3,7 +3,7 @@
 |  Copyright 2017, Alograg |
 |   https://www.alograg.me |
 +-------------------------*/
-#define propVersion "3.01"
+#define propVersion "3.02"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -15,6 +15,7 @@
 #include "..\Include\OrderReliable_2011.01.07.mqh"
 #include "..\Include\Utilities.mqh"
 #include "..\Include\TradeManager.mqh"
+#include "..\Include\MorningWork.mqh"
 // Externos
 // extern int name = value; //Descipción
 extern double firstBalance = 200.00;   // Monto inicial
@@ -49,7 +50,9 @@ void OnDeinit(const int reason) {
 +-----------*/
 void OnTick() {
   doStrategies();
-  //doManagment();
+  doManagment();
+  if (CheckNewBar())
+    initUtilsGlobals();
 }
 /*-----------+
 | Al minuto  |
@@ -58,7 +61,7 @@ void OnTimer() { initUtilsGlobals(); }
 /*-------------------------+
 | Ejecuta las estrategias  |
 +-------------------------*/
-void doStrategies() {}
+void doStrategies() { MorningWork(); }
 /*----------------------------+
 | Administra las operaciones  |
 +----------------------------*/
