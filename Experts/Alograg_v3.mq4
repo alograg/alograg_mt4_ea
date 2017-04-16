@@ -16,6 +16,7 @@
 #include "..\Include\Utilities.mqh"
 #include "..\Include\TradeManager.mqh"
 #include "..\Include\MorningWork.mqh"
+#include "..\Include\FreeDayNigth.mqh"
 // Externos
 // extern int name = value; //Descipción
 extern double firstBalance = 200.00;   // Monto inicial
@@ -61,7 +62,10 @@ void OnTimer() { initUtilsGlobals(); }
 /*-------------------------+
 | Ejecuta las estrategias  |
 +-------------------------*/
-void doStrategies() { MorningWork(); }
+void doStrategies() {
+  MorningWork();
+  FreeDayNigth();
+}
 /*----------------------------+
 | Administra las operaciones  |
 +----------------------------*/
