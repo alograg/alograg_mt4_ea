@@ -71,7 +71,7 @@
 //
 //	2006-07-19: 0.2.5:	Modified by Derk Wehler
 //						Cleaned up commenting and code,
-//to
+// to
 // make
 // more
 //						readable; added additional
