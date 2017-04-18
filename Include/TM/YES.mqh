@@ -95,8 +95,9 @@ void yesProcess() {
   }
   for (i = TotalNumberOfOrders - 1; i >= 0; i--) {
     if (OrderSelect(i, SELECT_BY_POS, MODE_TRADES)) {
-      PrintLog(i + "/" + TotalNumberOfOrders + ">>" + OrderSymbol() + ">>" +
-               OrderTicket() + ">>" + TotalNumberOfOrders);
+      if(OrderSymbol() != Symbol()) continue;
+      //PrintLog(i + "/" + TotalNumberOfOrders + ">>" + OrderSymbol() + ">>" +
+      //         OrderTicket() + ">>" + TotalNumberOfOrders);
       FoundZero = FALSE;
       OrderFound = FALSE;
       for (j = TotalNumberOfOrders - 1; j >= 0; j--) {
@@ -112,8 +113,8 @@ void yesProcess() {
         }
       }
       //PrintLog("OrderFound:" + OrderFound + ">> FoundZero:" + FoundZero +
-               ">> TotalNumberOfOrders:" + (TotalNumberOfOrders - 1) + ">>" +
-               i);
+      //         ">> TotalNumberOfOrders:" + (TotalNumberOfOrders - 1) + ">>" +
+      //         i);
       if (!OrderFound && FoundZero) {
         OrderArray[FoundZeroIdx][0] = OrderTicket();
         OrderArray[FoundZeroIdx][1] = OrderMagicNumber();
@@ -150,7 +151,7 @@ void yesProcess() {
           if ((OrderArray[OrderArrayIdx][9] == 0) &&
               (OrderProfitPip > OrderTS1Trigger)) {
             //PrintLog("Long Trailing Stop1 Activated at: " +
-                     (OrderOpenPrice() + (OrderTS1 * point)));
+            //         (OrderOpenPrice() + (OrderTS1 * point)));
             OrderArray[OrderArrayIdx][9] =
                 (OrderOpenPrice() + (OrderTS1 * point));
           }
@@ -160,7 +161,7 @@ void yesProcess() {
               (OrderArray[OrderArrayIdx][10] == 0) &&
               (OrderProfitPip > OrderTS2Trigger)) {
             //PrintLog("Long Trailing Stop2 Activated at: " +
-                     (OrderOpenPrice() + (OrderTS2 * point)));
+            //         (OrderOpenPrice() + (OrderTS2 * point)));
             OrderArray[OrderArrayIdx][10] =
                 (OrderOpenPrice() + (OrderTS2 * point));
           }
@@ -171,7 +172,7 @@ void yesProcess() {
               (OrderArray[OrderArrayIdx][11] == 0) &&
               (OrderProfitPip > OrderTS3Trigger)) {
             //PrintLog("Long Trailing Stop3 Activated at: " +
-                     (OrderOpenPrice() + (OrderTS3 * point)));
+            //         (OrderOpenPrice() + (OrderTS3 * point)));
             OrderArray[OrderArrayIdx][11] =
                 (OrderOpenPrice() + (OrderTS3 * point));
           }
@@ -184,7 +185,7 @@ void yesProcess() {
               (OrderArray[OrderArrayIdx][12] == 0) &&
               (OrderProfitPip > OrderTS4Trigger)) {
             //PrintLog("Long Trailing Stop4 Activated at: " +
-                     (OrderOpenPrice() + (OrderTS4 * point)));
+            //         (OrderOpenPrice() + (OrderTS4 * point)));
             OrderArray[OrderArrayIdx][12] =
                 (OrderOpenPrice() + (OrderTS4 * point));
             OrderArray[OrderArrayIdx][13] =
@@ -200,7 +201,7 @@ void yesProcess() {
               ((bid + (OrderTS4 * point)) > OrderArray[OrderArrayIdx][13]) &&
               !OrderTS5Jump) {
             //PrintLog("Long Trigger Trailing Stop5 Activated at: " +
-                     (OrderArray[OrderArrayIdx][13] + (OrderTS4 * point)));
+            //         (OrderArray[OrderArrayIdx][13] + (OrderTS4 * point)));
             OrderArray[OrderArrayIdx][13] = (bid - (OrderTS4 * point));
           }
           // TS5 - Jump Trailing
@@ -214,12 +215,32 @@ void yesProcess() {
                OrderArray[OrderArrayIdx][13]) &&
               OrderTS5Jump) {
             //PrintLog("Long Trigger Trailing Stop5 Activated at: " +
-                     (OrderArray[OrderArrayIdx][13] + (OrderTS4 * point)));
+            //         (OrderArray[OrderArrayIdx][13] + (OrderTS4 * point)));
             OrderArray[OrderArrayIdx][13] =
                 (OrderArray[OrderArrayIdx][13] + (OrderTS4 * point));
           }
           // Long Order Processing
-          if (OrderProfitPip >= OrderHiddenTP) {
+          if (((OrderArray[OrderArrayIdx][9] != 0) &&
+               (bid < OrderArray[OrderArrayIdx][9])) ||
+              ((OrderArray[OrderArrayIdx][10] != 0) &&
+               (bid < OrderArray[OrderArrayIdx][10])) ||
+              ((OrderArray[OrderArrayIdx][11] != 0) &&
+               (bid < OrderArray[OrderArrayIdx][11])) ||
+              ((OrderArray[OrderArrayIdx][12] != 0) &&
+               (bid < OrderArray[OrderArrayIdx][12])) ||
+              ((OrderArray[OrderArrayIdx][13] != 0) &&
+               (bid < OrderArray[OrderArrayIdx][13]))) {
+            //PrintLog("Long:" + OrderTicket() +
+            //         ". Trailing Stop Triggerred. Order Closed at: " + bid);
+            // Close and Set zero of the orderarray item
+            OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
+                                                  bid, slippage, DeepSkyBlue);
+            if (OrderCloseStatus) {
+              ResetOrderArray(OrderArrayIdx);
+              PurgeElement(OrderArrayIdx);
+              break;
+            }
+          }else if (OrderProfitPip >= OrderHiddenTP) {
             //PrintLog("Take Long Profit Now: " + OrderProfitPip);
             // Close and Set zero of the orderarray item
             OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
@@ -241,32 +262,11 @@ void yesProcess() {
               break;
             }
           }
-          if (((OrderArray[OrderArrayIdx][9] != 0) &&
-               (bid < OrderArray[OrderArrayIdx][9])) ||
-              ((OrderArray[OrderArrayIdx][10] != 0) &&
-               (bid < OrderArray[OrderArrayIdx][10])) ||
-              ((OrderArray[OrderArrayIdx][11] != 0) &&
-               (bid < OrderArray[OrderArrayIdx][11])) ||
-              ((OrderArray[OrderArrayIdx][12] != 0) &&
-               (bid < OrderArray[OrderArrayIdx][12])) ||
-              ((OrderArray[OrderArrayIdx][13] != 0) &&
-               (bid < OrderArray[OrderArrayIdx][13]))) {
-            //PrintLog("Long:" + OrderTicket() +
-                     ". Trailing Stop Triggerred. Order Closed at: " + bid);
-            // Close and Set zero of the orderarray item
-            OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
-                                                  bid, slippage, DeepSkyBlue);
-            if (OrderCloseStatus) {
-              ResetOrderArray(OrderArrayIdx);
-              PurgeElement(OrderArrayIdx);
-              break;
-            }
-          }
           if (BreakEven && (TimeCurrent() >
                             (OrderArray[OrderArrayIdx][4] + BreakEvenTime)) &&
               (bid > (OrderArray[OrderArrayIdx][5] + (OrderTS4 * point)))) {
             //PrintLog("LongBE:" + OrderTicket() +
-                     ". Breakeven Triggerred. Order Closed at: " + bid);
+            //         ". Breakeven Triggerred. Order Closed at: " + bid);
             // Close and Set zero of the orderarray item
             OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
                                                   bid, slippage, Navy);
@@ -283,15 +283,15 @@ void yesProcess() {
                             MarketInfo(Symbol(), MODE_TICKVALUE) *
                             MarketInfo(Symbol(), MODE_TICKSIZE);
           OrderLossPip = (ask - OrderArray[OrderArrayIdx][5]) / point;
-          PrintLog(OrderSymbol() + ">>" + OrderArray[OrderArrayIdx][0] + ">>" +
-                   OrderArray[OrderArrayIdx][8] + ">>" + bid + ">>" + ask +
-                   ">>" + OrderLossPip + ">>" + OrderHiddenSL);
+          //PrintLog(OrderSymbol() + ">>" + OrderArray[OrderArrayIdx][0] + ">>" +
+          //         OrderArray[OrderArrayIdx][8] + ">>" + bid + ">>" + ask +
+          //         ">>" + OrderLossPip + ">>" + OrderHiddenSL);
           // Print ("Trailing1S:
           // "+OrderTicket()+">>"+OrderProfitPip+">>"+OrderTS1Trigger+">>"+OrderArray[OrderArrayIdx][9]);
           if ((OrderArray[OrderArrayIdx][9] == 0) &&
               (OrderProfitPip > OrderTS1Trigger)) {
             //PrintLog("Short Trailing Stop1 Activated at: " +
-                     (OrderOpenPrice() - (OrderTS1 * point)));
+            //         (OrderOpenPrice() - (OrderTS1 * point)));
             OrderArray[OrderArrayIdx][9] =
                 (OrderOpenPrice() - (OrderTS1 * point));
           }
@@ -301,7 +301,7 @@ void yesProcess() {
               (OrderArray[OrderArrayIdx][10] == 0) &&
               (OrderProfitPip > OrderTS2Trigger)) {
             //PrintLog("Short Trailing Stop2 Activated at: " +
-                     (OrderOpenPrice() - (OrderTS2 * point)));
+            //         (OrderOpenPrice() - (OrderTS2 * point)));
             OrderArray[OrderArrayIdx][10] =
                 (OrderOpenPrice() - (OrderTS2 * point));
           }
@@ -312,7 +312,7 @@ void yesProcess() {
               (OrderArray[OrderArrayIdx][11] == 0) &&
               (OrderProfitPip > OrderTS3Trigger)) {
             //PrintLog("Short Trailing Stop3 Activated at: " +
-                     (OrderOpenPrice() - (OrderTS3 * point)));
+            //         (OrderOpenPrice() - (OrderTS3 * point)));
             OrderArray[OrderArrayIdx][11] =
                 (OrderOpenPrice() - (OrderTS3 * point));
           }
@@ -325,7 +325,7 @@ void yesProcess() {
               (OrderArray[OrderArrayIdx][12] == 0) &&
               (OrderProfitPip > OrderTS4Trigger)) {
             //PrintLog("Short Trailing Stop4 Activated at: " +
-                     (OrderOpenPrice() - (OrderTS4 * point)));
+            //         (OrderOpenPrice() - (OrderTS4 * point)));
             OrderArray[OrderArrayIdx][12] =
                 (OrderOpenPrice() - (OrderTS4 * point));
             OrderArray[OrderArrayIdx][13] =
@@ -341,7 +341,7 @@ void yesProcess() {
               ((ask - (OrderTS4 * point)) < OrderArray[OrderArrayIdx][13]) &&
               !OrderTS5Jump) {
             //PrintLog("Short Trigger Trailing Stop5 Activated at: " +
-                     (OrderArray[OrderArrayIdx][13] - (OrderTS4 * point)));
+            //         (OrderArray[OrderArrayIdx][13] - (OrderTS4 * point)));
             OrderArray[OrderArrayIdx][13] = (ask + (OrderTS4 * point));
           }
           // TS5 - Jump Trailing
@@ -355,12 +355,32 @@ void yesProcess() {
                OrderArray[OrderArrayIdx][13]) &&
               OrderTS5Jump) {
             //PrintLog("Short Trigger Trailing Stop5 Activated at: " +
-                     (OrderArray[OrderArrayIdx][13] - (OrderTS4 * point)));
+            //         (OrderArray[OrderArrayIdx][13] - (OrderTS4 * point)));
             OrderArray[OrderArrayIdx][13] =
                 (OrderArray[OrderArrayIdx][13] - (OrderTS4 * point));
           }
           // Short Order Processing
-          if (OrderProfitPip >= OrderHiddenTP) {
+          if (((OrderArray[OrderArrayIdx][9] != 0) &&
+               (ask > OrderArray[OrderArrayIdx][9])) ||
+              ((OrderArray[OrderArrayIdx][10] != 0) &&
+               (ask > OrderArray[OrderArrayIdx][10])) ||
+              ((OrderArray[OrderArrayIdx][11] != 0) &&
+               (ask > OrderArray[OrderArrayIdx][11])) ||
+              ((OrderArray[OrderArrayIdx][12] != 0) &&
+               (ask > OrderArray[OrderArrayIdx][12])) ||
+              ((OrderArray[OrderArrayIdx][13] != 0) &&
+               (ask > OrderArray[OrderArrayIdx][13]))) {
+            //PrintLog("Short:" + OrderTicket() +
+            //         ". Trailing Stop Triggerred. Order Closed at: " + ask);
+            // Close and Set zero of the orderarray item
+            OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
+                                                  ask, slippage, DarkOrange);
+            if (OrderCloseStatus) {
+              ResetOrderArray(OrderArrayIdx);
+              PurgeElement(OrderArrayIdx);
+              break;
+            }
+          }else if (OrderProfitPip >= OrderHiddenTP) {
             //PrintLog("Take Short Profit Now: " + OrderProfitPip);
             // Close and Set zero of the orderarray item
             OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
@@ -382,32 +402,11 @@ void yesProcess() {
               break;
             }
           }
-          if (((OrderArray[OrderArrayIdx][9] != 0) &&
-               (ask > OrderArray[OrderArrayIdx][9])) ||
-              ((OrderArray[OrderArrayIdx][10] != 0) &&
-               (ask > OrderArray[OrderArrayIdx][10])) ||
-              ((OrderArray[OrderArrayIdx][11] != 0) &&
-               (ask > OrderArray[OrderArrayIdx][11])) ||
-              ((OrderArray[OrderArrayIdx][12] != 0) &&
-               (ask > OrderArray[OrderArrayIdx][12])) ||
-              ((OrderArray[OrderArrayIdx][13] != 0) &&
-               (ask > OrderArray[OrderArrayIdx][13]))) {
-            //PrintLog("Short:" + OrderTicket() +
-                     ". Trailing Stop Triggerred. Order Closed at: " + ask);
-            // Close and Set zero of the orderarray item
-            OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
-                                                  ask, slippage, DarkOrange);
-            if (OrderCloseStatus) {
-              ResetOrderArray(OrderArrayIdx);
-              PurgeElement(OrderArrayIdx);
-              break;
-            }
-          }
           if (BreakEven && (TimeCurrent() >
                             (OrderArray[OrderArrayIdx][4] + BreakEvenTime)) &&
               (ask < (OrderArray[OrderArrayIdx][5] + (OrderTS4 * point)))) {
             //PrintLog("LongBE:" + OrderTicket() +
-                     ". Breakeven Triggerred. Order Closed at: " + ask);
+            //         ". Breakeven Triggerred. Order Closed at: " + ask);
             // Close and Set zero of the orderarray item
             OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
                                                   ask, slippage, Maroon);

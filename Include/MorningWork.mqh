@@ -20,13 +20,17 @@ void MorningWork() {
   if (!CheckNewBar())
     return;
   double MacdCurrent, MacdPrevious, SignalCurrent, SignalPrevious, TendanceMacd,
-      TendanceSignal;
+      TendanceSignal, TendanceMacdPrevious, TendanceSignalPrevious;
   int cnt, ticket, total;
   // variables
   TendanceMacd =
       iMACD(Symbol(), PERIOD_H1, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 0);
   TendanceSignal =
-      iMACD(Symbol(), PERIOD_H1, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 0);
+      iMACD(Symbol(), PERIOD_D1, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 0);
+  TendanceMacdPrevious =
+      iMACD(Symbol(), PERIOD_H1, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 1);
+  TendanceSignalPrevious =
+      iMACD(Symbol(), PERIOD_D1, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 1);
   MacdCurrent =
       iMACD(Symbol(), PERIOD_M15, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 0);
   MacdPrevious =
@@ -48,13 +52,13 @@ void MorningWork() {
     return;
   //--- check for long position (BUY) possibility
   if (MacdCurrent > SignalCurrent && MacdPrevious < SignalPrevious &&
-      TendanceMacd < 0) {
+      TendanceMacd < 0 && TendanceSignalPrevious < TendanceSignal) {
     ticket = OrderSendReliable(Symbol(), OP_BUY, lotsForTransaction, Ask, 3, 0,
                                0, MorningWorkComment, MagicNumber, 0, Green);
   }
   //--- check for short position (SELL) possibility
   if (MacdCurrent < SignalCurrent && MacdPrevious > SignalPrevious &&
-      TendanceMacd > 0) {
+      TendanceMacd > 0 && TendanceSignalPrevious > TendanceSignal) {
     ticket = OrderSendReliable(Symbol(), OP_SELL, lotsForTransaction, Bid, 3, 0,
                                0, MorningWorkComment, MagicNumber, 0, Red);
   }

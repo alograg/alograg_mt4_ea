@@ -21,25 +21,22 @@ void FreeDayNigth(double GapRange = 5, double SL_Factor = 1,
                   double TP_Factor = 1, double MM_Risk = 2) {
   if (TimeDayOfWeek(time0) != 5)
     return;
-  if (!(TimeHour(Time[0]) >= 23 && TimeMinute(Time[0]) > 55))
+  if (!(TimeHour(Time[0]) >= 23 && TimeMinute(Time[0]) >= 45 && CheckNewBar()))
     return;
-  double MyPoint = getCurrentPoint();
-  double CurrOpen = iMA(Symbol(), PERIOD_D1, 10, 0, MODE_EMA, PRICE_MEDIAN, 0);
-  double PrevClose = iMA(Symbol(), PERIOD_D1, 10, 0, MODE_EMA, PRICE_MEDIAN, 1);
+  double CurrOpen = iMACD(Symbol(), PERIOD_D1, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 0);
+  double PrevClose = iMACD(Symbol(), PERIOD_D1, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 1);
   //---- TRADE
   int Ticket;
-  double gls = getLotSize(MM_Risk, 0.2);
+  double gls = getLotSize();
   if (gls < 0.01)
     return;
-  if (gls >= 1)
-    StopLoss *= pareto - (gls - pareto);
   PrintLog("FreeDayNigth");
-  if (CurrOpen < PrevClose) {
+  if (CurrOpen > PrevClose) {
     Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, 0,
                                0, FreeDayNigthBuyComment,
                                FreeDayNigthMagicBuy, 0, Blue);
   }
-  if (CurrOpen > PrevClose) {
+  if (CurrOpen < PrevClose) {
     Ticket = OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, 0,
                                0, FreeDayNigthSellComment,
                                FreeDayNigthMagicSell, 0, Pink);
