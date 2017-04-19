@@ -26,8 +26,9 @@ void MorningWork() {
   MacdCurrent =
       iMACD(Symbol(), PERIOD_M15, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 0);
   double SignalPosition =
-             NormalizeDouble(MathAbs(MacdCurrent), Digits) / getPipValue();
-  if (SignalPosition < 1) return;
+      NormalizeDouble(MathAbs(MacdCurrent), Digits) / getPipValue();
+  if (SignalPosition < 1)
+    return;
   double lotsForTransaction = getLotSize();
   if (lotsForTransaction <= 0)
     return;

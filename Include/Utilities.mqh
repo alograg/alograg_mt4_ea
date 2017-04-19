@@ -30,11 +30,10 @@ void initUtilsGlobals(bool isNew = false) {
 double getPipValue() {
   if (pip > 0)
     return pip;
-  if (Digits == 2 || Digits == 3)
-    return 0.01;
-  else if (Digits == 4 || Digits == 5)
-    return 0.0001;
-  return 0.01;
+  pip = Point;
+  if (Digits == 3 || Digits == 5)
+    pip = Point * 10;
+  return pip;
 }
 // Calculate Slippage Value
 int getSlippage() {

@@ -19,7 +19,7 @@ string WeekendGapSellComment = eaName + ": Gap.S";
 string WeekendGapBuyComment = eaName + ": Gap.B";
 
 void WeekendGap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1,
-         double MM_Risk = 2) {
+                double MM_Risk = 2) {
   if (TimeDayOfWeek(time0) != 1)
     return;
   if (!(TimeHour(Time[0]) < 1 && TimeMinute(Time[0]) < 2 && CheckNewBar()))
@@ -35,13 +35,13 @@ void WeekendGap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1,
   int Ticket;
   //---- TRADE
   if (CurrOpen < PrevClose) {
-    Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, 0,
-                               0, WeekendGapBuyComment,
-                               WeekendGapMagicBuy, 0, Blue);
+    Ticket =
+        OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, 0, 0,
+                          WeekendGapBuyComment, WeekendGapMagicBuy, 0, Blue);
   }
   if (CurrOpen > PrevClose) {
-    Ticket = OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, 0,
-                               0, WeekendGapSellComment,
-                               WeekendGapMagicSell, 0, Red);
+    Ticket =
+        OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, 0, 0,
+                          WeekendGapSellComment, WeekendGapMagicSell, 0, Red);
   }
 }
