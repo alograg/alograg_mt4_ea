@@ -32,7 +32,7 @@ double getPipValue() {
     return pip;
   pip = Point;
   if (Digits == 3 || Digits == 5)
-    pip = Point * 10;
+    pip *= 10;
   return pip;
 }
 // Calculate Slippage Value
