@@ -39,11 +39,8 @@ double getPipValue() {
 int getSlippage() {
   if (slippage > 0)
     return slippage;
-  if (Digits == 2 || Digits == 4)
-    return 10;
-  else if (Digits == 3 || Digits == 5)
-    return 10 * 10;
-  return 10;
+    slippage = 3;
+    return slippage;
 }
 double getSpread() { return Ask - Bid; }
 // Maxima perdida permitida
