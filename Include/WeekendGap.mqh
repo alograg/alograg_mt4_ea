@@ -20,18 +20,17 @@ string WeekendGapBuyComment = eaName + ": Gap.B";
 
 void WeekendGap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1,
                 double MM_Risk = 2) {
-  if (TimeDayOfWeek(time0) != 1)
+  if (TimeDayOfWeek(Time[0]) != 1)
     return;
-  if (!(TimeHour(Time[0]) < 1 && TimeMinute(Time[0]) < 2 && CheckNewBar()))
+  if (TimeHour(Time[0]) >= 1 || TimeMinute(Time[0])>=1 || !CheckNewBar())
     return;
   double gls = getLotSize();
   if (gls < 0.01)
     return;
-  Print("Gap");
+  Print("Gap open: " + gls);
   double CurrOpen = iOpen(Symbol(), Period(), 0);
   double PrevClose = iClose(Symbol(), Period(), 1);
   double Range = NormalizeDouble(MathAbs(PrevClose - CurrOpen), Digits);
-  bool GAP = Range >= GapRange * Point * 10;
   int Ticket;
   //---- TRADE
   if (CurrOpen < PrevClose) {

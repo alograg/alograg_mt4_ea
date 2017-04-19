@@ -34,7 +34,7 @@ void yesProcess() {
     AvereageCandle = NormalizeDouble(
         MathAbs(iOpen(Symbol(), PERIOD_D1, 1) - iClose(Symbol(), PERIOD_D1, 1)),
         Digits);
-    OrderHiddenTP = round((AvereageCandle / getPipValue()));
+    OrderHiddenTP = round((AvereageCandle / getPipValue())/2);
     //PrintLog("Candel: " + AvereageCandle);
     //PrintLog("Pibs: " + OrderHiddenTP);
     OrderTSTrigger = OrderHiddenTP - 1;
