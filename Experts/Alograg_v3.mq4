@@ -3,7 +3,7 @@
 |  Copyright 2017, Alograg |
 |   https://www.alograg.me |
 +-------------------------*/
-#define propVersion "3.03"
+#define propVersion "3.04"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -17,6 +17,7 @@
 #include "..\Include\TradeManager.mqh"
 #include "..\Include\MorningWork.mqh"
 #include "..\Include\FreeDayNigth.mqh"
+#include "..\Include\WeekendGap.mqh"
 // Externos
 // extern int name = value; //Descipción
 extern double firstBalance = 200.00;   // Monto inicial
@@ -65,6 +66,7 @@ void OnTimer() { initUtilsGlobals(); }
 void doStrategies() {
   MorningWork();
   FreeDayNigth();
+  WeekendGap();
 }
 /*----------------------------+
 | Administra las operaciones  |

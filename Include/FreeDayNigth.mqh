@@ -23,14 +23,14 @@ void FreeDayNigth(double GapRange = 5, double SL_Factor = 1,
     return;
   if (!(TimeHour(Time[0]) >= 23 && TimeMinute(Time[0]) >= 45 && CheckNewBar()))
     return;
-  double CurrOpen = iMACD(Symbol(), PERIOD_D1, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 0);
-  double PrevClose = iMACD(Symbol(), PERIOD_D1, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 1);
-  //---- TRADE
-  int Ticket;
   double gls = getLotSize();
   if (gls < 0.01)
     return;
   PrintLog("FreeDayNigth");
+  double CurrOpen = iMACD(Symbol(), PERIOD_D1, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 0);
+  double PrevClose = iMACD(Symbol(), PERIOD_D1, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 1);
+  int Ticket;
+  //---- TRADE
   if (CurrOpen > PrevClose) {
     Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, 0,
                                0, FreeDayNigthBuyComment,

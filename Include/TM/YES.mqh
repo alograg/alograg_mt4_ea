@@ -23,7 +23,7 @@ double OrderTS4 = 200;        // In Point, 5 Digit Broker
 double OrderTS4Trigger = 400; // In Point, 5 Digit Broker
 bool OrderTS5Jump = FALSE;
 bool BreakEven = FALSE;
-int BreakEvenTime = 900; // Time Unit Seconds
+int BreakEvenTime = 604800; // Time Unit Seconds
 double BreakEvenTP = 20; // In Point, 5 Digit Broker
 
 double OrderArray[][14];
@@ -413,6 +413,7 @@ void yesProcess() {
             if (OrderCloseStatus) {
               ResetOrderArray(OrderArrayIdx);
               PurgeElement(OrderArrayIdx);
+              break;
             }
           }
         }
