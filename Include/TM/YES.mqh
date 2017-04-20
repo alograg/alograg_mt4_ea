@@ -123,9 +123,10 @@ void yesProcess() {
         // Found the Order
         OrderLongShort = OrderArray[OrderArrayIdx][2];
         // Print ("OrderLongShort: "+OrderLongShort);
-        OrderExtrasPip = (OrderSwap() + OrderCommission()) / OrderLots() /
+        int OrderExtrasPip = round((OrderSwap() + OrderCommission()) / OrderLots() /
                          MarketInfo(Symbol(), MODE_TICKVALUE) *
-                         MarketInfo(Symbol(), MODE_TICKSIZE);
+                         MarketInfo(Symbol(), MODE_TICKSIZE));
+        double OrderExtrasMoney = NormalizeDouble((OrderSwap() + OrderCommission()) / OrderLots(), Digits);
         if (OrderLongShort == OP_BUY) {
           OrderProfitPip = (Bid - OrderArray[OrderArrayIdx][5]) / getPipValue();
           OrderProfitPip += OrderExtrasPip;
@@ -187,11 +188,13 @@ void yesProcess() {
               break;
             }
           }
-          if (((BreakEven && MathAbs(TimeDayOfYear(OrderOpenTime()) -
-                                     TimeDayOfYear(time0)) > 4 &&
-                OrderProfitPip < 0) ||
-               OrderLossPip >= OrderArray[FoundZeroIdx][12]) &&
-              OrderArray[OrderArrayIdx][9] > 0) {
+          // TODO:: BreakEven Buy
+          if((BreakEven
+          && MathAbs(TimeDayOfYear(OrderOpenTime())-TimeDayOfYear(time0))>4
+          && OrderProfitPip < 0)
+          || ((OrderProfit() + OrderExtrasMoney) < (AccountFreeMargin() / 10)
+          && MathAbs(TimeDayOfYear(OrderOpenTime())-TimeDayOfYear(time0))>1))
+          {
             OrderArray[OrderArrayIdx][9] =
                 round(OrderProfitPip + OrderHiddenTP / 2);
             OrderArray[OrderArrayIdx][10] =
@@ -200,12 +203,12 @@ void yesProcess() {
             Print(OrderLossPip);
             Print(OrderArray[OrderArrayIdx][9]);
             Print(OrderArray[OrderArrayIdx][10]);
-            OrderArray[40][9];
+            //OrderArray[40][9];
           }
         }
         if (OrderLongShort == OP_SELL) {
           OrderProfitPip = (OrderArray[OrderArrayIdx][5] - Ask) / getPipValue();
-          OrderProfitPip += (OrderExtrasPip;
+          OrderProfitPip += OrderExtrasPip;
           OrderLossPip = (Ask - OrderArray[OrderArrayIdx][5]) / getPipValue();
           OrderLossPip += OrderExtrasPip;
           if(OrderArray[FoundZeroIdx][12] == 0){
@@ -262,7 +265,9 @@ void yesProcess() {
           // TODO:: BreakEven SELL
           if((BreakEven
           && MathAbs(TimeDayOfYear(OrderOpenTime())-TimeDayOfYear(time0))>4
-          && OrderProfitPip < 0))
+          && OrderProfitPip < 0)
+          || ((OrderProfit() + OrderExtrasMoney) < (AccountFreeMargin() / 10)
+          && MathAbs(TimeDayOfYear(OrderOpenTime())-TimeDayOfYear(time0))>1))
           {
               OrderArray[OrderArrayIdx][9] = round(OrderProfitPip + OrderHiddenTP/2);
               OrderArray[OrderArrayIdx][10]= round(OrderProfitPip + OrderHiddenTP/3);
