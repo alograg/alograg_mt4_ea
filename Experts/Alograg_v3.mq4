@@ -37,6 +37,8 @@ int OnInit() {
   // Registro de evento
   EventSetTimer(60);
   tmInit();
+  SendSimbolParams();
+  Print(eaName + " " + propVersion);
   return (INIT_SUCCEEDED);
 }
 /*--------+
@@ -53,8 +55,12 @@ void OnDeinit(const int reason) {
 void OnTick() {
   doStrategies();
   doManagment();
-  if (CheckNewBar())
+  if (CheckNewBar()){
     initUtilsGlobals();
+    SendSimbolParams();
+  }
+  if(isNewDay())
+    SendAccountReport();
 }
 /*-----------+
 | Al minuto  |

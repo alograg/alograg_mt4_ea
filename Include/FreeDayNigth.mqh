@@ -26,7 +26,7 @@ void FreeDayNigth(double GapRange = 5, double SL_Factor = 1,
   double gls = getLotSize();
   if (gls < 0.01)
     return;
-  PrintLog("FreeDayNigth");
+  Print("FreeDayNigth");
   double CurrOpen =
       iMACD(Symbol(), PERIOD_D1, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 0);
   double PrevClose =

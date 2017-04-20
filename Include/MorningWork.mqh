@@ -32,6 +32,7 @@ void MorningWork() {
   double lotsForTransaction = getLotSize();
   if (lotsForTransaction <= 0)
     return;
+  Print("MorningWork");
   TendanceMacd =
       iMACD(Symbol(), PERIOD_H1, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 0);
   TendanceSignal =

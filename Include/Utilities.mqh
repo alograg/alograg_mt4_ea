@@ -201,37 +201,38 @@ void SendAccountReport() {
 }
 // Simbol params
 void SendSimbolParams() {
-  string comm = StringFormat("Symbol: %G", Symbol());
-  comm = StringFormat("\nSpread value in points: %G", Spread);
-  comm = StringFormat("\nStop level in points: %G",
+  string comm = eaName + " v." + propVersion;
+  comm += StringFormat("\nSymbol: %s", Symbol());
+  comm += StringFormat("\nSpread value in points: %G", Spread);
+  comm += StringFormat("\nStop level in points: %G",
                       MarketInfo(Symbol(), MODE_STOPLEVEL));
-  comm = StringFormat("\nTick size in points: %G",
+  comm += StringFormat("\nTick size in points: %G",
                       MarketInfo(Symbol(), MODE_TICKSIZE));
-  comm = StringFormat("\nSwap of the buy order: %G",
+  comm += StringFormat("\nSwap of the buy order: %G",
                       MarketInfo(Symbol(), MODE_SWAPLONG));
-  comm = StringFormat("\nSwap of the sell order: %G",
+  comm += StringFormat("\nSwap of the sell order: %G",
                       MarketInfo(Symbol(), MODE_SWAPSHORT));
-  comm = StringFormat("\nSwap calculation method: %G",
+  comm += StringFormat("\nSwap calculation method: %G",
                       MarketInfo(Symbol(), MODE_SWAPTYPE));
-  comm = StringFormat("\nProfit calculation mode: %G",
+  comm += StringFormat("\nProfit calculation mode: %G",
                       MarketInfo(Symbol(), MODE_PROFITCALCMODE));
-  comm = StringFormat("\nMargin calculation mode: %G",
+  comm += StringFormat("\nMargin calculation mode: %G",
                       MarketInfo(Symbol(), MODE_MARGINCALCMODE));
-  comm = StringFormat("\nInitial margin requirements for 1 lot: %G",
+  comm += StringFormat("\nInitial margin requirements for 1 lot: %G",
                       MarketInfo(Symbol(), MODE_MARGININIT));
-  comm =
+  comm +=
       StringFormat("\nMargin to maintain open orders calculated for 1 lot: %G",
                    MarketInfo(Symbol(), MODE_MARGINMAINTENANCE));
-  comm = StringFormat("\nHedged margin calculated for 1 lot: %G",
+  comm += StringFormat("\nHedged margin calculated for 1 lot: %G",
                       MarketInfo(Symbol(), MODE_MARGINHEDGED));
-  comm = StringFormat("\nFree margin required to open 1 lot for buying: %G",
+  comm += StringFormat("\nFree margin required to open 1 lot for buying: %G",
                       MarketInfo(Symbol(), MODE_MARGINREQUIRED));
-  comm = StringFormat("\nOrder freeze level in points: %G",
+  comm += StringFormat("\nOrder freeze level in points: %G",
                       MarketInfo(Symbol(), MODE_FREEZELEVEL));
-  comm = StringFormat("\nAllowed using OrderCloseBy(): %G",
+  comm += StringFormat("\nAllowed using OrderCloseBy(): %G",
                       MarketInfo(Symbol(), MODE_CLOSEBY_ALLOWED));
   bool spreadfloat = SymbolInfoInteger(Symbol(), SYMBOL_SPREAD_FLOAT);
-  comm = StringFormat("Spread %s = %I64d points\r\n",
+  comm += StringFormat("\nSpread %s = %I64d points",
                       spreadfloat ? "floating" : "fixed",
                       SymbolInfoInteger(Symbol(), SYMBOL_SPREAD));
   double ask = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
@@ -239,7 +240,7 @@ void SendSimbolParams() {
   double spread = getSpread();
   int spread_points =
       (int)MathRound(spread / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
-  comm = comm + "Calculated spread = " + (string)spread_points + " points";
+  comm += "\nCalculated spread = " + (string)spread_points + " points";
   Comment(comm);
 }
 void PrintLog(string txt) {
