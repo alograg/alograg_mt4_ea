@@ -123,10 +123,12 @@ void yesProcess() {
         // Found the Order
         OrderLongShort = OrderArray[OrderArrayIdx][2];
         // Print ("OrderLongShort: "+OrderLongShort);
-        int OrderExtrasPip = round((OrderSwap() + OrderCommission()) / OrderLots() /
-                         MarketInfo(Symbol(), MODE_TICKVALUE) *
-                         MarketInfo(Symbol(), MODE_TICKSIZE));
-        double OrderExtrasMoney = NormalizeDouble((OrderSwap() + OrderCommission()) / OrderLots(), Digits);
+        int OrderExtrasPip =
+            round((OrderSwap() + OrderCommission()) / OrderLots() /
+                  MarketInfo(Symbol(), MODE_TICKVALUE) *
+                  MarketInfo(Symbol(), MODE_TICKSIZE));
+        double OrderExtrasMoney = NormalizeDouble(
+            (OrderSwap() + OrderCommission()) / OrderLots(), Digits);
         if (OrderLongShort == OP_BUY) {
           OrderProfitPip = (Bid - OrderArray[OrderArrayIdx][5]) / getPipValue();
           OrderProfitPip += OrderExtrasPip;
@@ -189,49 +191,36 @@ void yesProcess() {
             }
           }
           // TODO:: BreakEven Buy
-          if((BreakEven
-          && MathAbs(TimeDayOfYear(OrderOpenTime())-TimeDayOfYear(time0))>4
-          && OrderProfitPip < 0)
-          || ((OrderProfit() + OrderExtrasMoney) < (AccountFreeMargin() / 10)
-          && MathAbs(TimeDayOfYear(OrderOpenTime())-TimeDayOfYear(time0))>1))
-          {
-            OrderArray[OrderArrayIdx][9] =
-                round(OrderProfitPip + OrderHiddenTP / 2);
-            OrderArray[OrderArrayIdx][10] =
-                round(OrderProfitPip + OrderHiddenTP / 3);
-            Print(OrderProfitPip);
-            Print(OrderLossPip);
-            Print(OrderArray[OrderArrayIdx][9]);
-            Print(OrderArray[OrderArrayIdx][10]);
-            //OrderArray[40][9];
-          }
         }
         if (OrderLongShort == OP_SELL) {
           OrderProfitPip = (OrderArray[OrderArrayIdx][5] - Ask) / getPipValue();
           OrderProfitPip += OrderExtrasPip;
           OrderLossPip = (Ask - OrderArray[OrderArrayIdx][5]) / getPipValue();
           OrderLossPip += OrderExtrasPip;
-          if(OrderArray[FoundZeroIdx][12] == 0){
+          if (OrderArray[FoundZeroIdx][12] == 0) {
             OrderArray[FoundZeroIdx][12] = OrderHiddenSL;
           }
-          if(OrderArray[OrderArrayIdx][11] == 0){
+          if (OrderArray[OrderArrayIdx][11] == 0) {
             OrderArray[OrderArrayIdx][11] == OrderHiddenTP;
           }
           if (OrderArray[OrderArrayIdx][9] == 0 &&
               OrderProfitPip >= OrderTSTrigger) {
             OrderArray[OrderArrayIdx][9] = OrderTS;
             OrderArray[OrderArrayIdx][10] = round(OrderTSTrigger * 1.5);
-            //PrintLog("Short Trailing Stop Activated at: " + (OrderOpenPrice() - (OrderTS * getPipValue())));
-          } else if(OrderArray[OrderArrayIdx][10]!=0 &&
-              OrderProfitPip >= OrderArray[OrderArrayIdx][10]){
-              OrderArray[OrderArrayIdx][9] = OrderArray[OrderArrayIdx][10];
-              OrderArray[OrderArrayIdx][10] += MathAbs(round(OrderArray[OrderArrayIdx][10] /2));
-            //PrintLog("Short Trailing Stop Activated at: " + (OrderOpenPrice() - (OrderArray[OrderArrayIdx][10] * getPipValue())));
+            // PrintLog("Short Trailing Stop Activated at: " + (OrderOpenPrice()
+            // - (OrderTS * getPipValue())));
+          } else if (OrderArray[OrderArrayIdx][10] != 0 &&
+                     OrderProfitPip >= OrderArray[OrderArrayIdx][10]) {
+            OrderArray[OrderArrayIdx][9] = OrderArray[OrderArrayIdx][10];
+            OrderArray[OrderArrayIdx][10] +=
+                MathAbs(round(OrderArray[OrderArrayIdx][10] / 2));
+            // PrintLog("Short Trailing Stop Activated at: " + (OrderOpenPrice()
+            // - (OrderArray[OrderArrayIdx][10] * getPipValue())));
           }
-          if(OrderArray[OrderArrayIdx][10] >= OrderArray[OrderArrayIdx][11]){
+          if (OrderArray[OrderArrayIdx][10] >= OrderArray[OrderArrayIdx][11]) {
             OrderArray[OrderArrayIdx][11] = OrderArray[OrderArrayIdx][10];
           }
-          //PrintLog("Short: " + OrderTicket()
+          // PrintLog("Short: " + OrderTicket()
           //+ ">" + OrderHiddenTP
           //+ ">" + OrderProfitPip
           //+ ">" + OrderLossPip
@@ -241,8 +230,10 @@ void yesProcess() {
           //+ ">" + OrderArray[OrderArrayIdx][11]
           //);
           // Short Order Processing
-          if (OrderArray[OrderArrayIdx][9] != 0 && OrderProfitPip < OrderArray[OrderArrayIdx][9]) {
-            //PrintLog("Short:" + OrderTicket() + ". Trailing Stop Triggerred. Order Closed at: " + Ask);
+          if (OrderArray[OrderArrayIdx][9] != 0 &&
+              OrderProfitPip < OrderArray[OrderArrayIdx][9]) {
+            // PrintLog("Short:" + OrderTicket() + ". Trailing Stop Triggerred.
+            // Order Closed at: " + Ask);
             // Close and Set zero of the orderarray item
             OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
                                                   Ask, slippage, DarkOrange);
@@ -251,8 +242,9 @@ void yesProcess() {
               PurgeElement(OrderArrayIdx);
               break;
             }
-          } else if (OrderArray[OrderArrayIdx][11]!=0 && OrderProfitPip > OrderArray[OrderArrayIdx][11]) {
-            //PrintLog("Take Short Profit Now: " + OrderProfitPip);
+          } else if (OrderArray[OrderArrayIdx][11] != 0 &&
+                     OrderProfitPip > OrderArray[OrderArrayIdx][11]) {
+            // PrintLog("Take Short Profit Now: " + OrderProfitPip);
             // Close and Set zero of the orderarray item
             OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
                                                   Ask, slippage, Red);
@@ -263,20 +255,6 @@ void yesProcess() {
             }
           }
           // TODO:: BreakEven SELL
-          if((BreakEven
-          && MathAbs(TimeDayOfYear(OrderOpenTime())-TimeDayOfYear(time0))>4
-          && OrderProfitPip < 0)
-          || ((OrderProfit() + OrderExtrasMoney) < (AccountFreeMargin() / 10)
-          && MathAbs(TimeDayOfYear(OrderOpenTime())-TimeDayOfYear(time0))>1))
-          {
-              OrderArray[OrderArrayIdx][9] = round(OrderProfitPip + OrderHiddenTP/2);
-              OrderArray[OrderArrayIdx][10]= round(OrderProfitPip + OrderHiddenTP/3);
-              Print(OrderProfitPip);
-              Print(OrderLossPip);
-              Print(OrderArray[OrderArrayIdx][9]);
-              Print(OrderArray[OrderArrayIdx][10]);
-              //OrderArray[40][9];
-          }
         }
       }
       // PrintLog("==================================");
