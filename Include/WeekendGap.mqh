@@ -22,7 +22,7 @@ void WeekendGap(double GapRange = 5, double SL_Factor = 1, double TP_Factor = 1,
                 double MM_Risk = 2) {
   if (TimeDayOfWeek(Time[0]) != 1)
     return;
-  if (TimeHour(Time[0]) >= 1 || TimeMinute(Time[0])>=1 || !CheckNewBar())
+  if (TimeHour(Time[0]) >= 1 || TimeMinute(Time[0]) >= 1 || !CheckNewBar())
     return;
   double gls = getLotSize();
   if (gls < 0.01)

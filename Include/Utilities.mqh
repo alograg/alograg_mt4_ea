@@ -39,8 +39,8 @@ double getPipValue() {
 int getSlippage() {
   if (slippage > 0)
     return slippage;
-    slippage = 3;
-    return slippage;
+  slippage = 3;
+  return slippage;
 }
 double getSpread() { return Ask - Bid; }
 // Maxima perdida permitida

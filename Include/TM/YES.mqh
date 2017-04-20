@@ -10,10 +10,10 @@
 #property version propVersion
 #property strict
 // Constantes
-double OrderHiddenTP = 90;    // In Point, 5 Digit Broker
-double OrderHiddenSL = 90;    // In Point, 5 Digit Broker
-double OrderTS = 20;         // In Point, 5 Digit Broker
-double OrderTSTrigger = 50;  // In Point, 5 Digit Broker
+double OrderHiddenTP = 90;  // In Point, 5 Digit Broker
+double OrderHiddenSL = 90;  // In Point, 5 Digit Broker
+double OrderTS = 20;        // In Point, 5 Digit Broker
+double OrderTSTrigger = 50; // In Point, 5 Digit Broker
 bool BreakEven = TRUE;
 
 double OrderArray[][14];
@@ -34,9 +34,9 @@ void yesProcess() {
     AvereageCandle = NormalizeDouble(
         MathAbs(iOpen(Symbol(), PERIOD_D1, 1) - iClose(Symbol(), PERIOD_D1, 1)),
         Digits);
-    OrderHiddenTP = round((AvereageCandle / getPipValue())/2);
-    //PrintLog("Candel: " + AvereageCandle);
-    //PrintLog("Pibs: " + OrderHiddenTP);
+    OrderHiddenTP = round((AvereageCandle / getPipValue()) / 2);
+    // PrintLog("Candel: " + AvereageCandle);
+    // PrintLog("Pibs: " + OrderHiddenTP);
     OrderTSTrigger = OrderHiddenTP - 1;
     OrderTS = round(OrderHiddenTP * pareto);
     OrderHiddenSL =
@@ -80,7 +80,7 @@ void yesProcess() {
     if (OrderSelect(i, SELECT_BY_POS, MODE_TRADES)) {
       if (OrderSymbol() != Symbol())
         continue;
-      //PrintLog(i + "/" + TotalNumberOfOrders + ">>"
+      // PrintLog(i + "/" + TotalNumberOfOrders + ">>"
       // + OrderSymbol() + ">>"
       // +
       //         OrderTicket() + ">>"
@@ -123,33 +123,38 @@ void yesProcess() {
         // Found the Order
         OrderLongShort = OrderArray[OrderArrayIdx][2];
         // Print ("OrderLongShort: "+OrderLongShort);
+        OrderExtrasPip = (OrderSwap() + OrderCommission()) / OrderLots() /
+                         MarketInfo(Symbol(), MODE_TICKVALUE) *
+                         MarketInfo(Symbol(), MODE_TICKSIZE);
         if (OrderLongShort == OP_BUY) {
           OrderProfitPip = (Bid - OrderArray[OrderArrayIdx][5]) / getPipValue();
-          OrderProfitPip += (OrderSwap() + OrderCommission()) / OrderLots() /
-                            MarketInfo(Symbol(), MODE_TICKVALUE) *
-                            MarketInfo(Symbol(), MODE_TICKSIZE);
+          OrderProfitPip += OrderExtrasPip;
           OrderLossPip = (OrderArray[OrderArrayIdx][5] - Bid) / getPipValue();
-          if(OrderArray[FoundZeroIdx][12] == 0){
+          OrderLossPip += OrderExtrasPip;
+          if (OrderArray[FoundZeroIdx][12] == 0) {
             OrderArray[FoundZeroIdx][12] = OrderHiddenSL;
           }
-          if(OrderArray[OrderArrayIdx][11] == 0){
+          if (OrderArray[OrderArrayIdx][11] == 0) {
             OrderArray[OrderArrayIdx][11] == OrderHiddenTP;
           }
           if (OrderArray[OrderArrayIdx][9] == 0 &&
               OrderProfitPip >= OrderTSTrigger) {
             OrderArray[OrderArrayIdx][9] = OrderTS;
             OrderArray[OrderArrayIdx][10] = round(OrderTSTrigger * 1.5);
-            //PrintLog("Long Trailing Stop Activated at: " + (OrderOpenPrice() - (OrderTS * getPipValue())));
-          } else if(OrderArray[OrderArrayIdx][10]!=0 &&
-              OrderProfitPip >= OrderArray[OrderArrayIdx][10]){
-              OrderArray[OrderArrayIdx][9] = OrderArray[OrderArrayIdx][10];
-              OrderArray[OrderArrayIdx][10] += MathAbs(round(OrderArray[OrderArrayIdx][10] /2));
-            //PrintLog("Long Trailing Stop Activated at: " + (OrderOpenPrice() - (OrderArray[OrderArrayIdx][10] * getPipValue())));
+            // PrintLog("Long Trailing Stop Activated at: " + (OrderOpenPrice()
+            // - (OrderTS * getPipValue())));
+          } else if (OrderArray[OrderArrayIdx][10] != 0 &&
+                     OrderProfitPip >= OrderArray[OrderArrayIdx][10]) {
+            OrderArray[OrderArrayIdx][9] = OrderArray[OrderArrayIdx][10];
+            OrderArray[OrderArrayIdx][10] +=
+                MathAbs(round(OrderArray[OrderArrayIdx][10] / 2));
+            // PrintLog("Long Trailing Stop Activated at: " + (OrderOpenPrice()
+            // - (OrderArray[OrderArrayIdx][10] * getPipValue())));
           }
-          if(OrderArray[OrderArrayIdx][10] >= OrderArray[OrderArrayIdx][11]){
+          if (OrderArray[OrderArrayIdx][10] >= OrderArray[OrderArrayIdx][11]) {
             OrderArray[OrderArrayIdx][11] = OrderArray[OrderArrayIdx][10];
           }
-          //PrintLog("Long: " + OrderTicket()
+          // PrintLog("Long: " + OrderTicket()
           //+ ">" + OrderHiddenTP
           //+ ">" + OrderProfitPip
           //+ ">" + OrderLossPip
@@ -159,8 +164,10 @@ void yesProcess() {
           //+ ">" + OrderArray[OrderArrayIdx][11]
           //);
           // Long Order Processing
-          if (OrderArray[OrderArrayIdx][9] != 0 && OrderProfitPip < OrderArray[OrderArrayIdx][9]) {
-            //PrintLog("Long:" + OrderTicket() + ". Trailing Stop Triggerred. Order Closed at: " + Bid);
+          if (OrderArray[OrderArrayIdx][9] != 0 &&
+              OrderProfitPip < OrderArray[OrderArrayIdx][9]) {
+            // PrintLog("Long:" + OrderTicket() + ". Trailing Stop Triggerred.
+            // Order Closed at: " + Bid);
             OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
                                                   Bid, slippage, DeepSkyBlue);
             if (OrderCloseStatus) {
@@ -168,8 +175,9 @@ void yesProcess() {
               PurgeElement(OrderArrayIdx);
               break;
             }
-          } else if (OrderArray[OrderArrayIdx][11]!=0 && OrderProfitPip >= OrderArray[OrderArrayIdx][11]) {
-            //PrintLog("Take Long Profit Now: " + OrderProfitPip);
+          } else if (OrderArray[OrderArrayIdx][11] != 0 &&
+                     OrderProfitPip >= OrderArray[OrderArrayIdx][11]) {
+            // PrintLog("Take Long Profit Now: " + OrderProfitPip);
             // Close and Set zero of the orderarray item
             OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
                                                   Bid, slippage, Blue);
@@ -179,25 +187,27 @@ void yesProcess() {
               break;
             }
           }
-          if(((BreakEven 
-          && MathAbs(TimeDayOfYear(OrderOpenTime())-TimeDayOfYear(time0))>4
-          && OrderProfitPip < 0) || OrderLossPip >= OrderArray[FoundZeroIdx][12])
-          && OrderArray[OrderArrayIdx][9]>0) {
-              OrderArray[OrderArrayIdx][9] = round(OrderProfitPip + OrderHiddenTP/2);
-              OrderArray[OrderArrayIdx][10]= round(OrderProfitPip + OrderHiddenTP/3);
-              Print(OrderProfitPip);
-              Print(OrderLossPip);
-              Print(OrderArray[OrderArrayIdx][9]);
-              Print(OrderArray[OrderArrayIdx][10]);
-              OrderArray[40][9];
+          if (((BreakEven && MathAbs(TimeDayOfYear(OrderOpenTime()) -
+                                     TimeDayOfYear(time0)) > 4 &&
+                OrderProfitPip < 0) ||
+               OrderLossPip >= OrderArray[FoundZeroIdx][12]) &&
+              OrderArray[OrderArrayIdx][9] > 0) {
+            OrderArray[OrderArrayIdx][9] =
+                round(OrderProfitPip + OrderHiddenTP / 2);
+            OrderArray[OrderArrayIdx][10] =
+                round(OrderProfitPip + OrderHiddenTP / 3);
+            Print(OrderProfitPip);
+            Print(OrderLossPip);
+            Print(OrderArray[OrderArrayIdx][9]);
+            Print(OrderArray[OrderArrayIdx][10]);
+            OrderArray[40][9];
           }
         }
         if (OrderLongShort == OP_SELL) {
           OrderProfitPip = (OrderArray[OrderArrayIdx][5] - Ask) / getPipValue();
-          OrderProfitPip += (OrderSwap() + OrderCommission()) / OrderLots() /
-                            MarketInfo(Symbol(), MODE_TICKVALUE) *
-                            MarketInfo(Symbol(), MODE_TICKSIZE);
+          OrderProfitPip += (OrderExtrasPip;
           OrderLossPip = (Ask - OrderArray[OrderArrayIdx][5]) / getPipValue();
+          OrderLossPip += OrderExtrasPip;
           if(OrderArray[FoundZeroIdx][12] == 0){
             OrderArray[FoundZeroIdx][12] = OrderHiddenSL;
           }
@@ -250,7 +260,7 @@ void yesProcess() {
             }
           }
           // TODO:: BreakEven SELL
-          if((BreakEven 
+          if((BreakEven
           && MathAbs(TimeDayOfYear(OrderOpenTime())-TimeDayOfYear(time0))>4
           && OrderProfitPip < 0))
           {
@@ -264,7 +274,7 @@ void yesProcess() {
           }
         }
       }
-      //PrintLog("==================================");
+      // PrintLog("==================================");
     } // Order Select
   }   // For Loop
   TotalNumberOfOrders = OrdersTotal();
