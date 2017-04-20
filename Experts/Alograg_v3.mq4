@@ -3,7 +3,7 @@
 |  Copyright 2017, Alograg |
 |   https://www.alograg.me |
 +-------------------------*/
-#define propVersion "3.04"
+#define propVersion "3.10"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -66,7 +66,7 @@ void OnTimer() { initUtilsGlobals(); }
 void doStrategies() {
   MorningWork();
   FreeDayNigth();
-  WeekendGap();
+  //WeekendGap();
 }
 /*----------------------------+
 | Administra las operaciones  |
