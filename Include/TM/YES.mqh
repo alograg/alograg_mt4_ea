@@ -15,10 +15,12 @@ double OrderHiddenSL = 90;  // In Point, 5 Digit Broker
 double OrderTS = 20;        // In Point, 5 Digit Broker
 double OrderTSTrigger = 50; // In Point, 5 Digit Broker
 bool BreakEven = TRUE;
+string YesComment = eaName + ": YES-TM";
 
 double OrderArray[][14];
 int TotalNumberOfOrders;
 double AvereageCandle = -1;
+double Tendence = 0;
 
 void yesInit() {
   TotalNumberOfOrders = OrdersTotal();
@@ -32,16 +34,16 @@ void yesProcess() {
   bool TradeFound, OrderFound = FALSE, FoundZero = FALSE, OrderCloseStatus;
   if (isNewDay() || AvereageCandle < 0) {
     AvereageCandle = NormalizeDouble(
-        MathAbs(iOpen(Symbol(), PERIOD_D1, 1) - iClose(Symbol(), PERIOD_D1, 1)),
-        Digits);
-    OrderHiddenTP = round((AvereageCandle / getPipValue()) / 2);
+        MathAbs(iHigh(Symbol(), PERIOD_D1, 1) - iLow(Symbol(), PERIOD_D1, 1)),
+        Digits) / getPipValue();
+    OrderHiddenTP = round(AvereageCandle / 4);
     // PrintLog("Candel: " + AvereageCandle);
     // PrintLog("Pibs: " + OrderHiddenTP);
     OrderTSTrigger = OrderHiddenTP - 1;
     OrderTS = round(OrderHiddenTP * pareto);
     OrderHiddenSL =
-        round(AvereageCandle / getPipValue()) + (getSpread() / getPipValue());
-    OrderHiddenSL *= 50;
+        round(AvereageCandle) + getSpreadPoints();
+    //OrderHiddenSL *= 1.5;
   }
   if (TotalNumberOfOrders < OrdersTotal()) {
     TotalNumberOfOrders = OrdersTotal();
@@ -76,6 +78,7 @@ void yesProcess() {
     TotalNumberOfOrders = CountNumberOfOrders;
     // PrintLog("OrderArray Size Decreased to: " + TotalNumberOfOrders);
   }
+  Tendence = TendanceSignal - TendanceSignalPrevious;
   for (i = TotalNumberOfOrders - 1; i >= 0; i--) {
     if (OrderSelect(i, SELECT_BY_POS, MODE_TRADES)) {
       if (OrderSymbol() != Symbol())
@@ -190,6 +193,13 @@ void yesProcess() {
               break;
             }
           }
+          if (OrderLossPip >= OrderHiddenSL && OrderArray[OrderArrayIdx][13] == 0) {
+            OrderArray[OrderArrayIdx][13] = OrderTicket();
+            PrintLog("For Ticket: " + OrderTicket());
+            OrderCloseStatus = OrderSendReliable(Symbol(), OP_SELL, OrderLots()*1.5, Bid, 3, 0,
+                               0, YesComment, MagicNumber, 0, Red);
+            return;
+          }
           // TODO:: BreakEven Buy
         }
         if (OrderLongShort == OP_SELL) {
@@ -253,6 +263,13 @@ void yesProcess() {
               PurgeElement(OrderArrayIdx);
               break;
             }
+          }
+          if (OrderLossPip >= OrderHiddenSL && OrderArray[OrderArrayIdx][13] == 0) {
+            OrderArray[OrderArrayIdx][13] = OrderTicket();
+            PrintLog("For Ticket: " + OrderTicket());
+            OrderCloseStatus = OrderSendReliable(Symbol(), OP_BUY, OrderLots()*1.5, Ask, 3, 0,
+                               0, YesComment, MagicNumber, 0, Green);
+            return;
           }
           // TODO:: BreakEven SELL
         }

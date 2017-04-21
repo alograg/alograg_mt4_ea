@@ -70,6 +70,8 @@ void OnTimer() { initUtilsGlobals(); }
 | Ejecuta las estrategias  |
 +-------------------------*/
 void doStrategies() {
+  if(AccountFreeMargin() < MathMax(firstBalance/2, AccountBalance()-firstBalance))
+    return;
   MorningWork();
   FreeDayNigth();
   //WeekendGap();

@@ -9,7 +9,9 @@
 #property version propVersion
 #property strict
 // Constantes
-int totalOrders = 0, yearDay, Spread;
+int allPeriods[];
+int shortWork=0, longWork=PERIOD_D1;
+int totalOrders = 0, yearDay, Spread, countPeriods=0;
 datetime time0;
 double pip = -1, slippage = -1, maxLost = 0.0, workingMoney = 0.0,
        blocked = 0.0, unBlocked = 0.0;
@@ -18,12 +20,13 @@ void initUtilsGlobals(bool isNew = false) {
   if (isNew) {
     pip = getPipValue();
     slippage = getSlippage();
+    calculateBetterTransactionTime();
   }
   totalOrders = OrdersTotal();
   time0 = iTime(Symbol(), PERIOD_M15, 0);
   yearDay = TimeDayOfYear(time0);
   maxLost = getMaxLost();
-  Spread = MarketInfo(Symbol(), MODE_SPREAD);
+  Spread = getSpread();
   workingMoney = GlobalVariableGet(eaName + "_block_profit");
 }
 // Market Pip value calculation
@@ -43,6 +46,7 @@ int getSlippage() {
   return slippage;
 }
 double getSpread() { return Ask - Bid; }
+double getSpreadPoints() { return (int)MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT)); }
 // Maxima perdida permitida
 double getMaxLost() {
   if (maxLost < 0)
@@ -177,7 +181,7 @@ void SendAccountReport() {
     accountReport += "monetary";
   }
   accountReport += ".\n";
-  balanceReport += "Date " + TimeToString(Time[0]) + "\n";
+  balanceReport = "Date " + TimeToString(Time[0]) + "\n";
   balanceReport +=
       StringFormat("BALANCE        = %G", AccountInfoDouble(ACCOUNT_BALANCE));
   balanceReport += "\n";
@@ -203,7 +207,7 @@ void SendAccountReport() {
 void SendSimbolParams() {
   string comm = eaName + " v." + propVersion;
   comm += StringFormat("\nSymbol: %s", Symbol());
-  comm += StringFormat("\nSpread value in points: %G", Spread);
+  comm += StringFormat("\nSpread value in points: %G", getSpreadPoints());
   comm += StringFormat("\nStop level in points: %G",
                       MarketInfo(Symbol(), MODE_STOPLEVEL));
   comm += StringFormat("\nTick size in points: %G",
@@ -237,10 +241,7 @@ void SendSimbolParams() {
                       SymbolInfoInteger(Symbol(), SYMBOL_SPREAD));
   double ask = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
   double bid = SymbolInfoDouble(Symbol(), SYMBOL_BID);
-  double spread = getSpread();
-  int spread_points =
-      (int)MathRound(spread / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
-  comm += "\nCalculated spread = " + (string)spread_points + " points";
+  comm += "\nCalculated spread = " + getSpreadPoints() + " points";
   Comment(comm);
 }
 void PrintLog(string txt) {
@@ -258,4 +259,57 @@ int OrderSendHidden(string symbol, int cmd, double volume, double price,
     return orderNumber;
 
   return orderNumber;
+}
+
+template<typename E>
+int EnumToArray(E dummy, int &values[], const int start = INT_MIN, const int stop = INT_MAX)
+{
+  string t = typename(E) + "::";
+  int length = StringLen(t);
+  
+  ArrayResize(values, 0);
+  int count = 0;
+  
+  for(int i = start; i < stop && !IsStopped(); i++)
+  {
+    E e = (E)i;
+    if(StringCompare(StringSubstr(EnumToString(e), 0, length), t) != 0)
+    {
+      ArrayResize(values, count + 1);
+      values[count++] = i;
+    }
+  }
+  return count;
+}
+
+void calculateBetterTransactionTime(){
+  if(!countPeriods){
+    ENUM_TIMEFRAMES periodList;
+    countPeriods = EnumToArray(periodList, allPeriods, PERIOD_M1, longWork);
+  }
+  PrintLog("Spread: " + getSpreadPoints());
+  PrintLog("Count Periods: " + countPeriods);
+  int EvaluatePeriods = 10, diferencePoints = 0, actionValue = getSpreadPoints() * pareto;
+  double higthMa, lowMa, toPoints = MarketInfo(Symbol(), MODE_TICKVALUE) * MarketInfo(Symbol(), MODE_TICKSIZE);
+  for(int i = 0; i < countPeriods; i++)
+  {
+    //Print("Period ", i, " ", EnumToString((ENUM_TIMEFRAMES)allPeriods[i]), "=", allPeriods[i]);
+    higthMa = iMA(Symbol(), allPeriods[i], EvaluatePeriods, 0, MODE_EMA, PRICE_HIGH, 0);
+    lowMa = iMA(Symbol(), allPeriods[i], EvaluatePeriods, 0, MODE_EMA, PRICE_LOW, 0);
+    diferencePoints = (higthMa - lowMa) / toPoints;
+    if(!diferencePoints)
+      continue;
+    //PrintLog(actionValue + "->" + actionValue/pareto + "->" + diferencePoints + "->" + EnumToString((ENUM_TIMEFRAMES)allPeriods[i]));
+    if(!shortWork && diferencePoints >= actionValue){
+      shortWork = allPeriods[i];
+      //PrintLog("Short");
+      continue;
+    }
+    if(diferencePoints >= (getSpreadPoints() / pareto)){
+      longWork = allPeriods[i];
+      //PrintLog("Long");
+      break;
+    }
+  }
+  PrintLog("Period: work="+ EnumToString((ENUM_TIMEFRAMES)shortWork) + ", monitor=" + EnumToString((ENUM_TIMEFRAMES)longWork));
 }

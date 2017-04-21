@@ -26,19 +26,21 @@ void FreeDayNigth(double GapRange = 5, double SL_Factor = 1,
   double gls = getLotSize();
   if (gls < 0.01)
     return;
-  Print("FreeDayNigth");
   double CurrOpen =
       iMACD(Symbol(), PERIOD_D1, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 0);
   double PrevClose =
       iMACD(Symbol(), PERIOD_D1, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 1);
   int Ticket;
+  bool canBuy = CurrOpen > PrevClose;
+  bool canSell = CurrOpen < PrevClose;
   //---- TRADE
-  if (CurrOpen > PrevClose) {
+  Print("FreeDayNigth: buy ("+ canBuy + "), sell ("+ canSell +")");
+  if (canBuy) {
     Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, 0, 0,
                                FreeDayNigthBuyComment, FreeDayNigthMagicBuy, 0,
                                Blue);
   }
-  if (CurrOpen < PrevClose) {
+  if (canSell) {
     Ticket = OrderSendReliable(Symbol(), OP_SELL, gls, Bid, 3, 0, 0,
                                FreeDayNigthSellComment, FreeDayNigthMagicSell,
                                0, Pink);
