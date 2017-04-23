@@ -33,17 +33,17 @@ void yesProcess() {
   int OrderProfitPip, OrderLossPip;
   bool TradeFound, OrderFound = FALSE, FoundZero = FALSE, OrderCloseStatus;
   if (isNewDay() || AvereageCandle < 0) {
-    AvereageCandle = NormalizeDouble(
-        MathAbs(iHigh(Symbol(), PERIOD_D1, 1) - iLow(Symbol(), PERIOD_D1, 1)),
-        Digits) / getPipValue();
+    AvereageCandle = NormalizeDouble(MathAbs(iHigh(Symbol(), PERIOD_D1, 1) -
+                                             iLow(Symbol(), PERIOD_D1, 1)),
+                                     Digits) /
+                     getPipValue();
     OrderHiddenTP = round(AvereageCandle / 4);
     // PrintLog("Candel: " + AvereageCandle);
     // PrintLog("Pibs: " + OrderHiddenTP);
     OrderTSTrigger = OrderHiddenTP - 1;
     OrderTS = round(OrderHiddenTP * pareto);
-    OrderHiddenSL =
-        round(AvereageCandle) + getSpreadPoints();
-    //OrderHiddenSL *= 1.5;
+    OrderHiddenSL = round(AvereageCandle) + getSpreadPoints();
+    // OrderHiddenSL *= 1.5;
   }
   if (TotalNumberOfOrders < OrdersTotal()) {
     TotalNumberOfOrders = OrdersTotal();
@@ -193,11 +193,13 @@ void yesProcess() {
               break;
             }
           }
-          if (OrderLossPip >= OrderHiddenSL && OrderArray[OrderArrayIdx][13] == 0) {
+          if (OrderLossPip >= OrderHiddenSL &&
+              OrderArray[OrderArrayIdx][13] == 0) {
             OrderArray[OrderArrayIdx][13] = OrderTicket();
             PrintLog("For Ticket: " + OrderTicket());
-            OrderCloseStatus = OrderSendReliable(Symbol(), OP_SELL, OrderLots()*1.5, Bid, 3, 0,
-                               0, YesComment, MagicNumber, 0, Red);
+            OrderCloseStatus =
+                OrderSendReliable(Symbol(), OP_SELL, OrderLots() * 1.5, Bid, 3,
+                                  0, 0, YesComment, MagicNumber, 0, Red);
             return;
           }
           // TODO:: BreakEven Buy
@@ -264,11 +266,13 @@ void yesProcess() {
               break;
             }
           }
-          if (OrderLossPip >= OrderHiddenSL && OrderArray[OrderArrayIdx][13] == 0) {
+          if (OrderLossPip >= OrderHiddenSL &&
+              OrderArray[OrderArrayIdx][13] == 0) {
             OrderArray[OrderArrayIdx][13] = OrderTicket();
             PrintLog("For Ticket: " + OrderTicket());
-            OrderCloseStatus = OrderSendReliable(Symbol(), OP_BUY, OrderLots()*1.5, Ask, 3, 0,
-                               0, YesComment, MagicNumber, 0, Green);
+            OrderCloseStatus =
+                OrderSendReliable(Symbol(), OP_BUY, OrderLots() * 1.5, Ask, 3,
+                                  0, 0, YesComment, MagicNumber, 0, Green);
             return;
           }
           // TODO:: BreakEven SELL

@@ -55,11 +55,11 @@ void OnDeinit(const int reason) {
 void OnTick() {
   doStrategies();
   doManagment();
-  if (CheckNewBar()){
+  if (CheckNewBar()) {
     initUtilsGlobals();
     SendSimbolParams();
   }
-  if(isNewDay())
+  if (isNewDay())
     SendAccountReport();
 }
 /*-----------+
@@ -70,11 +70,12 @@ void OnTimer() { initUtilsGlobals(); }
 | Ejecuta las estrategias  |
 +-------------------------*/
 void doStrategies() {
-  if(AccountFreeMargin() < MathMax(firstBalance/2, AccountBalance()-firstBalance))
+  if (AccountFreeMargin() <
+      MathMax(firstBalance / 2, AccountBalance() - firstBalance))
     return;
   MorningWork();
   FreeDayNigth();
-  //WeekendGap();
+  // WeekendGap();
 }
 /*----------------------------+
 | Administra las operaciones  |

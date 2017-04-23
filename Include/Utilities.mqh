@@ -10,8 +10,8 @@
 #property strict
 // Constantes
 int allPeriods[];
-int shortWork=0, longWork=PERIOD_D1;
-int totalOrders = 0, yearDay, Spread, countPeriods=0;
+int shortWork = 0, longWork = PERIOD_D1;
+int totalOrders = 0, yearDay, Spread, countPeriods = 0;
 datetime time0;
 double pip = -1, slippage = -1, maxLost = 0.0, workingMoney = 0.0,
        blocked = 0.0, unBlocked = 0.0;
@@ -46,7 +46,9 @@ int getSlippage() {
   return slippage;
 }
 double getSpread() { return Ask - Bid; }
-double getSpreadPoints() { return (int)MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT)); }
+double getSpreadPoints() {
+  return (int)MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
+}
 // Maxima perdida permitida
 double getMaxLost() {
   if (maxLost < 0)
@@ -209,36 +211,36 @@ void SendSimbolParams() {
   comm += StringFormat("\nSymbol: %s", Symbol());
   comm += StringFormat("\nSpread value in points: %G", getSpreadPoints());
   comm += StringFormat("\nStop level in points: %G",
-                      MarketInfo(Symbol(), MODE_STOPLEVEL));
+                       MarketInfo(Symbol(), MODE_STOPLEVEL));
   comm += StringFormat("\nTick size in points: %G",
-                      MarketInfo(Symbol(), MODE_TICKSIZE));
+                       MarketInfo(Symbol(), MODE_TICKSIZE));
   comm += StringFormat("\nSwap of the buy order: %G",
-                      MarketInfo(Symbol(), MODE_SWAPLONG));
+                       MarketInfo(Symbol(), MODE_SWAPLONG));
   comm += StringFormat("\nSwap of the sell order: %G",
-                      MarketInfo(Symbol(), MODE_SWAPSHORT));
+                       MarketInfo(Symbol(), MODE_SWAPSHORT));
   comm += StringFormat("\nSwap calculation method: %G",
-                      MarketInfo(Symbol(), MODE_SWAPTYPE));
+                       MarketInfo(Symbol(), MODE_SWAPTYPE));
   comm += StringFormat("\nProfit calculation mode: %G",
-                      MarketInfo(Symbol(), MODE_PROFITCALCMODE));
+                       MarketInfo(Symbol(), MODE_PROFITCALCMODE));
   comm += StringFormat("\nMargin calculation mode: %G",
-                      MarketInfo(Symbol(), MODE_MARGINCALCMODE));
+                       MarketInfo(Symbol(), MODE_MARGINCALCMODE));
   comm += StringFormat("\nInitial margin requirements for 1 lot: %G",
-                      MarketInfo(Symbol(), MODE_MARGININIT));
+                       MarketInfo(Symbol(), MODE_MARGININIT));
   comm +=
       StringFormat("\nMargin to maintain open orders calculated for 1 lot: %G",
                    MarketInfo(Symbol(), MODE_MARGINMAINTENANCE));
   comm += StringFormat("\nHedged margin calculated for 1 lot: %G",
-                      MarketInfo(Symbol(), MODE_MARGINHEDGED));
+                       MarketInfo(Symbol(), MODE_MARGINHEDGED));
   comm += StringFormat("\nFree margin required to open 1 lot for buying: %G",
-                      MarketInfo(Symbol(), MODE_MARGINREQUIRED));
+                       MarketInfo(Symbol(), MODE_MARGINREQUIRED));
   comm += StringFormat("\nOrder freeze level in points: %G",
-                      MarketInfo(Symbol(), MODE_FREEZELEVEL));
+                       MarketInfo(Symbol(), MODE_FREEZELEVEL));
   comm += StringFormat("\nAllowed using OrderCloseBy(): %G",
-                      MarketInfo(Symbol(), MODE_CLOSEBY_ALLOWED));
+                       MarketInfo(Symbol(), MODE_CLOSEBY_ALLOWED));
   bool spreadfloat = SymbolInfoInteger(Symbol(), SYMBOL_SPREAD_FLOAT);
   comm += StringFormat("\nSpread %s = %I64d points",
-                      spreadfloat ? "floating" : "fixed",
-                      SymbolInfoInteger(Symbol(), SYMBOL_SPREAD));
+                       spreadfloat ? "floating" : "fixed",
+                       SymbolInfoInteger(Symbol(), SYMBOL_SPREAD));
   double ask = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
   double bid = SymbolInfoDouble(Symbol(), SYMBOL_BID);
   comm += "\nCalculated spread = " + getSpreadPoints() + " points";
@@ -261,20 +263,18 @@ int OrderSendHidden(string symbol, int cmd, double volume, double price,
   return orderNumber;
 }
 
-template<typename E>
-int EnumToArray(E dummy, int &values[], const int start = INT_MIN, const int stop = INT_MAX)
-{
+template <typename E>
+int EnumToArray(E dummy, int &values[], const int start = INT_MIN,
+                const int stop = INT_MAX) {
   string t = typename(E) + "::";
   int length = StringLen(t);
-  
+
   ArrayResize(values, 0);
   int count = 0;
-  
-  for(int i = start; i < stop && !IsStopped(); i++)
-  {
+
+  for (int i = start; i < stop && !IsStopped(); i++) {
     E e = (E)i;
-    if(StringCompare(StringSubstr(EnumToString(e), 0, length), t) != 0)
-    {
+    if (StringCompare(StringSubstr(EnumToString(e), 0, length), t) != 0) {
       ArrayResize(values, count + 1);
       values[count++] = i;
     }
@@ -282,34 +282,40 @@ int EnumToArray(E dummy, int &values[], const int start = INT_MIN, const int sto
   return count;
 }
 
-void calculateBetterTransactionTime(){
-  if(!countPeriods){
+void calculateBetterTransactionTime() {
+  if (!countPeriods) {
     ENUM_TIMEFRAMES periodList;
     countPeriods = EnumToArray(periodList, allPeriods, PERIOD_M1, longWork);
   }
   PrintLog("Spread: " + getSpreadPoints());
   PrintLog("Count Periods: " + countPeriods);
-  int EvaluatePeriods = 10, diferencePoints = 0, actionValue = getSpreadPoints() * pareto;
-  double higthMa, lowMa, toPoints = MarketInfo(Symbol(), MODE_TICKVALUE) * MarketInfo(Symbol(), MODE_TICKSIZE);
-  for(int i = 0; i < countPeriods; i++)
-  {
-    //Print("Period ", i, " ", EnumToString((ENUM_TIMEFRAMES)allPeriods[i]), "=", allPeriods[i]);
-    higthMa = iMA(Symbol(), allPeriods[i], EvaluatePeriods, 0, MODE_EMA, PRICE_HIGH, 0);
-    lowMa = iMA(Symbol(), allPeriods[i], EvaluatePeriods, 0, MODE_EMA, PRICE_LOW, 0);
+  int EvaluatePeriods = 10, diferencePoints = 0,
+      actionValue = getSpreadPoints() * pareto;
+  double higthMa, lowMa, toPoints = MarketInfo(Symbol(), MODE_TICKVALUE) *
+                                    MarketInfo(Symbol(), MODE_TICKSIZE);
+  for (int i = 0; i < countPeriods; i++) {
+    // Print("Period ", i, " ", EnumToString((ENUM_TIMEFRAMES)allPeriods[i]),
+    // "=", allPeriods[i]);
+    higthMa = iMA(Symbol(), allPeriods[i], EvaluatePeriods, 0, MODE_EMA,
+                  PRICE_HIGH, 0);
+    lowMa = iMA(Symbol(), allPeriods[i], EvaluatePeriods, 0, MODE_EMA,
+                PRICE_LOW, 0);
     diferencePoints = (higthMa - lowMa) / toPoints;
-    if(!diferencePoints)
+    if (!diferencePoints)
       continue;
-    //PrintLog(actionValue + "->" + actionValue/pareto + "->" + diferencePoints + "->" + EnumToString((ENUM_TIMEFRAMES)allPeriods[i]));
-    if(!shortWork && diferencePoints >= actionValue){
+    // PrintLog(actionValue + "->" + actionValue/pareto + "->" + diferencePoints
+    // + "->" + EnumToString((ENUM_TIMEFRAMES)allPeriods[i]));
+    if (!shortWork && diferencePoints >= actionValue) {
       shortWork = allPeriods[i];
-      //PrintLog("Short");
+      // PrintLog("Short");
       continue;
     }
-    if(diferencePoints >= (getSpreadPoints() / pareto)){
+    if (diferencePoints >= (getSpreadPoints() / pareto)) {
       longWork = allPeriods[i];
-      //PrintLog("Long");
+      // PrintLog("Long");
       break;
     }
   }
-  PrintLog("Period: work="+ EnumToString((ENUM_TIMEFRAMES)shortWork) + ", monitor=" + EnumToString((ENUM_TIMEFRAMES)longWork));
+  PrintLog("Period: work=" + EnumToString((ENUM_TIMEFRAMES)shortWork) +
+           ", monitor=" + EnumToString((ENUM_TIMEFRAMES)longWork));
 }

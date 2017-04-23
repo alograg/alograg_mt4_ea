@@ -34,7 +34,7 @@ void FreeDayNigth(double GapRange = 5, double SL_Factor = 1,
   bool canBuy = CurrOpen > PrevClose;
   bool canSell = CurrOpen < PrevClose;
   //---- TRADE
-  Print("FreeDayNigth: buy ("+ canBuy + "), sell ("+ canSell +")");
+  Print("FreeDayNigth: buy (" + canBuy + "), sell (" + canSell + ")");
   if (canBuy) {
     Ticket = OrderSendReliable(Symbol(), OP_BUY, gls, Ask, 3, 0, 0,
                                FreeDayNigthBuyComment, FreeDayNigthMagicBuy, 0,
