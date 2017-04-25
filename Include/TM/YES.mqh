@@ -195,9 +195,8 @@ void yesProcess() {
           }
           if (OrderLossPip >= OrderHiddenSL &&
               OrderArray[OrderArrayIdx][13] == 0) {
-            OrderArray[OrderArrayIdx][13] = OrderTicket();
             PrintLog("For Ticket: " + OrderTicket());
-            OrderCloseStatus =
+            OrderArray[OrderArrayIdx][13] =
                 OrderSendReliable(Symbol(), OP_SELL, OrderLots() * 1.5, Bid, 3,
                                   0, 0, YesComment, MagicNumber, 0, Red);
             return;
@@ -268,9 +267,8 @@ void yesProcess() {
           }
           if (OrderLossPip >= OrderHiddenSL &&
               OrderArray[OrderArrayIdx][13] == 0) {
-            OrderArray[OrderArrayIdx][13] = OrderTicket();
             PrintLog("For Ticket: " + OrderTicket());
-            OrderCloseStatus =
+            OrderArray[OrderArrayIdx][13] =
                 OrderSendReliable(Symbol(), OP_BUY, OrderLots() * 1.5, Ask, 3,
                                   0, 0, YesComment, MagicNumber, 0, Green);
             return;
@@ -281,6 +279,39 @@ void yesProcess() {
       // PrintLog("==================================");
     } // Order Select
   }   // For Loop
+  TempNumberOfOrders = ArraySize(OrderArray)/14;
+  for (i = TempNumberOfOrders - 1; i >= 0; i--) {
+    if(!OrderArray[i][13] || OrderArray[i][0] == OrderArray[i][13])
+      continue;
+    PrintLog("Order: " + OrderArray[i][0] + ">"+ OrderArray[i][13]);
+    if (OrderSelect(OrderArray[i][13], SELECT_BY_TICKET , MODE_HISTORY)) {
+      if (OrderSymbol() != Symbol() || !OrderCloseTime())
+        continue;
+      PrintLog("Order: " + OrderArray[i][13] + ":"+ OrderCloseTime());
+      if(OrderSelect(OrderArray[i][0], SELECT_BY_TICKET , MODE_TRADES)){
+        if(OrderCloseTime())
+          continue;
+        if(MathAbs(TimeDayOfYear(OrderOpenTime())-TimeDayOfYear(time0))<7)
+          continue;
+        PrintLog("Order: " + OrderArray[i][0] + ":"+ OrderTicket());
+        OrderLongShort = OrderArray[OrderArrayIdx][2];
+        if (OrderLongShort == OP_BUY) {
+          OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
+                                                  Bid, slippage, Red);
+        }
+        if (OrderLongShort == OP_SELL) {
+          OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
+                                                  Ask, slippage, Red);
+        }
+        if (OrderCloseStatus) {
+          ResetOrderArray(OrderArrayIdx);
+          PurgeElement(OrderArrayIdx);
+          //OrderArray[100][13];
+          break;
+        }
+      }
+    }
+  }
   TotalNumberOfOrders = OrdersTotal();
 }
 void ResetOrderArray(int idx) {

@@ -92,7 +92,7 @@ double getLotSize(double Risk = 2, double SL = 0) {
   double MaxLot = 1.5;
   double MinLot = MarketInfo(Symbol(), MODE_MINLOT);
   double StopLoss = SL / Point / 10;
-  double Size = Risk / 100 * getUnBlocked() / 10 / StopLoss;
+  double Size = Risk / 100 * getUnBlocked() / 10 / MathMax(StopLoss,1);
   if (Size <= MinLot)
     Size = MinLot;
   if (Size >= MaxLot)
