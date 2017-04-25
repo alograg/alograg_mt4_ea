@@ -47,9 +47,9 @@ void MorningWork() {
       iMACD(Symbol(), shortWork, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 0);
   SignalPrevious =
       iMACD(Symbol(), shortWork, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 1);
-  bool canBuy = MacdCurrent > SignalCurrent && MacdPrevious < SignalPrevious &&
+  bool canBuy = MacdCurrent > SignalCurrent && MacdPrevious <= SignalPrevious &&
                 TendanceMacd < 0 && TendanceSignalPrevious < TendanceSignal;
-  bool canSell = MacdCurrent < SignalCurrent && MacdPrevious > SignalPrevious &&
+  bool canSell = MacdCurrent < SignalCurrent && MacdPrevious >= SignalPrevious &&
                  TendanceMacd > 0 && TendanceSignalPrevious > TendanceSignal;
   // Print("MorningWork: buy ("+ canBuy + "), sell ("+ canSell +")");
   //--- check for long position (BUY) possibility
@@ -58,8 +58,7 @@ void MorningWork() {
                                0, MorningWorkComment, MagicNumber, 0, Green);
   }
   //--- check for short position (SELL) possibility
-  if (MacdCurrent < SignalCurrent && MacdPrevious > SignalPrevious &&
-      TendanceMacd > 0 && TendanceSignalPrevious > TendanceSignal) {
+  if (canSell) {
     ticket = OrderSendReliable(Symbol(), OP_SELL, lotsForTransaction, Bid, 3, 0,
                                0, MorningWorkComment, MagicNumber, 0, Red);
   }

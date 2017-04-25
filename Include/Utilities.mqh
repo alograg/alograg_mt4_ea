@@ -46,8 +46,8 @@ int getSlippage() {
   return slippage;
 }
 double getSpread() { return Ask - Bid; }
-double getSpreadPoints() {
-  return (int)MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
+int getSpreadPoints() {
+  return MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
 }
 // Maxima perdida permitida
 double getMaxLost() {
@@ -81,21 +81,18 @@ double getUnBlocked() {
   return NormalizeDouble(unBlocked / 5, 2);
 }
 // Tamaño del lote según dispocición
-double getLotSize(double Risk = 2, double SL = 0) {
+double getLotSize(double Risk = 2) {
   if (AccountFreeMargin() < AccountBalance() * 0.2)
     return 0.0;
-  double lastWithDrawal = 0.0;
-  if (SL == 0)
-    SL = (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) + (Spread * Point);
-  else
-    SL *= (iATR(Symbol(), PERIOD_M1, 15, 1) * Risk) + (Spread * Point);
   double MaxLot = 1.5;
-  double MinLot = MarketInfo(Symbol(), MODE_MINLOT);
+  double MinLot = 0.01;
+  double ATR = iATR(Symbol(), longWork, 13, 1);
+  double SL = (ATR * 2) + getSpreadPoints();
   double StopLoss = SL / Point / 10;
-  double Size = Risk / 100 * getUnBlocked() / 10 / MathMax(StopLoss,1);
-  if (Size <= MinLot)
+  double Size = Risk / 100 * getUnBlocked() / 10 / StopLoss;
+  if (Size < MinLot)
     Size = MinLot;
-  if (Size >= MaxLot)
+  if (Size > MaxLot)
     Size = MaxLot;
   return (NormalizeDouble(Size, 2));
 }

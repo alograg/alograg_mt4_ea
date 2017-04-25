@@ -3,7 +3,7 @@
 |  Copyright 2017, Alograg |
 |   https://www.alograg.me |
 +-------------------------*/
-#define propVersion "3.16"
+#define propVersion "3.17"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -71,7 +71,7 @@ void OnTimer() { initUtilsGlobals(); }
 +-------------------------*/
 void doStrategies() {
   if (AccountFreeMargin() <
-      MathMax(firstBalance / 2, AccountBalance() - firstBalance))
+      MathMax(firstBalance / 2, AccountFreeMargin() - firstBalance))
     return;
   MorningWork();
   FreeDayNigth();
