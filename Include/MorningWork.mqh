@@ -1,8 +1,8 @@
-/*-----------------------------------------------------------------+
-|                                                   MorningWork.mqh |
-|                                          Copyright 2017, Alograg |
-|                                           https://www.alograg.me |
-+-----------------------------------------------------------------*/
+/*------------------------+
+|         MorningWork.mqh |
+| Copyright 2017, Alograg |
+|  https://www.alograg.me |
++------------------------*/
 
 #property copyright "Copyright 2017, Alograg"
 #property link "https://www.alograg.me"
@@ -11,7 +11,6 @@
 
 #include "Utilities.mqh"
 #include "OrderReliable_2011.01.07.mqh"
-#include "CloseAllProfited.mqh"
 
 string MorningWorkComment = eaName + ": MorningWork";
 double TempArray[];

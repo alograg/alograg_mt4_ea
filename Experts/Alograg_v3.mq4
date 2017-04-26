@@ -1,9 +1,9 @@
-/*-------------------------+
-|           Alograg v3.mq4 |
-|  Copyright 2017, Alograg |
-|   https://www.alograg.me |
-+-------------------------*/
-#define propVersion "3.17"
+/*------------------------+
+|          Alograg v3.mq4 |
+| Copyright 2017, Alograg |
+|  https://www.alograg.me |
++------------------------*/
+#define propVersion "3.20"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -17,11 +17,13 @@
 #include "..\Include\TradeManager.mqh"
 #include "..\Include\MorningWork.mqh"
 #include "..\Include\FreeDayNigth.mqh"
-#include "..\Include\WeekendGap.mqh"
+//#include "..\Include\WeekendGap.mqh"
+#include "..\Include\FlowTheLider.mqh"
 // Externos
 // extern int name = value; //Descipción
 extern double firstBalance = 200.00;   // Monto inicial
 extern double incrementPerWeek = 1.50; // Incremento de protección
+extern bool strategiesActivate = TRUE; // Estrategias Activadas
 // Constantes
 double pareto = 0.8;
 double toDayMoney = 0.0;
@@ -70,11 +72,14 @@ void OnTimer() { initUtilsGlobals(); }
 | Ejecuta las estrategias  |
 +-------------------------*/
 void doStrategies() {
+  if(!strategiesActivate)
+    return;
   if (AccountFreeMargin() <
       MathMax(firstBalance / 2, AccountFreeMargin() - firstBalance))
     return;
   MorningWork();
   FreeDayNigth();
+  FlowTheLider();
   // WeekendGap();
 }
 /*----------------------------+
