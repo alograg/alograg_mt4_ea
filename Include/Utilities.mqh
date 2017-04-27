@@ -209,29 +209,10 @@ void SendSimbolParams() {
   comm += StringFormat("\nSpread value in points: %G", getSpreadPoints());
   comm += StringFormat("\nStop level in points: %G",
                        MarketInfo(Symbol(), MODE_STOPLEVEL));
-  comm += StringFormat("\nTick size in points: %G",
-                       MarketInfo(Symbol(), MODE_TICKSIZE));
   comm += StringFormat("\nSwap of the buy order: %G",
                        MarketInfo(Symbol(), MODE_SWAPLONG));
   comm += StringFormat("\nSwap of the sell order: %G",
                        MarketInfo(Symbol(), MODE_SWAPSHORT));
-  comm += StringFormat("\nSwap calculation method: %G",
-                       MarketInfo(Symbol(), MODE_SWAPTYPE));
-  comm += StringFormat("\nProfit calculation mode: %G",
-                       MarketInfo(Symbol(), MODE_PROFITCALCMODE));
-  comm += StringFormat("\nMargin calculation mode: %G",
-                       MarketInfo(Symbol(), MODE_MARGINCALCMODE));
-  comm += StringFormat("\nInitial margin requirements for 1 lot: %G",
-                       MarketInfo(Symbol(), MODE_MARGININIT));
-  comm +=
-      StringFormat("\nMargin to maintain open orders calculated for 1 lot: %G",
-                   MarketInfo(Symbol(), MODE_MARGINMAINTENANCE));
-  comm += StringFormat("\nHedged margin calculated for 1 lot: %G",
-                       MarketInfo(Symbol(), MODE_MARGINHEDGED));
-  comm += StringFormat("\nFree margin required to open 1 lot for buying: %G",
-                       MarketInfo(Symbol(), MODE_MARGINREQUIRED));
-  comm += StringFormat("\nOrder freeze level in points: %G",
-                       MarketInfo(Symbol(), MODE_FREEZELEVEL));
   comm += StringFormat("\nAllowed using OrderCloseBy(): %G",
                        MarketInfo(Symbol(), MODE_CLOSEBY_ALLOWED));
   bool spreadfloat = SymbolInfoInteger(Symbol(), SYMBOL_SPREAD_FLOAT);
