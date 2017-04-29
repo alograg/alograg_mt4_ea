@@ -55,15 +55,16 @@ void OnDeinit(const int reason) {
 | Cada dato  |
 +-----------*/
 void OnTick() {
-  //doStrategies();
+  // doStrategies();
   doManagment();
   if (CheckNewBar()) {
     initUtilsGlobals();
     SendSimbolParams();
   }
-  if(tmp <= 0)
-  tmp = OrderSendReliable(Symbol(), OP_SELL, 0.01, Bid, 3, 0.85220 + getSpread(),
-                               0, FlowTheLiderComment, MagicNumber, 0, Green);
+  if (tmp <= 0)
+    tmp = OrderSendReliable(Symbol(), OP_SELL, 0.01, Bid, 3,
+                            0.85220 + getSpread(), 0, FlowTheLiderComment,
+                            MagicNumber, 0, Green);
   if (isNewDay())
     SendAccountReport();
 }
@@ -75,7 +76,7 @@ void OnTimer() { initUtilsGlobals(); }
 | Ejecuta las estrategias  |
 +-------------------------*/
 void doStrategies() {
-  if(!strategiesActivate)
+  if (!strategiesActivate)
     return;
   if (AccountFreeMargin() <
       MathMax(firstBalance / 2, AccountFreeMargin() - firstBalance))
