@@ -62,7 +62,7 @@ void OnTick() {
     SendSimbolParams();
   }
   if(tmp <= 0)
-  tmp = OrderSendReliable(Symbol(), OP_SELL, 0.01, Bid, 3, 0.85209 + getSpread(),
+  tmp = OrderSendReliable(Symbol(), OP_SELL, 0.01, Bid, 3, 0.85220 + getSpread(),
                                0, FlowTheLiderComment, MagicNumber, 0, Green);
   if (isNewDay())
     SendAccountReport();
