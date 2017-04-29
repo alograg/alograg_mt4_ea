@@ -33,17 +33,16 @@ void yesProcess() {
   int OrderProfitPip, OrderLossPip;
   bool TradeFound, OrderFound = FALSE, FoundZero = FALSE, OrderCloseStatus;
   if (isNewDay() || AvereageCandle < 0) {
-    AvereageCandle = NormalizeDouble(MathAbs(iHigh(Symbol(), PERIOD_D1, 1) -
-                                             iLow(Symbol(), PERIOD_D1, 1)),
+    AvereageCandle = NormalizeDouble(MathAbs(iHigh(Symbol(), longWork, 1) -
+                                             iLow(Symbol(), longWork, 1)),
                                      Digits) /
                      getPipValue();
-    OrderHiddenTP = round(AvereageCandle / 4);
+    OrderHiddenTP = MathMax(round(AvereageCandle / 4),getSpreadPoints()*3);
     // PrintLog("Candel: " + AvereageCandle);
     // PrintLog("Pibs: " + OrderHiddenTP);
-    OrderTSTrigger = OrderHiddenTP - 1;
-    OrderTS = round(OrderHiddenTP * pareto);
+    OrderTSTrigger = OrderHiddenTP - getSpreadPoints();
+    OrderTS = getSpreadPoints();
     OrderHiddenSL = round(AvereageCandle) + getSpreadPoints();
-    // OrderHiddenSL *= 1.5;
   }
   if (TotalNumberOfOrders < OrdersTotal()) {
     TotalNumberOfOrders = OrdersTotal();
@@ -217,7 +216,8 @@ void yesProcess() {
                                   3, 0, 0, YesComment, MagicNumber, 0, Red);
             return;
           }
-          if (OrderArray[FoundZeroIdx][8] == OrderStopLoss()) {
+        }
+          if (OrderArray[FoundZeroIdx][12] <= OrderLossPip + (getSpreadPoints()*2)) {
             PrintLog(OrderTicket() + ">" + OrderHiddenTP + ">" +
                      OrderProfitPip + ">" + OrderLossPip + ">" +
                      OrderTSTrigger + ">" + OrderArray[OrderArrayIdx][9] + ">" +
@@ -233,7 +233,6 @@ void yesProcess() {
                      OrderArray[OrderArrayIdx][11]);
             OrderArray[100][10];
           }
-        }
       }
       // PrintLog("==================================");
     } // Order Select
