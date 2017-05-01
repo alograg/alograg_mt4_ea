@@ -219,6 +219,12 @@ void SendSimbolParams() {
   double ask = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
   double bid = SymbolInfoDouble(Symbol(), SYMBOL_BID);
   comm += "\nCalculated spread = " + getSpreadPoints() + " points";
+  comm += "\nPeriod: work=" + EnumToString((ENUM_TIMEFRAMES)shortWork) +
+          ", monitor=" + EnumToString((ENUM_TIMEFRAMES)longWork);
+  comm += "\nTS:" + OrderTS;
+  comm += "\nTST:" + OrderTSTrigger;
+  comm += "\nTP:" + OrderHiddenTP;
+  comm += "\nSL:" + OrderHiddenSL;
   Comment(comm);
 }
 void PrintLog(string txt) {
