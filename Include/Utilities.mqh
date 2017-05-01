@@ -86,10 +86,7 @@ double getLotSize(double Risk = 2) {
     return 0.0;
   double MaxLot = 1.5;
   double MinLot = 0.01;
-  double ATR = iATR(Symbol(), longWork, 13, 1);
-  double SL = (ATR * 2) + getSpreadPoints();
-  double StopLoss = SL / Point / 10;
-  double Size = Risk / 100 * getUnBlocked() / 10 / StopLoss;
+  double Size = AccountFreeMargin() / (10000 * Risk);
   if (Size < MinLot)
     Size = MinLot;
   if (Size > MaxLot)
