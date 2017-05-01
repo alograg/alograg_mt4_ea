@@ -33,11 +33,11 @@ void MorningWork() {
   if (lotsForTransaction <= 0)
     return;
   TendanceMacd =
-      iMACD(Symbol(), longWork, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 0);
+      iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 0);
   TendanceSignal =
       iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 0);
   TendanceMacdPrevious =
-      iMACD(Symbol(), longWork, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 1);
+      iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 1);
   TendanceSignalPrevious =
       iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 1);
   MacdPrevious =

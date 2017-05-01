@@ -25,22 +25,22 @@ void FlowTheLider() {
   if (lotsForTransaction <= 0)
     return;
   double SignalCurrent = NormalizeDouble(
-      iMACD(Symbol(), shortWork, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 0),
+      iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 0),
       Digits);
   if (MathAbs(SignalCurrent) > (getPipValue() * 2))
     return;
 
   double SignalPrevious1 = NormalizeDouble(
-      iMACD(Symbol(), shortWork, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 1),
+      iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 1),
       Digits);
   double SignalPrevious2 = NormalizeDouble(
-      iMACD(Symbol(), shortWork, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 2),
+      iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 2),
       Digits);
   double SignalPrevious3 = NormalizeDouble(
-      iMACD(Symbol(), shortWork, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 3),
+      iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 3),
       Digits);
   double SignalPrevious4 = NormalizeDouble(
-      iMACD(Symbol(), shortWork, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 4),
+      iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 4),
       Digits);
 
   bool canBuy =

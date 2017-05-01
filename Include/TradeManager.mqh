@@ -9,8 +9,18 @@
 #property version propVersion
 #property strict
 // Incluciones
+#include "CloseAllProfited.mqh"
+#include "TM\InversAllNegative.mqh"
 #include "TM\YES.mqh"
 
 // Constantes
+bool ianWork = FALSE;
+
 void tmInit() { yesInit(); }
-void tmEvent() { yesProcess(); }
+void tmEvent() {
+  yesProcess();
+  if (ianWork && CheckNewBar()) {
+    InversAllNegative();
+    ianWork = FALSE;
+  }
+}

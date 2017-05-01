@@ -38,21 +38,13 @@ int CloseOneIfProfit(int id, int by = SELECT_BY_POS, string comment = NULL,
   int hasClose;
   double profit = NormalizeDouble(
       OrderProfit() + OrderCommission() + OrderSwap() - minCents, 2);
-  if (profit > 0.01 || profit < maxLost) {
+  if (profit > 0.01) {
     Print("can close: ", id);
     if (OrderType() == OP_BUY) {
-      if (!IsTesting())
-        hasClose =
-            OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
-      else
-        hasClose = OrderClose(OrderTicket(), OrderLots(), Bid, 4, White);
+      hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
     }
     if (OrderType() == OP_SELL) {
-      if (!IsTesting())
-        hasClose =
-            OrderCloseReliable(OrderTicket(), OrderLots(), Ask, 4, White);
-      else
-        hasClose = OrderClose(OrderTicket(), OrderLots(), Ask, 4, White);
+      hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Ask, 4, White);
     }
 
     return hasClose ? 1 : 0;
@@ -66,18 +58,10 @@ void CloseAll(string comment = NULL) {
     if (OrderSymbol() != Symbol() && !isFornComment(comment, OrderComment()))
       continue;
     if (OrderType() == OP_BUY) {
-      if (!IsTesting())
-        hasClose =
-            OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
-      else
-        hasClose = OrderClose(OrderTicket(), OrderLots(), Bid, 4, White);
+      hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
     }
     if (OrderType() == OP_SELL) {
-      if (!IsTesting())
-        hasClose =
-            OrderCloseReliable(OrderTicket(), OrderLots(), Ask, 4, White);
-      else
-        hasClose = OrderClose(OrderTicket(), OrderLots(), Ask, 4, White);
+      hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Ask, 4, White);
     }
   }
 }

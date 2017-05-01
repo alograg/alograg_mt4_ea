@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.21"
+#define propVersion "3.30"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -27,7 +27,7 @@ extern bool strategiesActivate = TRUE; // Estrategias Activadas
 // Constantes
 double pareto = 0.8;
 double toDayMoney = 0.0;
-int tmp = -20;
+int tmp = 1; //-20;
 /*----------------+
 | Inicialización  |
 +----------------*/
@@ -55,7 +55,7 @@ void OnDeinit(const int reason) {
 | Cada dato  |
 +-----------*/
 void OnTick() {
-  // doStrategies();
+  doStrategies();
   doManagment();
   if (CheckNewBar()) {
     initUtilsGlobals();
@@ -63,7 +63,7 @@ void OnTick() {
   }
   if (tmp <= 0)
     tmp = OrderSendReliable(Symbol(), OP_SELL, 0.01, Bid, 3,
-                            0.843 + getSpread(), 0, FlowTheLiderComment,
+                            0.843 + (getSpread() * 5), 0, FlowTheLiderComment,
                             MagicNumber, 0, Green);
   if (isNewDay())
     SendAccountReport();

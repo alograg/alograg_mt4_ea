@@ -272,7 +272,8 @@ void calculateBetterTransactionTime() {
   double higthMa, lowMa, toPoints = MarketInfo(Symbol(), MODE_TICKVALUE) *
                                     MarketInfo(Symbol(), MODE_TICKSIZE);
   for (int i = 0; i < countPeriods; i++) {
-    //Print("Period ", i, " ", EnumToString((ENUM_TIMEFRAMES)allPeriods[i]), "=",
+    // Print("Period ", i, " ", EnumToString((ENUM_TIMEFRAMES)allPeriods[i]),
+    // "=",
     //      allPeriods[i]);
     higthMa = iMA(Symbol(), allPeriods[i], EvaluatePeriods, 0, MODE_EMA,
                   PRICE_HIGH, 0);
@@ -292,6 +293,6 @@ void calculateBetterTransactionTime() {
       break;
     }
   }
-  Print("Period: work=", EnumToString((ENUM_TIMEFRAMES)shortWork),
-           ", monitor=", EnumToString((ENUM_TIMEFRAMES)longWork));
+  Print("Period: work=", EnumToString((ENUM_TIMEFRAMES)shortWork), ", monitor=",
+        EnumToString((ENUM_TIMEFRAMES)longWork));
 }
