@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.36"
+#define propVersion "3.40"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -20,6 +20,7 @@
 //#include "..\Include\WeekendGap.mqh"
 #include "..\Include\FlowTheLider.mqh"
 #include "..\Include\TwoWays.mqh"
+#include "..\Include\CrossMover.mqh"
 // Externos
 // extern int name = value; //Descipción
 extern double firstBalance = 200.00;   // Monto inicial
@@ -86,6 +87,7 @@ void doStrategies() {
   FreeDayNigth();
   FlowTheLider();
   TwoWays();
+  CrossMover();
   // WeekendGap();
 }
 /*----------------------------+
