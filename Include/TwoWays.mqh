@@ -10,19 +10,37 @@
 #property strict
 
 string TwoWaysComment = eaName + ": TwoWays";
-int sellOption, buyOption;
+int sellOption, buyOption, cleanOptions;
 
 void TwoWays() {
-  if (!CheckNewBar())
-    return;
   if (sellOption || buyOption) {
+    cleanOptions = 0;
     int currentOrder = OrderSelect(sellOption, SELECT_BY_TICKET);
     int sellOptionTime = OrderCloseTime();
+    double sellOptionProfit = OrderProfit();
     currentOrder = OrderSelect(buyOption, SELECT_BY_TICKET);
     int buyOptionTime = OrderCloseTime();
+    double buyOptionProfit = OrderProfit();
+    if (!buyOptionTime && sellOptionTime) {
+      cleanOptions =
+          CloseOneIfProfit(buyOption, SELECT_BY_TICKET, NULL, false, 0.02);
+    }
+    if (buyOptionTime && !sellOptionTime) {
+      cleanOptions =
+          CloseOneIfProfit(sellOption, SELECT_BY_TICKET, NULL, false, 0.02);
+    }
+    if (cleanOptions) {
+      buyOption = 0;
+      sellOption = 0;
+      return;
+    }
     if (!sellOptionTime || !buyOptionTime)
       return;
   }
+  if (!CheckNewBar())
+    return;
+  if (!(TimeHour(Time[0]) == 7 && TimeMinute(Time[0]) == 0 && CheckNewBar()))
+    return;
   double lotsForTransaction = getLotSize();
   if (lotsForTransaction <= 0)
     return;
