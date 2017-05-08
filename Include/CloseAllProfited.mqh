@@ -19,7 +19,7 @@ void CloseAllProfited(string comment = NULL, bool force = false,
     iClosed += CloseOneIfProfit(indexToClose, SELECT_BY_POS, comment, force);
   }
   // if (IsTesting())
-  // Print("Close: ", iClosed, " closed of ", TotalToClose);
+  // PrintLog("Close: ", iClosed, " closed of ", TotalToClose);
 }
 
 int CloseOneIfProfit(int id, int by = SELECT_BY_POS, string comment = NULL,
@@ -28,18 +28,14 @@ int CloseOneIfProfit(int id, int by = SELECT_BY_POS, string comment = NULL,
     return 0;
   if (OrderSymbol() != Symbol())
     return 0;
-  Print("is simbol: ", id);
   if (!isFornComment(comment, OrderComment()))
     return 0;
-  Print("is comment: ", id);
   if (OrderTakeProfit() <= 0 && force)
     return 0;
-  Print("hasProffit: ", id);
   int hasClose;
   double profit = NormalizeDouble(
       OrderProfit() + OrderCommission() + OrderSwap() - minCents, 2);
   if (profit > 0.01) {
-    Print("can close: ", id);
     if (OrderType() == OP_BUY) {
       hasClose = OrderCloseReliable(OrderTicket(), OrderLots(), Bid, 4, White);
     }
