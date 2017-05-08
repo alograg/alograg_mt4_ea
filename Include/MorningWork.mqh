@@ -46,11 +46,16 @@ void MorningWork() {
       iMACD(Symbol(), shortWork, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 0);
   SignalPrevious =
       iMACD(Symbol(), shortWork, 12, 26, 9, PRICE_TYPICAL, MODE_SIGNAL, 1);
-  bool canBuy = MacdCurrent > SignalCurrent && MacdPrevious <= SignalPrevious &&
-                TendanceMacd < 0 && TendanceSignalPrevious < TendanceSignal;
+  bool canBuy = MacdCurrent > SignalCurrent &&
+                MacdPrevious <= SignalPrevious &&
+                TendanceMacd < 0 &&
+                TendanceSignalPrevious < TendanceSignal &&
+                canOrder(OP_BUY);
   bool canSell = MacdCurrent < SignalCurrent &&
-                 MacdPrevious >= SignalPrevious && TendanceMacd > 0 &&
-                 TendanceSignalPrevious > TendanceSignal;
+                 MacdPrevious >= SignalPrevious &&
+                 TendanceMacd > 0 &&
+                 TendanceSignalPrevious > TendanceSignal &&
+                 canOrder(OP_SELL);
   // Print("MorningWork: buy ("+ canBuy + "), sell ("+ canSell +")");
   //--- check for long position (BUY) possibility
   if (canBuy) {

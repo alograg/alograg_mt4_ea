@@ -299,3 +299,15 @@ void calculateBetterTransactionTime() {
   Print("Period: work=", EnumToString((ENUM_TIMEFRAMES)shortWork), ", monitor=",
         EnumToString((ENUM_TIMEFRAMES)longWork));
 }
+
+bool canOrder(int type){
+  double margin=0, useValue = Bid;
+  if(type == OP_BUY){
+    useValue = Bid;
+  }
+  if(type == OP_SELL){
+    useValue = Ask;
+  }
+  margin = NormalizeDouble(MathAbs(iHigh(Symbol(), PERIOD_D1, 1) - useValue), Digits) / getPipValue();
+  return margin > (getSpreadPoints() * 3);
+}

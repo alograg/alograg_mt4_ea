@@ -29,7 +29,6 @@ void FlowTheLider() {
       Digits);
   if (MathAbs(SignalCurrent) > (getPipValue() * 2))
     return;
-
   double SignalPrevious1 = NormalizeDouble(
       iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 1),
       Digits);
@@ -42,20 +41,15 @@ void FlowTheLider() {
   double SignalPrevious4 = NormalizeDouble(
       iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 4),
       Digits);
-
-  bool canBuy =
-      SignalCurrent > SignalPrevious1 && SignalPrevious1 > SignalPrevious2 &&
-      SignalPrevious2 > SignalPrevious3 && SignalPrevious3 > SignalPrevious4;
+  bool canBuy = SignalCurrent > SignalPrevious1 && SignalPrevious1 > SignalPrevious2 &&
+                SignalPrevious2 > SignalPrevious3 &&
+                SignalPrevious3 > SignalPrevious4 &&
+                canOrder(OP_BUY);
   bool canSell = SignalCurrent > 0 && SignalCurrent < SignalPrevious1 &&
                  SignalPrevious1 < SignalPrevious2 &&
                  SignalPrevious2 < SignalPrevious3 &&
-                 SignalPrevious3 < SignalPrevious4 && !hasSell;
-  if (canBuy || canSell)
-    Print("FlowTheLider: ", SignalCurrent, ">", SignalPrevious1, ">",
-          SignalPrevious2, ">", SignalPrevious3, ">", SignalPrevious4);
-  /*
-
-*/
+                 SignalPrevious3 < SignalPrevious4 &&
+                 canOrder(OP_SELL);
   //--- check for long position (BUY) possibility
   if (canBuy) {
     ticket = OrderSendReliable(Symbol(), OP_BUY, lotsForTransaction, Ask, 3, 0,
