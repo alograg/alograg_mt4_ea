@@ -49,7 +49,6 @@ void FlowTheLider() {
                  SignalPrevious1 < SignalPrevious2 &&
                  SignalPrevious2 < SignalPrevious3 &&
                  SignalPrevious3 < SignalPrevious4 &&
-                 !hasSell &&
                  canOrder(OP_SELL);
   //--- check for long position (BUY) possibility
   if (canBuy) {

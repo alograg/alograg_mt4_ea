@@ -301,16 +301,20 @@ void calculateBetterTransactionTime() {
 }
 
 bool canOrder(int type){
-  double margin=0, useValue = Bid, useReference;
+  double margin=0, useValue = 0, useReference;
+  if(strategiesLimitBorderUp || strategiesLimitBorderDown){
+    if(strategiesLimitBorderUp && type == OP_BUY){
+      useReference=iHigh(Symbol(), PERIOD_D1, 1);
+      useValue = Bid;
+    }
+    if(strategiesLimitBorderDown && type == OP_SELL){
+        useReference=iLow(Symbol(), PERIOD_D1, 1);
+        useValue = Ask;
+    }
+    if(useValue){
+      margin = NormalizeDouble(MathAbs(useReference - useValue), Digits) / getPipValue();
+      return margin > (getSpreadPoints() * 3);
+    }
+  }
   return true;
-  if(type == OP_BUY){
-    useReference=iHigh(Symbol(), PERIOD_D1, 1);
-    useValue = Bid;
-  }
-  if(type == OP_SELL){
-    useReference=iLow(Symbol(), PERIOD_D1, 1);
-    useValue = Ask;
-  }
-  margin = NormalizeDouble(MathAbs(useReference - useValue), Digits) / getPipValue();
-  return margin > (getSpreadPoints() * 3);
 }

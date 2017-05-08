@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.45"
+#define propVersion "3.50"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -26,6 +26,8 @@
 extern double firstBalance = 200.00;   // Monto inicial
 extern double incrementPerWeek = 1.50; // Incremento de protección
 extern bool strategiesActivate = TRUE; // Estrategias Activadas
+extern bool strategiesLimitBorderUp = FALSE; // Limita el borde superior de compra
+extern bool strategiesLimitBorderDown = FALSE; // Limita el borde superior de compra
 // Constantes
 double pareto = 0.8;
 double toDayMoney = 0.0;
