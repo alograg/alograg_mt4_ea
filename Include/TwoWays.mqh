@@ -17,17 +17,17 @@ void TwoWays() {
     cleanOptions = 0;
     int currentOrder = OrderSelect(sellOption, SELECT_BY_TICKET);
     int sellOptionTime = OrderCloseTime();
-    double sellOptionProfit = OrderProfit();
+    double sellOptionLots = OrderLots();
     currentOrder = OrderSelect(buyOption, SELECT_BY_TICKET);
     int buyOptionTime = OrderCloseTime();
-    double buyOptionProfit = OrderProfit();
+    double buyOptionLots = OrderLots();
     if (!buyOptionTime && sellOptionTime) {
-      cleanOptions =
-          CloseOneIfProfit(buyOption, SELECT_BY_TICKET, NULL, false, 0.02);
+      cleanOptions = CloseOneIfProfit(buyOption, SELECT_BY_TICKET, NULL, false,
+                                      buyOptionLots);
     }
     if (buyOptionTime && !sellOptionTime) {
-      cleanOptions =
-          CloseOneIfProfit(sellOption, SELECT_BY_TICKET, NULL, false, 0.02);
+      cleanOptions = CloseOneIfProfit(sellOption, SELECT_BY_TICKET, NULL, false,
+                                      sellOptionLots);
     }
     if (cleanOptions) {
       buyOption = 0;
