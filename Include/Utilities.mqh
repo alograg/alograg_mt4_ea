@@ -300,19 +300,20 @@ void calculateBetterTransactionTime() {
         EnumToString((ENUM_TIMEFRAMES)longWork));
 }
 
-bool canOrder(int type){
-  double margin=0, useValue = 0, useReference;
-  if(strategiesLimitBorderUp || strategiesLimitBorderDown){
-    if(strategiesLimitBorderUp && type == OP_BUY){
-      useReference=iHigh(Symbol(), PERIOD_D1, 1);
+bool canOrder(int type) {
+  double margin = 0, useValue = 0, useReference;
+  if (strategiesLimitBorderUp || strategiesLimitBorderDown) {
+    if (strategiesLimitBorderUp && type == OP_BUY) {
+      useReference = iHigh(Symbol(), PERIOD_D1, 1);
       useValue = Bid;
     }
-    if(strategiesLimitBorderDown && type == OP_SELL){
-        useReference=iLow(Symbol(), PERIOD_D1, 1);
-        useValue = Ask;
+    if (strategiesLimitBorderDown && type == OP_SELL) {
+      useReference = iLow(Symbol(), PERIOD_D1, 1);
+      useValue = Ask;
     }
-    if(useValue){
-      margin = NormalizeDouble(MathAbs(useReference - useValue), Digits) / getPipValue();
+    if (useValue) {
+      margin = NormalizeDouble(MathAbs(useReference - useValue), Digits) /
+               getPipValue();
       return margin > (getSpreadPoints() * 3);
     }
   }

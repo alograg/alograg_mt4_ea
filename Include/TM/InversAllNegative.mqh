@@ -13,24 +13,28 @@
 string IanComment = eaName + ": IAN-TM";
 
 void InversAllNegative() {
+  if (!CheckNewBar())
+    return;
+  if (!(TimeHour(Time[0]) == 6 && TimeMinute(Time[0]) == 30 && CheckNewBar()))
+    return;
   int TotalToClose = OrdersTotal(), ticket;
-  double toSell = 0, toBuy = 0;
+  double lots = 0, money = 0;
   for (int indexToClose = totalOrders - 1; 0 <= indexToClose; indexToClose--) {
     ticket = OrderSelect(indexToClose, SELECT_BY_POS);
-    double profit =
+    money +=
         NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap(), 2);
-    if (0 > profit) {
-      if (OrderType() == OP_BUY)
-        toSell += OrderLots();
-      if (OrderType() == OP_SELL)
-        toBuy += OrderLots();
-    }
+    if (OrderType() == OP_BUY)
+      lots += OrderLots();
+    if (OrderType() == OP_SELL)
+      lots -= OrderLots();
   }
-  PrintLog(IanComment + ": Buy " + toBuy + " Sell " + toSell);
-  if (toBuy)
-    ticket = OrderSendReliable(Symbol(), OP_BUY, toBuy, Ask, 3, 0, 0,
+  PrintLog(IanComment + ": Lots " + lots + " money " + money);
+  if (0 < money)
+    return;
+  if (0 > lots)
+    ticket = OrderSendReliable(Symbol(), OP_BUY, MatAbs(lots), Ask, 3, 0, 0,
                                IanComment, MagicNumber, 0, Green);
-  if (toSell)
-    ticket = OrderSendReliable(Symbol(), OP_SELL, toSell, Bid, 3, 0, 0,
+  if (0 < lots)
+    ticket = OrderSendReliable(Symbol(), OP_SELL, MatAbs(lots), Bid, 3, 0, 0,
                                IanComment, toSell, 0, Green);
 }

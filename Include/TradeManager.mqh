@@ -14,13 +14,9 @@
 #include "TM\YES.mqh"
 
 // Constantes
-bool ianWork = FALSE;
 
 void tmInit() { yesInit(); }
 void tmEvent() {
   yesProcess();
-  if (ianWork && CheckNewBar()) {
-    InversAllNegative();
-    ianWork = FALSE;
-  }
+  InversAllNegative();
 }
