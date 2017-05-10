@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.51"
+#define propVersion "3.60"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -33,7 +33,7 @@ extern bool strategiesLimitBorderDown =
 // Constantes
 double pareto = 0.8;
 double toDayMoney = 0.0;
-int tmp = 1; //-20;
+int tmp = 30; //-20;
 /*----------------+
 | Inicialización  |
 +----------------*/
@@ -47,6 +47,7 @@ int OnInit() {
   tmInit();
   SendSimbolParams();
   Print(eaName + " " + propVersion);
+    testOperation();
   return (INIT_SUCCEEDED);
 }
 /*--------+
@@ -98,3 +99,10 @@ void doStrategies() {
 | Administra las operaciones  |
 +----------------------------*/
 void doManagment() { tmEvent(); }
+
+void testOperation(){
+  if(tmp<=20)
+  tmp =
+        OrderSendReliable(Symbol(), OP_BUY, 0.05, Ask, 3, 0, 0,
+                          MagicNumber, MagicNumber, 0, Green);
+}
