@@ -41,6 +41,9 @@ void TwoWays() {
     return;
   if (!(TimeHour(Time[0]) == 7 && TimeMinute(Time[0]) == 0 && CheckNewBar()))
     return;
+  if (AccountFreeMargin() <
+      MathMax(firstBalance / 2, AccountFreeMargin() - firstBalance))
+    return;
   double lotsForTransaction = getLotSize();
   if (lotsForTransaction <= 0)
     return;

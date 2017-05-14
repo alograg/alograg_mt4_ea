@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.60"
+#define propVersion "3.61"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -47,7 +47,7 @@ int OnInit() {
   tmInit();
   SendSimbolParams();
   Print(eaName + " " + propVersion);
-    testOperation();
+  testOperation();
   return (INIT_SUCCEEDED);
 }
 /*--------+
@@ -68,10 +68,6 @@ void OnTick() {
     initUtilsGlobals();
     SendSimbolParams();
   }
-  if (tmp <= 0)
-    tmp = OrderSendReliable(Symbol(), OP_SELL, 0.01, Bid, 3,
-                            0.843 + (getSpread() * 5), 0, FlowTheLiderComment,
-                            MagicNumber, 0, Green);
   if (isNewDay())
     SendAccountReport();
 }
@@ -85,13 +81,13 @@ void OnTimer() { initUtilsGlobals(); }
 void doStrategies() {
   if (!strategiesActivate)
     return;
+  TwoWays();
   if (AccountFreeMargin() <
       MathMax(firstBalance / 2, AccountFreeMargin() - firstBalance))
     return;
   MorningWork();
   FreeDayNigth();
   FlowTheLider();
-  TwoWays();
   CrossMover();
   // WeekendGap();
 }
@@ -100,9 +96,8 @@ void doStrategies() {
 +----------------------------*/
 void doManagment() { tmEvent(); }
 
-void testOperation(){
-  if(tmp<=20)
-  tmp =
-        OrderSendReliable(Symbol(), OP_BUY, 0.05, Ask, 3, 0, 0,
-                          MagicNumber, MagicNumber, 0, Green);
+void testOperation() {
+  if (tmp <= 20)
+    tmp = OrderSendReliable(Symbol(), OP_BUY, 0.05, Ask, 3, 0, 0, MagicNumber,
+                            MagicNumber, 0, Green);
 }
