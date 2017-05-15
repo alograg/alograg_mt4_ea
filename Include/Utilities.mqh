@@ -176,8 +176,10 @@ void SendAccountReport() {
   default:
     accountReport += "monetary";
   }
-  accountReport += ".\n";
-  balanceReport = "Date " + TimeToString(Time[0]) + "\n";
+  balanceReport =
+      StringFormat("Broker; %s \n", AccountInfoString(ACCOUNT_COMPANY));
+  balanceReport += AccountInfoString(ACCOUNT_CURRENCY);
+  balanceReport += " Date " + TimeToString(Time[0]) + "\n";
   balanceReport +=
       StringFormat("BALANCE        = %G", AccountInfoDouble(ACCOUNT_BALANCE));
   balanceReport += "\n";

@@ -173,15 +173,16 @@ void yesProcess() {
             OrderProfitPip >= OrderTSTrigger) {
           OrderArray[OrderArrayIdx][9] = OrderTS;
           OrderArray[OrderArrayIdx][10] += MathAbs(round(OrderTSTrigger * 1.5));
-          // PrintLog("Trailing Stop Activated at: " + (OrderOpenPrice()
-          // - (OrderTS * getPipValue())));
+          Print("Trailing Stop Activated at: ",
+                (OrderOpenPrice() - (OrderTS * getPipValue())));
         } else if (OrderArray[OrderArrayIdx][10] != 0 &&
                    OrderProfitPip >= OrderArray[OrderArrayIdx][10]) {
           OrderArray[OrderArrayIdx][9] = OrderArray[OrderArrayIdx][10];
           OrderArray[OrderArrayIdx][10] +=
               MathAbs(round(OrderArray[OrderArrayIdx][10] / 2));
-          // PrintLog("Trailing Stop Activated at: " + (OrderOpenPrice()
-          // - (OrderArray[OrderArrayIdx][10] * getPipValue())));
+          Print("Trailing Stop Activated at: ",
+                (OrderOpenPrice() -
+                 (OrderArray[OrderArrayIdx][10] * getPipValue())));
         }
         if (OrderArray[OrderArrayIdx][10] >= OrderArray[OrderArrayIdx][11]) {
           OrderArray[OrderArrayIdx][11] = OrderArray[OrderArrayIdx][10];
@@ -200,8 +201,8 @@ void yesProcess() {
              OrderProfitPip < OrderArray[OrderArrayIdx][9]) ||
             (OrderArray[OrderArrayIdx][11] != 0 &&
              OrderProfitPip >= OrderArray[OrderArrayIdx][11])) {
-          // PrintLog(OrderTicket() + ": Trailing Stop Triggerred.
-          // Order Closed at: " + Bid);
+          Print(OrderTicket(), ": Trailing Stop Triggerred. Order Closed at: ",
+                closeIn);
           OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
                                                 closeIn, slippage, DeepSkyBlue);
           if (OrderCloseStatus) {

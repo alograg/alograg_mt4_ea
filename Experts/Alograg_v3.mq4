@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.61"
+#define propVersion "3.69"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -65,16 +65,28 @@ void OnTick() {
   doStrategies();
   doManagment();
   if (CheckNewBar()) {
-    initUtilsGlobals();
+    if (IsTesting())
+      initUtilsGlobals();
     SendSimbolParams();
   }
-  if (isNewDay())
-    SendAccountReport();
 }
 /*-----------+
 | Al minuto  |
 +-----------*/
-void OnTimer() { initUtilsGlobals(); }
+void OnTimer() {
+  if (isNewDay()) {
+    SendAccountReport();
+    Print("Send Report Alograg v.", propVersion);
+  }
+  if (false && !IsTradeAllowed()) {
+    string Alarm = TerminalInfoString(TERMINAL_NAME) + "\n";
+    Alarm += TerminalInfoString(TERMINAL_COMPANY) + "\n";
+    Alarm += TerminalInfoString(TERMINAL_PATH) + "\n";
+    Alarm += "AutoTrade off!!!";
+    SendNotification(Alarm);
+  }
+  initUtilsGlobals();
+}
 /*-------------------------+
 | Ejecuta las estrategias  |
 +-------------------------*/
