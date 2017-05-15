@@ -52,7 +52,7 @@ void MorningWork() {
   bool canSell = MacdCurrent < SignalCurrent &&
                  MacdPrevious >= SignalPrevious && TendanceMacd > 0 &&
                  TendanceSignalPrevious > TendanceSignal && canOrder(OP_SELL);
-  // Print("MorningWork: buy ("+ canBuy + "), sell ("+ canSell +")");
+  PrintAndNotify("MorningWork: buy ("+ canBuy + "), sell ("+ canSell +")");
   //--- check for long position (BUY) possibility
   if (canBuy) {
     ticket = OrderSendReliable(Symbol(), OP_BUY, lotsForTransaction, Ask, 3, 0,

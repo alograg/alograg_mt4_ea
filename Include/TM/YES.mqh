@@ -38,8 +38,7 @@ void yesProcess() {
                                      Digits) /
                      getPipValue();
     OrderHiddenTP = round(AvereageCandle);
-    PrintLog("Candel: " + AvereageCandle);
-    PrintLog("Pibs: " + OrderHiddenTP);
+    PrintAndNotify("Candel: " + AvereageCandle + " Pibs: " + OrderHiddenTP);
     OrderTSTrigger = getSpreadPoints();
     OrderTS = getSpreadPoints() * 2;
     OrderHiddenSL = OrderHiddenTP + getSpreadPoints();

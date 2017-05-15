@@ -13,6 +13,7 @@ int allPeriods[];
 int shortWork = 0, longWork = PERIOD_D1;
 int totalOrders = 0, yearDay, Spread, countPeriods = 0;
 datetime time0;
+bool canNotifyNow = false;
 double pip = -1, slippage = -1, maxLost = 0.0, workingMoney = 0.0,
        blocked = 0.0, unBlocked = 0.0;
 // Inicializa las variables globales
@@ -232,6 +233,11 @@ void SendSimbolParams() {
 void PrintLog(string txt) {
   if (IsTesting())
     Print(txt);
+}
+void PrintAndNotify(string txt) {
+  Print(txt);
+  if(canNotifyNow)
+    SendNotification(txt);
 }
 int OrderSendHidden(string symbol, int cmd, double volume, double price,
                     int slippage, double stoploss, double takeprofit,

@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.71"
+#define propVersion "3.73"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -15,11 +15,11 @@
 #include "..\Include\OrderReliable_2011.01.07.mqh"
 #include "..\Include\Utilities.mqh"
 #include "..\Include\TradeManager.mqh"
+#include "..\Include\TwoWays.mqh"
 #include "..\Include\MorningWork.mqh"
 #include "..\Include\FreeDayNigth.mqh"
 //#include "..\Include\WeekendGap.mqh"
 #include "..\Include\FlowTheLider.mqh"
-#include "..\Include\TwoWays.mqh"
 #include "..\Include\CrossMover.mqh"
 // Externos
 // extern int name = value; //Descipción
@@ -43,10 +43,10 @@ int OnInit() {
   // Inicializacion de variables
   initUtilsGlobals(true);
   // Registro de evento
-  EventSetTimer(60);
+  EventSetTimer(60*60);
   tmInit();
   SendSimbolParams();
-  Print(eaName + " " + propVersion);
+  PrintAndNotify(eaName + " " + propVersion);
   testOperation();
   return (INIT_SUCCEEDED);
 }
@@ -67,15 +67,17 @@ void OnTick() {
   if (CheckNewBar()) {
     initUtilsGlobals();
     SendSimbolParams();
+    canNotifyNow = false;
   }
 }
-/*-----------+
-| Al minuto  |
-+-----------*/
+/*----------+
+| Al timer  |
++----------*/
 void OnTimer() {
+  canNotifyNow = true;
   if (isNewDay()) {
     SendAccountReport();
-    Print("Send Report Alograg v.", propVersion);
+    PrintAndNotify("Send Report Alograg v." + propVersion);
   }
   if (false && !IsTradeAllowed()) {
     string Alarm = TerminalInfoString(TERMINAL_NAME) + "\n";

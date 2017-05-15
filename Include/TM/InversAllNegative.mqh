@@ -48,6 +48,6 @@ void InversAllNegative() {
     ianTicket = OrderSendReliable(Symbol(), OP_BUY, MathAbs(lots), Ask, 3, 0, 0,
                                   IanComment, MagicNumber, 0, Green);
   if (0 < lots)
-    ianTicket = OrderSendReliable(Symbol(), OP_SELL, MathAbs(lots), Bid, 3, 0,
-                                  0, IanComment, MagicNumber, 0, Green);
+    ianTicket = OrderSendReliable(Symbol(), OP_SELL, MathAbs(lots), Bid, 3, 0, 0,
+                                  IanComment, MagicNumber, 0, Green);
 }

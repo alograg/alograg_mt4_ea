@@ -49,6 +49,7 @@ void FlowTheLider() {
                  SignalPrevious1 < SignalPrevious2 &&
                  SignalPrevious2 < SignalPrevious3 &&
                  SignalPrevious3 < SignalPrevious4 && canOrder(OP_SELL);
+  PrintAndNotify("FlowTheLider: buy (" + canBuy + "), sell (" + canSell + ")");
   //--- check for long position (BUY) possibility
   if (canBuy) {
     ticket = OrderSendReliable(Symbol(), OP_BUY, lotsForTransaction, Ask, 3, 0,
