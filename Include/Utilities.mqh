@@ -235,9 +235,9 @@ void PrintLog(string txt) {
     Print(txt);
 }
 void PrintAndNotify(string txt) {
-  Print(txt);
+  Print(txt, " - ", TimeCurrent());
   if(canNotifyNow)
-    SendNotification(txt);
+    SendNotification(TimeCurrent() + " - " + txt);
 }
 int OrderSendHidden(string symbol, int cmd, double volume, double price,
                     int slippage, double stoploss, double takeprofit,

@@ -29,6 +29,12 @@ void FlowTheLider() {
       Digits);
   if (MathAbs(SignalCurrent) > (getPipValue() * 2))
     return;
+  else
+    PrintAndNotify("FlowTheLider: signal "
+      + SignalCurrent+ " > "
+      + (getPipValue() * 2) + " = "
+      + (MathAbs(SignalCurrent) > (getPipValue() * 2))
+      );
   double SignalPrevious1 = NormalizeDouble(
       iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 1),
       Digits);
