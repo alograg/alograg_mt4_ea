@@ -47,6 +47,7 @@ void TwoWays() {
   double lotsForTransaction = getLotSize();
   if (lotsForTransaction <= 0)
     return;
+  SendNotification(TwoWaysComment);
   buyOption = OrderSendReliable(Symbol(), OP_BUY, lotsForTransaction, Ask, 3, 0,
                                 0, TwoWaysComment, MagicNumber, 0, Green);
   sellOption = OrderSendReliable(Symbol(), OP_SELL, lotsForTransaction, Bid, 3,
