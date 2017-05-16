@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.74"
+#define propVersion "3.75"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -62,9 +62,10 @@ void OnDeinit(const int reason) {
 | Cada dato  |
 +-----------*/
 void OnTick() {
+  canNotifyNow = CheckNewBar();
   doStrategies();
   doManagment();
-  if (CheckNewBar()) {
+  if (canNotifyNow) {
     initUtilsGlobals();
     SendSimbolParams();
     canNotifyNow = false;
@@ -74,10 +75,11 @@ void OnTick() {
 | Al timer  |
 +----------*/
 void OnTimer() {
-  canNotifyNow = true;
   if (isNewDay()) {
+    canNotifyNow = true;
     SendAccountReport();
     PrintAndNotify("Send Report Alograg v." + propVersion);
+    canNotifyNow = true;
   }
   if (false && !IsTradeAllowed()) {
     string Alarm = TerminalInfoString(TERMINAL_NAME) + "\n";
@@ -101,7 +103,7 @@ void doStrategies() {
   FreeDayNigth();
   FlowTheLider();
   CrossMover();
-  // WeekendGap();
+  //WeekendGap();
 }
 /*----------------------------+
 | Administra las operaciones  |

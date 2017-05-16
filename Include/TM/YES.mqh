@@ -202,6 +202,8 @@ void yesProcess() {
              OrderProfitPip >= OrderArray[OrderArrayIdx][11])) {
           Print(OrderTicket(), ": Trailing Stop Triggerred. Order Closed at: ",
                 closeIn);
+          bool canClose = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap(), 2) > 0;
+          if(canClose)
           OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
                                                 closeIn, slippage, DeepSkyBlue);
           if (OrderCloseStatus) {

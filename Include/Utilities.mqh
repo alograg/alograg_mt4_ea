@@ -327,3 +327,20 @@ bool canOrder(int type) {
   }
   return true;
 }
+bool canOrderAsk(int type, int period) {
+  double margin = 0, useValue = 0, useReference;
+  if (type == OP_BUY) {
+    useReference = iHigh(Symbol(), period, 1);
+    useValue = Bid;
+  }
+  if (type == OP_SELL) {
+    useReference = iLow(Symbol(), period, 1);
+    useValue = Ask;
+  }
+  if (useValue) {
+    margin = NormalizeDouble(MathAbs(useReference - useValue), Digits) /
+              getPipValue();
+    return margin > (getSpreadPoints() * 2);
+  }
+  return false;
+}

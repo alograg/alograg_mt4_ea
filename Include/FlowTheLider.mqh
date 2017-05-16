@@ -27,17 +27,19 @@ void FlowTheLider() {
   double SignalCurrent = NormalizeDouble(
       iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 0),
       Digits);
-  if (MathAbs(SignalCurrent) > (getPipValue() * 2))
-    return;
-  else
+  double SignalPrevious1 = NormalizeDouble(
+      iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 1),
+      Digits);
+  if (MathAbs(SignalCurrent) > (getPipValue() * 2)){
     PrintAndNotify("FlowTheLider: signal "
       + SignalCurrent+ " > "
       + (getPipValue() * 2) + " = "
       + (MathAbs(SignalCurrent) > (getPipValue() * 2))
       );
-  double SignalPrevious1 = NormalizeDouble(
-      iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 1),
-      Digits);
+    if(MathAbs(SignalCurrent- SignalPrevious1) < (getPipValue() * 2)
+    && !canOrderAsk(SignalCurrent < 0 ? OP_BUY : OP_SELL, PERIOD_D1))
+      return;
+  }
   double SignalPrevious2 = NormalizeDouble(
       iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 2),
       Digits);
