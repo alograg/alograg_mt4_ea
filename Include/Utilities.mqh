@@ -16,6 +16,7 @@ datetime time0;
 bool canNotifyNow = false;
 double pip = -1, slippage = -1, maxLost = 0.0, workingMoney = 0.0,
        blocked = 0.0, unBlocked = 0.0;
+string fullNotification = "";
 // Inicializa las variables globales
 void initUtilsGlobals(bool isNew = false) {
   if (isNew) {
@@ -177,8 +178,9 @@ void SendAccountReport() {
   default:
     accountReport += "monetary";
   }
-  balanceReport =
-      StringFormat("Broker; %s \n", AccountInfoString(ACCOUNT_COMPANY));
+  balanceReport = "Report "+eaName+" v." + propVersion + "\n";
+  balanceReport +=
+      StringFormat("\nBroker; %s \n", AccountInfoString(ACCOUNT_COMPANY));
   balanceReport += AccountInfoString(ACCOUNT_CURRENCY);
   balanceReport += " Date " + TimeToString(Time[0]) + "\n";
   balanceReport +=
@@ -199,7 +201,7 @@ void SendAccountReport() {
   balanceReport += StringFormat("MARGIN LEVEL   = %G",
                                 AccountInfoDouble(ACCOUNT_MARGIN_LEVEL));
   balanceReport += "\n";
-  SendMail(subject, accountReport + balanceReport);
+  //SendMail(subject, accountReport + balanceReport);
   SendNotification(balanceReport);
 }
 // Simbol params
@@ -234,10 +236,8 @@ void PrintLog(string txt) {
   if (IsTesting())
     Print(txt);
 }
-void PrintAndNotify(string txt) {
-  Print(txt, " - ", TimeCurrent());
-  if(canNotifyNow)
-    SendNotification(TimeCurrent() + " - " + txt);
+void AddNotify(string txt) {
+  fullNotification += TimeCurrent() + " - " + txt + "\n";
 }
 int OrderSendHidden(string symbol, int cmd, double volume, double price,
                     int slippage, double stoploss, double takeprofit,

@@ -25,7 +25,8 @@ void CrossMover() {
          maH5 = iMA(Symbol(), shortWork, 10, 0, MODE_EMA, PRICE_HIGH, 5),
          maL5 = iMA(Symbol(), shortWork, 10, 0, MODE_EMA, PRICE_LOW, 5);
   bool canBuy = ma0 > maH0 && ma5 < maL5, canSell = ma0 < maL0 && ma5 > maH5;
-  PrintAndNotify("CrossMover: buy (" + canBuy + "), sell (" + canSell + ")");
+  if(canBuy || canSell)
+    AddNotify("CrossMover: buy (" + canBuy + "), sell (" + canSell + ")");
   if (canBuy)
     cmBuyOption =
         OrderSendReliable(Symbol(), OP_BUY, lotsForTransaction, Ask, 3, 0, 0,

@@ -43,7 +43,7 @@ void InversAllNegative() {
   }
   if (0 < money)
     return;
-  PrintAndNotify(IanComment + ": Lots " + lots + " money " + money);
+  AddNotify(IanComment + ": Lots " + lots + " money " + money);
   if (0 > lots)
     ianTicket = OrderSendReliable(Symbol(), OP_BUY, MathAbs(lots), Ask, 3, 0, 0,
                                   IanComment, MagicNumber, 0, Green);

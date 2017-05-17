@@ -46,7 +46,8 @@ int OnInit() {
   EventSetTimer(60*60);
   tmInit();
   SendSimbolParams();
-  PrintAndNotify(eaName + " " + propVersion);
+  Print(eaName + " " + propVersion);
+  AddNotify(eaName + " " + propVersion);
   testOperation();
   return (INIT_SUCCEEDED);
 }
@@ -62,25 +63,20 @@ void OnDeinit(const int reason) {
 | Cada dato  |
 +-----------*/
 void OnTick() {
-  canNotifyNow = CheckNewBar();
   doStrategies();
   doManagment();
-  if (canNotifyNow) {
+  if (CheckNewBar()) {
     initUtilsGlobals();
     SendSimbolParams();
-    canNotifyNow = false;
+    SendNotification(fullNotification);
   }
+  fullNotification = "";
 }
 /*----------+
 | Al timer  |
 +----------*/
 void OnTimer() {
-  if (isNewDay()) {
-    canNotifyNow = true;
-    SendAccountReport();
-    PrintAndNotify("Send Report Alograg v." + propVersion);
-    canNotifyNow = true;
-  }
+  SendAccountReport();
   if (false && !IsTradeAllowed()) {
     string Alarm = TerminalInfoString(TERMINAL_NAME) + "\n";
     Alarm += TerminalInfoString(TERMINAL_COMPANY) + "\n";

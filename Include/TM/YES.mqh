@@ -37,11 +37,17 @@ void yesProcess() {
                                              iLow(Symbol(), PERIOD_D1, 1)),
                                      Digits) /
                      getPipValue();
-    OrderHiddenTP = round(MathMin(AvereageCandle, getSpreadPoints()*5));
-    PrintAndNotify("Candel: " + AvereageCandle + " Pibs: " + OrderHiddenTP + " Spead: " + getSpreadPoints());
+    OrderHiddenTP = round(AvereageCandle);
+//    OrderHiddenTP = round(MathMin(MathMax(AvereageCandle, getSpreadPoints()*3), getSpreadPoints()*5));
     OrderTSTrigger = getSpreadPoints();
     OrderTS = getSpreadPoints() * 2;
     OrderHiddenSL = OrderHiddenTP + getSpreadPoints();
+    string log = "Candel: " + AvereageCandle + 
+              " Pibs: " + OrderHiddenTP + 
+              " Spead: " + getSpreadPoints() +
+              " TP: " + OrderHiddenTP;
+    Print(log);
+    AddNotify(log);
   }
   if (TotalNumberOfOrders < OrdersTotal()) {
     TotalNumberOfOrders = OrdersTotal();
