@@ -39,8 +39,8 @@ void yesProcess() {
                      getPipValue();
     OrderHiddenTP = round(AvereageCandle);
 //    OrderHiddenTP = round(MathMin(MathMax(AvereageCandle, getSpreadPoints()*3), getSpreadPoints()*5));
-    OrderTSTrigger = getSpreadPoints();
-    OrderTS = getSpreadPoints() * 2;
+    OrderTSTrigger = getSpreadPoints()*1.1;
+    OrderTS = getSpreadPoints()*0.9;
     OrderHiddenSL = OrderHiddenTP + getSpreadPoints();
     string log = "Candel: " + AvereageCandle + 
               " Pibs: " + OrderHiddenTP + 
