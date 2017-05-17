@@ -37,8 +37,8 @@ void yesProcess() {
                                              iLow(Symbol(), PERIOD_D1, 1)),
                                      Digits) /
                      getPipValue();
-    OrderHiddenTP = round(AvereageCandle);
-    PrintAndNotify("Candel: " + AvereageCandle + " Pibs: " + OrderHiddenTP);
+    OrderHiddenTP = round(MathMin(AvereageCandle, getSpreadPoints()*5));
+    PrintAndNotify("Candel: " + AvereageCandle + " Pibs: " + OrderHiddenTP + " Spead: " + getSpreadPoints());
     OrderTSTrigger = getSpreadPoints();
     OrderTS = getSpreadPoints() * 2;
     OrderHiddenSL = OrderHiddenTP + getSpreadPoints();
@@ -172,14 +172,14 @@ void yesProcess() {
             OrderProfitPip >= OrderTSTrigger) {
           OrderArray[OrderArrayIdx][9] = OrderTS;
           OrderArray[OrderArrayIdx][10] += MathAbs(round(OrderTSTrigger * 1.5));
-          Print("Trailing Stop Activated at: ",
+          Print(OrderTicket(), ": Trailing Stop Activated (1) at: ",
                 (OrderOpenPrice() - (OrderTS * getPipValue())));
         } else if (OrderArray[OrderArrayIdx][10] != 0 &&
                    OrderProfitPip >= OrderArray[OrderArrayIdx][10]) {
           OrderArray[OrderArrayIdx][9] = OrderArray[OrderArrayIdx][10];
           OrderArray[OrderArrayIdx][10] +=
               MathAbs(round(OrderArray[OrderArrayIdx][10] / 2));
-          Print("Trailing Stop Activated at: ",
+          Print(OrderTicket(), ": Trailing Stop Activated (2) at: ",
                 (OrderOpenPrice() -
                  (OrderArray[OrderArrayIdx][10] * getPipValue())));
         }

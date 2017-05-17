@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.75"
+#define propVersion "3.76"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
