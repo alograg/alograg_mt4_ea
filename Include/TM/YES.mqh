@@ -32,6 +32,8 @@ void yesProcess() {
   int TempNumberOfOrders, CountNumberOfOrders;
   int OrderProfitPip, OrderLossPip;
   bool TradeFound, OrderFound = FALSE, FoundZero = FALSE, OrderCloseStatus;
+  OrderTS = round(getSpreadPoints());
+  OrderTSTrigger = round(OrderTS * 1.1);
   if (isNewDay() || AvereageCandle < 0) {
     AvereageCandle = NormalizeDouble(MathAbs(iHigh(Symbol(), PERIOD_D1, 1) -
                                              iLow(Symbol(), PERIOD_D1, 1)),
@@ -39,13 +41,11 @@ void yesProcess() {
                      getPipValue();
     OrderHiddenTP = round(AvereageCandle);
 //    OrderHiddenTP = round(MathMin(MathMax(AvereageCandle, getSpreadPoints()*3), getSpreadPoints()*5));
-    OrderTSTrigger = getSpreadPoints()*1.1;
-    OrderTS = getSpreadPoints()*0.9;
     OrderHiddenSL = OrderHiddenTP + getSpreadPoints();
-    string log = "Candel: " + AvereageCandle + 
-              " Pibs: " + OrderHiddenTP + 
+    string log = "Candel: " + NormalizeDouble(AvereageCandle,2) + 
+              " Pibs/TP: " + OrderHiddenTP + 
               " Spead: " + getSpreadPoints() +
-              " TP: " + OrderHiddenTP;
+              " TS: " + OrderTSTrigger;
     Print(log);
     AddNotify(log);
   }

@@ -11,11 +11,13 @@
 // Constantes
 int allPeriods[];
 int shortWork = 0, longWork = PERIOD_D1;
-int totalOrders = 0, yearDay, Spread, countPeriods = 0;
+int totalOrders = 0, yearDay, countPeriods = 0;
+int SpreadSampleSize = 100;
 datetime time0;
 bool canNotifyNow = false;
 double pip = -1, slippage = -1, maxLost = 0.0, workingMoney = 0.0,
        blocked = 0.0, unBlocked = 0.0;
+double Spread[];
 string fullNotification = "";
 // Inicializa las variables globales
 void initUtilsGlobals(bool isNew = false) {
@@ -24,11 +26,11 @@ void initUtilsGlobals(bool isNew = false) {
     slippage = getSlippage();
     calculateBetterTransactionTime();
   }
+  getSpread(Ask-Bid);
   totalOrders = OrdersTotal();
   time0 = iTime(Symbol(), PERIOD_M15, 0);
   yearDay = TimeDayOfYear(time0);
   maxLost = getMaxLost();
-  Spread = getSpread();
   workingMoney = GlobalVariableGet(eaName + "_block_profit");
 }
 // Market Pip value calculation
@@ -47,7 +49,31 @@ int getSlippage() {
   slippage = 3;
   return slippage;
 }
-double getSpread() { return Ask - Bid; }
+double getSpread(double AddValue=0) {
+  double LastValue;
+   static double ArrayTotal=0;
+   
+   if (AddValue == 0 && SpreadSampleSize <= 0) return(Ask-Bid);
+   if (AddValue == 0 && ArrayTotal == 0) return(Ask-Bid);
+   if (AddValue == 0 ) return(ArrayTotal/ArraySize(Spread));
+   
+   ArrayTotal = ArrayTotal + AddValue;
+   ArraySetAsSeries(Spread, true); 
+   if (ArraySize(Spread) == SpreadSampleSize)
+      {
+      LastValue = Spread[0];
+      ArrayTotal = ArrayTotal - LastValue;
+      ArraySetAsSeries(Spread, false);
+      ArrayResize(Spread, ArraySize(Spread)-1 );
+      ArraySetAsSeries(Spread, true);
+      ArrayResize(Spread, ArraySize(Spread)+1 ); 
+      }
+   else ArrayResize(Spread, ArraySize(Spread)+1 ); 
+   //Print("ArraySize = ",ArraySize(lSpread)," AddedNo. = ",AddValue);
+   ArraySetAsSeries(Spread, false);
+   Spread[0] = AddValue;
+   return(NormalizeDouble(ArrayTotal/ArraySize(Spread), Digits));
+}
 int getSpreadPoints() {
   return MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
 }
