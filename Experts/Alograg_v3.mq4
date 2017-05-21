@@ -43,7 +43,7 @@ int OnInit() {
   // Inicializacion de variables
   initUtilsGlobals(true);
   // Registro de evento
-  EventSetTimer(60*60);
+  EventSetTimer(60 * 60);
   tmInit();
   SendSimbolParams();
   Print(eaName + " " + propVersion);
@@ -99,7 +99,7 @@ void doStrategies() {
   FreeDayNigth();
   FlowTheLider();
   CrossMover();
-  //WeekendGap();
+  // WeekendGap();
 }
 /*----------------------------+
 | Administra las operaciones  |

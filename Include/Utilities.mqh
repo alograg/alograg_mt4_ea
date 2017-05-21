@@ -26,7 +26,7 @@ void initUtilsGlobals(bool isNew = false) {
     slippage = getSlippage();
     calculateBetterTransactionTime();
   }
-  getSpread(Ask-Bid);
+  getSpread(Ask - Bid);
   totalOrders = OrdersTotal();
   time0 = iTime(Symbol(), PERIOD_M15, 0);
   yearDay = TimeDayOfYear(time0);
@@ -49,30 +49,32 @@ int getSlippage() {
   slippage = 3;
   return slippage;
 }
-double getSpread(double AddValue=0) {
+double getSpread(double AddValue = 0) {
   double LastValue;
-   static double ArrayTotal=0;
-   
-   if (AddValue == 0 && SpreadSampleSize <= 0) return(Ask-Bid);
-   if (AddValue == 0 && ArrayTotal == 0) return(Ask-Bid);
-   if (AddValue == 0 ) return(ArrayTotal/ArraySize(Spread));
-   
-   ArrayTotal = ArrayTotal + AddValue;
-   ArraySetAsSeries(Spread, true); 
-   if (ArraySize(Spread) == SpreadSampleSize)
-      {
-      LastValue = Spread[0];
-      ArrayTotal = ArrayTotal - LastValue;
-      ArraySetAsSeries(Spread, false);
-      ArrayResize(Spread, ArraySize(Spread)-1 );
-      ArraySetAsSeries(Spread, true);
-      ArrayResize(Spread, ArraySize(Spread)+1 ); 
-      }
-   else ArrayResize(Spread, ArraySize(Spread)+1 ); 
-   //Print("ArraySize = ",ArraySize(lSpread)," AddedNo. = ",AddValue);
-   ArraySetAsSeries(Spread, false);
-   Spread[0] = AddValue;
-   return(NormalizeDouble(ArrayTotal/ArraySize(Spread), Digits));
+  static double ArrayTotal = 0;
+
+  if (AddValue == 0 && SpreadSampleSize <= 0)
+    return (Ask - Bid);
+  if (AddValue == 0 && ArrayTotal == 0)
+    return (Ask - Bid);
+  if (AddValue == 0)
+    return (ArrayTotal / ArraySize(Spread));
+
+  ArrayTotal = ArrayTotal + AddValue;
+  ArraySetAsSeries(Spread, true);
+  if (ArraySize(Spread) == SpreadSampleSize) {
+    LastValue = Spread[0];
+    ArrayTotal = ArrayTotal - LastValue;
+    ArraySetAsSeries(Spread, false);
+    ArrayResize(Spread, ArraySize(Spread) - 1);
+    ArraySetAsSeries(Spread, true);
+    ArrayResize(Spread, ArraySize(Spread) + 1);
+  } else
+    ArrayResize(Spread, ArraySize(Spread) + 1);
+  // Print("ArraySize = ",ArraySize(lSpread)," AddedNo. = ",AddValue);
+  ArraySetAsSeries(Spread, false);
+  Spread[0] = AddValue;
+  return (NormalizeDouble(ArrayTotal / ArraySize(Spread), Digits));
 }
 int getSpreadPoints() {
   return MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
@@ -204,7 +206,7 @@ void SendAccountReport() {
   default:
     accountReport += "monetary";
   }
-  balanceReport = "Report "+eaName+" v." + propVersion + "\n";
+  balanceReport = "Report " + eaName + " v." + propVersion + "\n";
   balanceReport +=
       StringFormat("\nBroker; %s \n", AccountInfoString(ACCOUNT_COMPANY));
   balanceReport += AccountInfoString(ACCOUNT_CURRENCY);
@@ -227,7 +229,7 @@ void SendAccountReport() {
   balanceReport += StringFormat("MARGIN LEVEL   = %G",
                                 AccountInfoDouble(ACCOUNT_MARGIN_LEVEL));
   balanceReport += "\n";
-  //SendMail(subject, accountReport + balanceReport);
+  // SendMail(subject, accountReport + balanceReport);
   SendNotification(balanceReport);
 }
 // Simbol params
@@ -365,7 +367,7 @@ bool canOrderAsk(int type, int period) {
   }
   if (useValue) {
     margin = NormalizeDouble(MathAbs(useReference - useValue), Digits) /
-              getPipValue();
+             getPipValue();
     return margin > (getSpreadPoints() * 2);
   }
   return false;

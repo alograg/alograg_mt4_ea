@@ -40,12 +40,12 @@ void yesProcess() {
                                      Digits) /
                      getPipValue();
     OrderHiddenTP = round(AvereageCandle);
-//    OrderHiddenTP = round(MathMin(MathMax(AvereageCandle, getSpreadPoints()*3), getSpreadPoints()*5));
+    //    OrderHiddenTP = round(MathMin(MathMax(AvereageCandle,
+    // getSpreadPoints()*3), getSpreadPoints()*5));
     OrderHiddenSL = OrderHiddenTP + getSpreadPoints();
-    string log = "Candel: " + NormalizeDouble(AvereageCandle,2) + 
-              " Pibs/TP: " + OrderHiddenTP + 
-              " Spead: " + getSpreadPoints() +
-              " TS: " + OrderTSTrigger;
+    string log = "Candel: " + NormalizeDouble(AvereageCandle, 2) +
+                 " Pibs/TP: " + OrderHiddenTP + " Spead: " + getSpreadPoints() +
+                 " TS: " + OrderTSTrigger;
     Print(log);
     AddNotify(log);
   }
@@ -208,10 +208,12 @@ void yesProcess() {
              OrderProfitPip >= OrderArray[OrderArrayIdx][11])) {
           Print(OrderTicket(), ": Trailing Stop Triggerred. Order Closed at: ",
                 closeIn);
-          bool canClose = NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap(), 2) > 0;
-          if(canClose)
-          OrderCloseStatus = OrderCloseReliable(OrderTicket(), OrderLots(),
-                                                closeIn, slippage, DeepSkyBlue);
+          bool canClose =
+              NormalizeDouble(OrderProfit() + OrderCommission() + OrderSwap(),
+                              2) > 0;
+          if (canClose)
+            OrderCloseStatus = OrderCloseReliable(
+                OrderTicket(), OrderLots(), closeIn, slippage, DeepSkyBlue);
           if (OrderCloseStatus) {
             ResetOrderArray(OrderArrayIdx);
             PurgeElement(OrderArrayIdx);

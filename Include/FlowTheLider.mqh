@@ -30,9 +30,9 @@ void FlowTheLider() {
   double SignalPrevious1 = NormalizeDouble(
       iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 1),
       Digits);
-  if (MathAbs(SignalCurrent) > (getPipValue() * 2)){
-    if(MathAbs(SignalCurrent- SignalPrevious1) < (getPipValue() * 2)
-    && !canOrderAsk(SignalCurrent < 0 ? OP_BUY : OP_SELL, PERIOD_D1))
+  if (MathAbs(SignalCurrent) > (getPipValue() * 2)) {
+    if (MathAbs(SignalCurrent - SignalPrevious1) < (getPipValue() * 2) &&
+        !canOrderAsk(SignalCurrent < 0 ? OP_BUY : OP_SELL, PERIOD_D1))
       return;
   }
   double SignalPrevious2 = NormalizeDouble(
@@ -52,7 +52,7 @@ void FlowTheLider() {
                  SignalPrevious1 < SignalPrevious2 &&
                  SignalPrevious2 < SignalPrevious3 &&
                  SignalPrevious3 < SignalPrevious4 && canOrder(OP_SELL);
-  if(canBuy||canSell)
+  if (canBuy || canSell)
     AddNotify("FlowTheLider: buy (" + canBuy + "), sell (" + canSell + ")");
   //--- check for long position (BUY) possibility
   if (canBuy) {
