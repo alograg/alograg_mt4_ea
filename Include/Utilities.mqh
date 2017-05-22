@@ -25,13 +25,13 @@ void initUtilsGlobals(bool isNew = false) {
     pip = getPipValue();
     slippage = getSlippage();
     calculateBetterTransactionTime();
+    workingMoney = Deposits();
   }
   getSpread(Ask-Bid);
   totalOrders = OrdersTotal();
   time0 = iTime(Symbol(), PERIOD_M15, 0);
   yearDay = TimeDayOfYear(time0);
   maxLost = getMaxLost();
-  workingMoney = GlobalVariableGet(eaName + "_block_profit");
 }
 // Market Pip value calculation
 double getPipValue() {
@@ -75,7 +75,7 @@ double getSpread(double AddValue=0) {
    return(NormalizeDouble(ArrayTotal/ArraySize(Spread), Digits));
 }
 int getSpreadPoints() {
-  return MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
+  return 20;//MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
 }
 // Maxima perdida permitida
 double getMaxLost() {
@@ -92,7 +92,7 @@ double getWeekProfit() {
 }
 // Dinero bloqueado
 double getBlockMoney() {
-  double evaluated = GlobalVariableGet(eaName + "_block_profit");
+  double evaluated = workingMoney;
   evaluated *= 1 + getWeekProfit();
   return evaluated;
 }
@@ -386,4 +386,7 @@ double Deposits()
             }     
       }  
    return(total); 
+}
+bool moneyOnRisk(){
+  return AccountFreeMargin() < MathMax(workingMoney / 2, AccountFreeMargin() - workingMoney);
 }
