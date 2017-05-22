@@ -370,3 +370,20 @@ bool canOrderAsk(int type, int period) {
   }
   return false;
 }
+//-------- Debit/Credit total -------------------
+double Deposits() 
+{ 
+   double total=0; 
+   for (int i=0; i<OrdersHistoryTotal(); i++) 
+      { 
+         if (OrderSelect(i, SELECT_BY_POS, MODE_HISTORY)) 
+            {
+               if(OrderType()>5)
+                  {
+                     total+=OrderProfit(); 
+                           
+                  }
+            }     
+      }  
+   return(total); 
+}
