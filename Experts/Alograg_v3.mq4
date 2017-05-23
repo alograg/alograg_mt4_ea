@@ -94,7 +94,7 @@ void doStrategies() {
   TwoWays();
   if (moneyOnRisk())
     return;
-  MorningWork();
+  //MorningWork();
   FreeDayNigth();
   FlowTheLider();
   CrossMover();
