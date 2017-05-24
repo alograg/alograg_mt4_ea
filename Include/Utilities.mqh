@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+<< << << < HEAD
 /*------------------------+
 |           Utilities.mqh |
 | Copyright 2017, Alograg |
@@ -9,8 +9,8 @@
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict
-// Constantes
-int allPeriods[];
+    // Constantes
+    int allPeriods[];
 int shortWork = 0, longWork = PERIOD_D1;
 int totalOrders = 0, yearDay, countPeriods = 0;
 int SpreadSampleSize = 100;
@@ -373,7 +373,7 @@ bool canOrderAsk(int type, int period) {
   }
   return false;
 }
-=======
+== == == =
 /*------------------------+
 |           Utilities.mqh |
 | Copyright 2017, Alograg |
@@ -384,8 +384,8 @@ bool canOrderAsk(int type, int period) {
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict
-// Constantes
-int allPeriods[];
+             // Constantes
+    int allPeriods[];
 int shortWork = 0, longWork = PERIOD_D1;
 int totalOrders = 0, yearDay, countPeriods = 0;
 int SpreadSampleSize = 100;
@@ -403,7 +403,7 @@ void initUtilsGlobals(bool isNew = false) {
     calculateBetterTransactionTime();
     workingMoney = Deposits();
   }
-  getSpread(Ask-Bid);
+  getSpread(Ask - Bid);
   totalOrders = OrdersTotal();
   time0 = iTime(Symbol(), PERIOD_M15, 0);
   yearDay = TimeDayOfYear(time0);
@@ -425,33 +425,36 @@ int getSlippage() {
   slippage = 3;
   return slippage;
 }
-double getSpread(double AddValue=0) {
+double getSpread(double AddValue = 0) {
   double LastValue;
-   static double ArrayTotal=0;
-   
-   if (AddValue == 0 && SpreadSampleSize <= 0) return(Ask-Bid);
-   if (AddValue == 0 && ArrayTotal == 0) return(Ask-Bid);
-   if (AddValue == 0 ) return(ArrayTotal/ArraySize(Spread));
-   
-   ArrayTotal = ArrayTotal + AddValue;
-   ArraySetAsSeries(Spread, true); 
-   if (ArraySize(Spread) == SpreadSampleSize)
-      {
-      LastValue = Spread[0];
-      ArrayTotal = ArrayTotal - LastValue;
-      ArraySetAsSeries(Spread, false);
-      ArrayResize(Spread, ArraySize(Spread)-1 );
-      ArraySetAsSeries(Spread, true);
-      ArrayResize(Spread, ArraySize(Spread)+1 ); 
-      }
-   else ArrayResize(Spread, ArraySize(Spread)+1 ); 
-   //Print("ArraySize = ",ArraySize(lSpread)," AddedNo. = ",AddValue);
-   ArraySetAsSeries(Spread, false);
-   Spread[0] = AddValue;
-   return(NormalizeDouble(ArrayTotal/ArraySize(Spread), Digits));
+  static double ArrayTotal = 0;
+
+  if (AddValue == 0 && SpreadSampleSize <= 0)
+    return (Ask - Bid);
+  if (AddValue == 0 && ArrayTotal == 0)
+    return (Ask - Bid);
+  if (AddValue == 0)
+    return (ArrayTotal / ArraySize(Spread));
+
+  ArrayTotal = ArrayTotal + AddValue;
+  ArraySetAsSeries(Spread, true);
+  if (ArraySize(Spread) == SpreadSampleSize) {
+    LastValue = Spread[0];
+    ArrayTotal = ArrayTotal - LastValue;
+    ArraySetAsSeries(Spread, false);
+    ArrayResize(Spread, ArraySize(Spread) - 1);
+    ArraySetAsSeries(Spread, true);
+    ArrayResize(Spread, ArraySize(Spread) + 1);
+  } else
+    ArrayResize(Spread, ArraySize(Spread) + 1);
+  // Print("ArraySize = ",ArraySize(lSpread)," AddedNo. = ",AddValue);
+  ArraySetAsSeries(Spread, false);
+  Spread[0] = AddValue;
+  return (NormalizeDouble(ArrayTotal / ArraySize(Spread), Digits));
 }
 int getSpreadPoints() {
-  return 20;//MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
+  return 20; // MathRound(getSpread() / SymbolInfoDouble(Symbol(),
+             // SYMBOL_POINT));
 }
 // Maxima perdida permitida
 double getMaxLost() {
@@ -580,7 +583,7 @@ void SendAccountReport() {
   default:
     accountReport += "monetary";
   }
-  balanceReport = "Report "+eaName+" v." + propVersion + "\n";
+  balanceReport = "Report " + eaName + " v." + propVersion + "\n";
   balanceReport +=
       StringFormat("\nBroker; %s \n", AccountInfoString(ACCOUNT_COMPANY));
   balanceReport += AccountInfoString(ACCOUNT_CURRENCY);
@@ -603,7 +606,7 @@ void SendAccountReport() {
   balanceReport += StringFormat("MARGIN LEVEL   = %G",
                                 AccountInfoDouble(ACCOUNT_MARGIN_LEVEL));
   balanceReport += "\n";
-  //SendMail(subject, accountReport + balanceReport);
+  // SendMail(subject, accountReport + balanceReport);
   SendNotification(balanceReport);
 }
 // Simbol params
@@ -741,29 +744,25 @@ bool canOrderAsk(int type, int period) {
   }
   if (useValue) {
     margin = NormalizeDouble(MathAbs(useReference - useValue), Digits) /
-              getPipValue();
+             getPipValue();
     return margin > (getSpreadPoints() * 2);
   }
   return false;
 }
 //-------- Debit/Credit total -------------------
-double Deposits() 
-{ 
-   double total=0; 
-   for (int i=0; i<OrdersHistoryTotal(); i++) 
-      { 
-         if (OrderSelect(i, SELECT_BY_POS, MODE_HISTORY)) 
-            {
-               if(OrderType()>5)
-                  {
-                     total+=OrderProfit(); 
-                           
-                  }
-            }     
-      }  
-   return(total); 
+double Deposits() {
+  double total = 0;
+  for (int i = 0; i < OrdersHistoryTotal(); i++) {
+    if (OrderSelect(i, SELECT_BY_POS, MODE_HISTORY)) {
+      if (OrderType() > 5) {
+        total += OrderProfit();
+      }
+    }
+  }
+  return (total);
 }
-bool moneyOnRisk(){
-  return AccountFreeMargin() < MathMax(workingMoney / 2, AccountFreeMargin() - workingMoney);
+bool moneyOnRisk() {
+  return AccountFreeMargin() <
+         MathMax(workingMoney / 2, AccountFreeMargin() - workingMoney);
 }
 >>>>>>> 9044a6539fe14fe3c6cecc7d65a26e763587547a
