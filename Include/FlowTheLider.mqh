@@ -51,16 +51,12 @@ void FlowTheLider() {
       SignalCurrent > SignalPrevious1 && SignalPrevious1 > SignalPrevious2 &&
       SignalPrevious2 > SignalPrevious3 && SignalPrevious3 > SignalPrevious4 &&
       SignalPrevious4 > SignalPrevious5 && canOrder(OP_BUY);
-  bool canSell =
-      SignalCurrent > 0 && SignalCurrent < SignalPrevious1 &&
-      SignalPrevious1 < SignalPrevious2 && SignalPrevious2 < SignalPrevious3 &&
-      << << << < HEAD SignalPrevious3 < SignalPrevious4 && canOrder(OP_SELL);
-  if (canBuy || canSell)
-    == == == = SignalPrevious3 < SignalPrevious4 &&
-               SignalPrevious4 < SignalPrevious5 && canOrder(OP_SELL);
-  if (canBuy || canSell)
-    >>>>>>> 9044a6539fe14fe3c6cecc7d65a26e763587547a AddNotify(
-                "FlowTheLider: buy (" + canBuy + "), sell (" + canSell + ")");
+  bool canSell = SignalCurrent > 0 && SignalCurrent < SignalPrevious1 &&
+                 SignalPrevious1 < SignalPrevious2 &&
+                 SignalPrevious2 < SignalPrevious3 &&
+                 SignalPrevious3 < SignalPrevious4 &&
+                 SignalPrevious4 < SignalPrevious5 && canOrder(OP_SELL);
+  AddNotify("FlowTheLider: buy (" + canBuy + "), sell (" + canSell + ")");
   //--- check for long position (BUY) possibility
   if (canBuy) {
     ticket = OrderSendReliable(Symbol(), OP_BUY, lotsForTransaction, Ask, 3, 0,
