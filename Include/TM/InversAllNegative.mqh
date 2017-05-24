@@ -25,8 +25,7 @@ void InversAllNegative() {
     else
       ianTicket = 0;
   }
-  if (AccountFreeMargin() <
-      MathMax(firstBalance / 2, AccountFreeMargin() - firstBalance))
+  if (moneyOnRisk())
     return;
   int TotalToClose = OrdersTotal(), ticket;
   double lots = 0, money = 0;

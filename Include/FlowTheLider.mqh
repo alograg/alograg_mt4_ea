@@ -44,15 +44,27 @@ void FlowTheLider() {
   double SignalPrevious4 = NormalizeDouble(
       iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 4),
       Digits);
+  double SignalPrevious5 = NormalizeDouble(
+      iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 5),
+      Digits);
   bool canBuy = SignalCurrent > SignalPrevious1 &&
                 SignalPrevious1 > SignalPrevious2 &&
                 SignalPrevious2 > SignalPrevious3 &&
-                SignalPrevious3 > SignalPrevious4 && canOrder(OP_BUY);
+                SignalPrevious3 > SignalPrevious4 &&
+                SignalPrevious4 > SignalPrevious5 &&
+                canOrder(OP_BUY);
   bool canSell = SignalCurrent > 0 && SignalCurrent < SignalPrevious1 &&
                  SignalPrevious1 < SignalPrevious2 &&
                  SignalPrevious2 < SignalPrevious3 &&
+<<<<<<< HEAD
                  SignalPrevious3 < SignalPrevious4 && canOrder(OP_SELL);
   if (canBuy || canSell)
+=======
+                 SignalPrevious3 < SignalPrevious4 &&
+                 SignalPrevious4 < SignalPrevious5 &&
+                 canOrder(OP_SELL);
+  if(canBuy||canSell)
+>>>>>>> 9044a6539fe14fe3c6cecc7d65a26e763587547a
     AddNotify("FlowTheLider: buy (" + canBuy + "), sell (" + canSell + ")");
   //--- check for long position (BUY) possibility
   if (canBuy) {
