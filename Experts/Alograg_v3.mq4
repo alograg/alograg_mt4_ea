@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.81"
+#define propVersion "3.84"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -38,12 +38,13 @@ int tmp = 30; //-20;
 | Inicialización  |
 +----------------*/
 int OnInit() {
-  // Monto para utilizar en transacciones
-  GlobalVariableSet(eaName + "_block_profit", Deposits() * 0.2);
   // Inicializacion de variables
   initUtilsGlobals(true);
+  Print("Depositos: ", workingMoney);
+  // Monto para utilizar en transacciones
+  GlobalVariableSet(eaName + "_block_profit", workingMoney * 0.2);
   // Registro de evento
-  EventSetTimer(60 * 60);
+  EventSetTimer(60 * 60 * 6);
   tmInit();
   SendSimbolParams();
   Print(eaName + " " + propVersion);
@@ -94,7 +95,7 @@ void doStrategies() {
   TwoWays();
   if (moneyOnRisk())
     return;
-  // MorningWork();
+  MorningWork();
   FreeDayNigth();
   FlowTheLider();
   CrossMover();

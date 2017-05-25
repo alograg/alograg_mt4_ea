@@ -25,7 +25,7 @@ void initUtilsGlobals(bool isNew = false) {
     pip = getPipValue();
     slippage = getSlippage();
     calculateBetterTransactionTime();
-    workingMoney = Deposits();
+    workingMoney = IsTesting() ? firstBalance : Deposits();
   }
   getSpread(Ask - Bid);
   totalOrders = OrdersTotal();
@@ -38,8 +38,6 @@ double getPipValue() {
   if (pip > 0)
     return pip;
   pip = Point;
-  if (Digits == 3 || Digits == 5)
-    pip *= 10;
   return pip;
 }
 // Calculate Slippage Value
@@ -77,14 +75,13 @@ double getSpread(double AddValue = 0) {
   return (NormalizeDouble(ArrayTotal / ArraySize(Spread), Digits));
 }
 int getSpreadPoints() {
-  return 20; // MathRound(getSpread() / SymbolInfoDouble(Symbol(),
-             // SYMBOL_POINT));
+  return MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
 }
 // Maxima perdida permitida
 double getMaxLost() {
   if (maxLost < 0)
     return maxLost;
-  return MathMax(firstBalance * -0.25, -5);
+  return MathMax(workingMoney * -0.25, -5);
 }
 // Incremento semanal
 double getWeekProfit() {
@@ -102,9 +99,9 @@ double getBlockMoney() {
 // Dinero libre
 double getUnBlocked() {
   blocked = AccountEquity();
-  double millards = MathFloor(blocked / firstBalance) - 1;
+  double millards = MathFloor(blocked / workingMoney) - 1;
   if (millards >= 1) {
-    blocked -= firstBalance * millards;
+    blocked -= workingMoney * millards;
   }
   blocked -= getBlockMoney();
   blocked /= 3;
@@ -113,7 +110,7 @@ double getUnBlocked() {
 }
 // Tamaño del lote según dispocición
 double getLotSize(double Risk = 2) {
-  if (AccountFreeMargin() < AccountBalance() * 0.2)
+  if (AccountFreeMargin() < AccountBalance() * 0.5)
     return 0.0;
   double MaxLot = 1.5;
   double MinLot = 0.01;
@@ -237,27 +234,21 @@ void SendAccountReport() {
 void SendSimbolParams() {
   string comm = eaName + " v." + propVersion;
   comm += StringFormat("\nSymbol: %s", Symbol());
-  comm += StringFormat("\nSpread value in points: %G", getSpreadPoints());
-  comm += StringFormat("\nStop level in points: %G",
-                       MarketInfo(Symbol(), MODE_STOPLEVEL));
-  comm += StringFormat("\nSwap of the buy order: %G",
-                       MarketInfo(Symbol(), MODE_SWAPLONG));
-  comm += StringFormat("\nSwap of the sell order: %G",
-                       MarketInfo(Symbol(), MODE_SWAPSHORT));
-  comm += StringFormat("\nAllowed using OrderCloseBy(): %G",
-                       MarketInfo(Symbol(), MODE_CLOSEBY_ALLOWED));
   bool spreadfloat = SymbolInfoInteger(Symbol(), SYMBOL_SPREAD_FLOAT);
-  comm += StringFormat("\nSpread %s = %I64d points",
+  comm += StringFormat("\nSpread %s = %I64d points, %.5f",
                        spreadfloat ? "floating" : "fixed",
-                       SymbolInfoInteger(Symbol(), SYMBOL_SPREAD));
-  double ask = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
-  double bid = SymbolInfoDouble(Symbol(), SYMBOL_BID);
-  comm += "\nCalculated spread = " + getSpreadPoints() + " points";
+                       SymbolInfoInteger(Symbol(), SYMBOL_SPREAD),
+                       NormalizeDouble(getSpread(), Digits));
+  comm += StringFormat("\nStop level: %G",
+                       MarketInfo(Symbol(), MODE_STOPLEVEL));
+  comm += StringFormat("\nSwap: byu %G sell %G",
+                       MarketInfo(Symbol(), MODE_SWAPLONG),
+                        MarketInfo(Symbol(), MODE_SWAPSHORT));
   comm += "\nPeriod: work=" + EnumToString((ENUM_TIMEFRAMES)shortWork) +
           ", monitor=" + EnumToString((ENUM_TIMEFRAMES)longWork);
+  comm += "\nTP/Candel:" + OrderHiddenTP;
   comm += "\nTS:" + OrderTS;
   comm += "\nTST:" + OrderTSTrigger;
-  comm += "\nTP:" + OrderHiddenTP;
   comm += "\nSL:" + OrderHiddenSL;
   Comment(comm);
 }
@@ -376,6 +367,7 @@ bool canOrderAsk(int type, int period) {
 //-------- Debit/Credit total -------------------
 double Deposits() {
   double total = 0;
+  Print("Search Deposits: ", OrdersHistoryTotal());
   for (int i = 0; i < OrdersHistoryTotal(); i++) {
     if (OrderSelect(i, SELECT_BY_POS, MODE_HISTORY)) {
       if (OrderType() > 5) {
@@ -388,4 +380,8 @@ double Deposits() {
 bool moneyOnRisk() {
   return AccountFreeMargin() <
          MathMax(workingMoney / 2, AccountFreeMargin() - workingMoney);
+}
+float riskByMoney(){
+  float avaiable = MathMax((AccountEquity()-workingMoney) / workingMoney, 1);
+  return NormalizeDouble(avaiable, 1);
 }
