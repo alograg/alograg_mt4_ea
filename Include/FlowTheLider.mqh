@@ -32,6 +32,7 @@ void FlowTheLider() {
       Digits);
   double diffSignals = MathAbs(SignalCurrent - SignalPrevious1);
   if (MathAbs(SignalCurrent) > getSpread()) {
+    // utilizar la señal del macd
     if (diffSignals < getSpread() / 2 &&
         !canOrderAsk((SignalCurrent - SignalPrevious1) > 0 ? OP_BUY : OP_SELL, PERIOD_D1)){
       return;

@@ -104,7 +104,10 @@ void doStrategies() {
 /*----------------------------+
 | Administra las operaciones  |
 +----------------------------*/
-void doManagment() { tmEvent(); }
+void doManagment() { 
+  tmEvent();
+  // FlowTheEnemy
+}
 
 void testOperation() {
   if (tmp <= 20)
