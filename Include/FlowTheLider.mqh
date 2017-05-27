@@ -68,12 +68,12 @@ void FlowTheLider() {
   if (canBuy) {
     ticket = OrderSendReliable(Symbol(), OP_BUY, lotsForTransaction, Ask, 3, 0,
                                0, FlowTheLiderComment, MagicNumber, 0, Green);
-    hasSell = FALSE;
+    return;
   }
   //--- check for short position (SELL) possibility
   if (canSell) {
     ticket = OrderSendReliable(Symbol(), OP_SELL, lotsForTransaction, Bid, 3, 0,
                                0, FlowTheLiderComment, MagicNumber, 0, Red);
-    hasSell = TRUE;
+    return;
   }
 }

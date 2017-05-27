@@ -22,6 +22,18 @@ void CloseAllProfited(string comment = NULL, bool force = false,
   // PrintLog("Close: ", iClosed, " closed of ", TotalToClose);
 }
 
+void CloseAllOldProfited(double minCents = 0.03) {
+  int TotalToClose = OrdersTotal(), iClosed = 0;
+  for (int indexToClose = totalOrders - 1; 0 <= indexToClose; indexToClose--) {
+    if(!OrderSelect(indexToClose, SELECT_BY_POS, MODE_TRADES)) continue;
+    if (MathAbs(TimeDayOfYear(OrderOpenTime()) - TimeDayOfYear(time0)) < 1)
+      continue;
+    iClosed += CloseOneIfProfit(indexToClose, SELECT_BY_POS, NULL, false, minCents);
+  }
+  if (iClosed>0)
+    yesReset();
+}
+
 int CloseOneIfProfit(int id, int by = SELECT_BY_POS, string comment = NULL,
                      bool force = false, double minCents = 0.07) {
   if (!OrderSelect(id, by))

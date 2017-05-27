@@ -92,7 +92,7 @@ void OnTimer() {
 void doStrategies() {
   if (!strategiesActivate)
     return;
-  TwoWays();
+  //TwoWays();
   if (moneyOnRisk())
     return;
   MorningWork();

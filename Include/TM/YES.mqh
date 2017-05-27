@@ -26,6 +26,10 @@ void yesInit() {
   TotalNumberOfOrders = OrdersTotal();
   ArrayResize(OrderArray, TotalNumberOfOrders);
 }
+void yesReset() {
+  TotalNumberOfOrders = 0;
+  ArrayResize(OrderArray, TotalNumberOfOrders);
+}
 void yesProcess() {
   int i, j, icnt, jcnt, t, OrderTickets, OrderArrayIdx, FoundZeroIdx,
       OrderLongShort;
@@ -217,6 +221,7 @@ void yesProcess() {
           if (OrderCloseStatus) {
             ResetOrderArray(OrderArrayIdx);
             PurgeElement(OrderArrayIdx);
+            CloseAllOldProfited();
             break;
           }
         }

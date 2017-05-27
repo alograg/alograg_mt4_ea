@@ -12,11 +12,13 @@
 #include "CloseAllProfited.mqh"
 #include "TM\InversAllNegative.mqh"
 #include "TM\YES.mqh"
+#include "TM\FlowTheEnemy.mqh"
 
 // Constantes
 
 void tmInit() { yesInit(); }
 void tmEvent() {
   yesProcess();
+  FlowTheEnemy();
   InversAllNegative();
 }
