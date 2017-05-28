@@ -36,7 +36,8 @@ void yesProcess() {
   int TempNumberOfOrders, CountNumberOfOrders;
   int OrderProfitPip, OrderLossPip;
   bool TradeFound, OrderFound = FALSE, FoundZero = FALSE, OrderCloseStatus;
-  OrderTSTrigger = round(MathMin(getSpreadPoints() * 2 * riskByMoney(), AvereageCandle/10));
+  OrderTSTrigger = round(
+      MathMin(getSpreadPoints() * 2 * riskByMoney(), AvereageCandle / 10));
   OrderTS = round(OrderTSTrigger / 2);
   if (isNewDay() || AvereageCandle < 0) {
     AvereageCandle = NormalizeDouble(MathAbs(iHigh(Symbol(), PERIOD_D1, 1) -
