@@ -239,11 +239,11 @@ void SendSimbolParams() {
                        spreadfloat ? "floating" : "fixed",
                        SymbolInfoInteger(Symbol(), SYMBOL_SPREAD),
                        NormalizeDouble(getSpread(), Digits));
-  comm += StringFormat("\nStop level: %G",
-                       MarketInfo(Symbol(), MODE_STOPLEVEL));
+  comm +=
+      StringFormat("\nStop level: %G", MarketInfo(Symbol(), MODE_STOPLEVEL));
   comm += StringFormat("\nSwap: byu %G sell %G",
                        MarketInfo(Symbol(), MODE_SWAPLONG),
-                        MarketInfo(Symbol(), MODE_SWAPSHORT));
+                       MarketInfo(Symbol(), MODE_SWAPSHORT));
   comm += "\nPeriod: work=" + EnumToString((ENUM_TIMEFRAMES)shortWork) +
           ", monitor=" + EnumToString((ENUM_TIMEFRAMES)longWork);
   comm += "\nTP/Candel:" + OrderHiddenTP;
@@ -381,7 +381,7 @@ bool moneyOnRisk() {
   return AccountFreeMargin() <
          MathMax(workingMoney / 2, AccountFreeMargin() - workingMoney);
 }
-float riskByMoney(){
-  float avaiable = MathMax((AccountEquity()-workingMoney) / workingMoney, 1);
+float riskByMoney() {
+  float avaiable = MathMax((AccountEquity() - workingMoney) / workingMoney, 1);
   return NormalizeDouble(avaiable, 1);
 }

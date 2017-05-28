@@ -27,8 +27,8 @@ void yesInit() {
   ArrayResize(OrderArray, TotalNumberOfOrders);
 }
 void yesReset() {
-  TotalNumberOfOrders = 0;
-  ArrayResize(OrderArray, TotalNumberOfOrders);
+  ArrayResize(OrderArray, 0);
+  yesInit();
 }
 void yesProcess() {
   int i, j, icnt, jcnt, t, OrderTickets, OrderArrayIdx, FoundZeroIdx,

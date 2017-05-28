@@ -92,7 +92,7 @@ void OnTimer() {
 void doStrategies() {
   if (!strategiesActivate)
     return;
-  //TwoWays();
+  // TwoWays();
   if (moneyOnRisk())
     return;
   MorningWork();
@@ -104,7 +104,7 @@ void doStrategies() {
 /*----------------------------+
 | Administra las operaciones  |
 +----------------------------*/
-void doManagment() { 
+void doManagment() {
   tmEvent();
   // FlowTheEnemy
 }
