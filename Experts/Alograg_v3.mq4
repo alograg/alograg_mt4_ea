@@ -106,7 +106,12 @@ void doStrategies() {
 +----------------------------*/
 void doManagment() {
   tmEvent();
-  // FlowTheEnemy
+  if (IsTesting() && (time0 == StrToTime("2017.01.12 19:00"))) {
+    CloseByProfited();
+  }
+  if (IsTesting() && (time0 == StrToTime("2017.01.24 15:00"))) {
+    CloseAll();
+  }
 }
 
 void testOperation() {

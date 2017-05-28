@@ -75,7 +75,7 @@ double getSpread(double AddValue = 0) {
   return (NormalizeDouble(ArrayTotal / ArraySize(Spread), Digits));
 }
 int getSpreadPoints() {
-  return MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT));
+  return MathMin(MathRound(getSpread() / SymbolInfoDouble(Symbol(), SYMBOL_POINT)), 20);
 }
 // Maxima perdida permitida
 double getMaxLost() {

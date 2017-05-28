@@ -16,6 +16,10 @@ double arrayOut[];
 void FlowTheEnemy() {
   if (!CheckNewBar())
     return;
+  int countLidersBuy = COT(OP_BUY, MagicNumber, FlowTheLiderComment),
+      countLidersSell = COT(OP_SELL, MagicNumber, FlowTheLiderComment);
+  if (countLidersBuy + countLidersSell < 1)
+    return;
   double SignalCurrent = NormalizeDouble(
       iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 0),
       Digits);
@@ -34,14 +38,22 @@ void FlowTheEnemy() {
   double SignalPrevious5 = NormalizeDouble(
       iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 5),
       Digits);
+  double SignalPrevious6 = NormalizeDouble(
+      iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 6),
+      Digits);
+  double SignalPrevious7 = NormalizeDouble(
+      iMACD(Symbol(), PERIOD_H4, 12, 26, 9, PRICE_TYPICAL, MODE_MAIN, 7),
+      Digits);
   bool canBuy =
       SignalCurrent < SignalPrevious1 && SignalPrevious1 < SignalPrevious2 &&
       SignalPrevious2 > SignalPrevious3 && SignalPrevious3 > SignalPrevious4 &&
-      SignalPrevious4 > SignalPrevious5;
+      SignalPrevious4 > SignalPrevious5 && SignalPrevious5 > SignalPrevious6 &&
+      SignalPrevious6 > SignalPrevious7;
   bool canSell =
-      SignalCurrent > SignalPrevious1 && SignalPrevious1 > SignalPrevious2 &&
-      SignalPrevious2 < SignalPrevious3 && SignalPrevious3 < SignalPrevious4 &&
-      SignalPrevious4 < SignalPrevious5;
+      SignalCurrent > 0 && SignalCurrent > SignalPrevious1 &&
+      SignalPrevious1 > SignalPrevious2 && SignalPrevious2 < SignalPrevious3 &&
+      SignalPrevious3 < SignalPrevious4 && SignalPrevious4 < SignalPrevious5 &&
+      SignalPrevious5 < SignalPrevious6 && SignalPrevious6 < SignalPrevious7;
   if (!canBuy && !canSell)
     return;
   int sourceTicket, enemyTicket, hasOrder, searchIn = OrdersTotal(),
@@ -57,12 +69,12 @@ void FlowTheEnemy() {
       closeCount++;
       if (OrderType() == OP_BUY) {
         enemyTicket =
-            OrderSendReliable(Symbol(), OP_SELL, OrderLots(), Ask, 3, 0, 0,
-                              FlowTheEnemyComment, MagicNumber, 0, Yellow);
+            OrderSendReliable(Symbol(), OP_SELL, OrderLots() + 0.01, Ask, 3, 0,
+                              0, FlowTheEnemyComment, MagicNumber, 0, Yellow);
       } else if (OrderType() == OP_SELL) {
         enemyTicket =
-            OrderSendReliable(Symbol(), OP_BUY, OrderLots(), Bid, 3, 0, 0,
-                              FlowTheEnemyComment, MagicNumber, 0, Yellow);
+            OrderSendReliable(Symbol(), OP_BUY, OrderLots() + 0.01, Bid, 3, 0,
+                              0, FlowTheEnemyComment, MagicNumber, 0, Yellow);
       }
       if (enemyTicket) {
         Print("Close ", sourceTicket, " with ", enemyTicket);
