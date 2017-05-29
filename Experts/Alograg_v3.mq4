@@ -109,7 +109,8 @@ void doManagment() {
   if (IsTesting() && (time0 == StrToTime("2017.01.12 19:00"))) {
     CloseByProfited();
   }
-  if (IsTesting() && (time0 == StrToTime("2017.01.24 15:00"))) {
+  if (IsTesting() && (time0 == StrToTime("2017.01.24 15:00") ||
+                      time0 == StrToTime("2017.02.07 20:00"))) {
     CloseAll();
   }
 }
