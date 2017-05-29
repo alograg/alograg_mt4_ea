@@ -211,6 +211,8 @@ void SendAccountReport() {
   balanceReport += AccountInfoString(ACCOUNT_CURRENCY);
   balanceReport += " Date " + TimeToString(Time[0]) + "\n";
   balanceReport +=
+      StringFormat("RealMoney      = %G", workingMoney);
+  balanceReport +=
       StringFormat("BALANCE        = %G", AccountInfoDouble(ACCOUNT_BALANCE));
   balanceReport += "\n";
   balanceReport +=
@@ -247,10 +249,11 @@ void SendSimbolParams() {
                        MarketInfo(Symbol(), MODE_SWAPSHORT));
   comm += "\nPeriod: work=" + EnumToString((ENUM_TIMEFRAMES)shortWork) +
           ", monitor=" + EnumToString((ENUM_TIMEFRAMES)longWork);
-  comm += "\nTP/Candel:" + OrderHiddenTP;
-  comm += "\nTS:" + OrderTS;
-  comm += "\nTST:" + OrderTSTrigger;
-  comm += "\nSL:" + OrderHiddenSL;
+  comm += "\nMoney: " + workingMoney;
+  comm += "\nTP/Candel: " + OrderHiddenTP;
+  comm += "\nTS: " + OrderTS;
+  comm += "\nTST: " + OrderTSTrigger;
+  comm += "\nSL: " + OrderHiddenSL;
   Comment(comm);
 }
 void PrintLog(string txt) {
