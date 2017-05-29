@@ -113,7 +113,7 @@ double getUnBlocked() {
 double getLotSize(double Risk = 2) {
   if (AccountFreeMargin() < AccountBalance() * 0.5)
     return 0.0;
-  double MaxLot = 1.5;
+  double MaxLot = 0.15;
   double MinLot = 0.01;
   double Size = AccountFreeMargin() / (10000 * Risk);
   if (Size < MinLot)
