@@ -389,3 +389,4 @@ float riskByMoney() {
   float avaiable = MathMax((AccountEquity() - workingMoney) / workingMoney, 1);
   return NormalizeDouble(avaiable, 1);
 }
+//345678901234567890123456789012345678901234567
