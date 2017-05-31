@@ -383,7 +383,7 @@ double Deposits() {
 }
 bool moneyOnRisk() {
   return AccountFreeMargin() <
-         MathMax(workingMoney, AccounMargin())/2;
+         MathMax(workingMoney, AccountMargin())/2;
 }
 float riskByMoney() {
   float avaiable = MathMax((AccountEquity() - workingMoney) / workingMoney, 1);

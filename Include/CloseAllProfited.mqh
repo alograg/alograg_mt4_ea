@@ -100,6 +100,7 @@ int CloseOneIfProfit(int id, int by = SELECT_BY_POS, string comment = NULL,
 
 void CloseAll(string comment = NULL) {
   int TotalToClose = OrdersTotal(), iClosed = 0, hasClose = 0;
+  CloseByProfited();
   for (int indexToClose = totalOrders - 1; 0 <= indexToClose; indexToClose--) {
     if (OrderSymbol() != Symbol() && !isFornComment(comment, OrderComment()))
       continue;
