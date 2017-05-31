@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.88"
+#define propVersion "3.89"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -104,16 +104,7 @@ void doStrategies() {
 /*----------------------------+
 | Administra las operaciones  |
 +----------------------------*/
-void doManagment() {
-  tmEvent();
-  if (IsTesting() && (time0 == StrToTime("2017.01.12 19:00"))) {
-    CloseByProfited();
-  }
-  if (IsTesting() && (time0 == StrToTime("2017.01.24 15:00") ||
-                      time0 == StrToTime("2017.02.07 20:00"))) {
-    CloseAll();
-  }
-}
+void doManagment() { tmEvent(); }
 
 void testOperation() {
   if (tmp <= 20)

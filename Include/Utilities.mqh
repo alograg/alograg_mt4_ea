@@ -210,10 +210,9 @@ void SendAccountReport() {
       StringFormat("\nBroker; %s \n", AccountInfoString(ACCOUNT_COMPANY));
   balanceReport += AccountInfoString(ACCOUNT_CURRENCY);
   balanceReport += " Date " + TimeToString(Time[0]) + "\n";
+  balanceReport += StringFormat("RealMoney      = %G", workingMoney);
   balanceReport +=
-      StringFormat("RealMoney      = %G", workingMoney);
-  balanceReport +=
-      StringFormat("BALANCE        = %G", AccountInfoDouble(ACCOUNT_BALANCE));
+      StringFormat("\nBALANCE        = %G", AccountInfoDouble(ACCOUNT_BALANCE));
   balanceReport += "\n";
   balanceReport +=
       StringFormat("PROFIT         = %G", AccountInfoDouble(ACCOUNT_PROFIT));
@@ -382,11 +381,10 @@ double Deposits() {
   return (total);
 }
 bool moneyOnRisk() {
-  return AccountFreeMargin() <
-         MathMax(workingMoney, AccountMargin())/2;
+  return AccountFreeMargin() < MathMax(workingMoney, AccountMargin()) / 2;
 }
 float riskByMoney() {
-  float avaiable = MathMax((AccountEquity() - workingMoney) / workingMoney, 1);
+  float avaiable = MathMax((AccountBalance() - workingMoney) / workingMoney, 1);
   return NormalizeDouble(avaiable, 1);
 }
-//345678901234567890123456789012345678901234567
+// 345678901234567890123456789012345678901234567

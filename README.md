@@ -55,13 +55,3 @@ Template for «forex strategy for USDCHF» for Metatrader 4 I do not spread, bec
 https://www.tradingview.com/chart/EURUSD/vvazQHn5-EURUSD-Daily-Chart-very-simple-trend-following-strategy/
 
 
-
-
-1427	2017.01.23 16:56	close at stop	740	0.14	0.86055	0.00000	0.00000	-43.92	4884.89
-1480	2017.01.23 16:56	close at stop	658	0.08	0.86055	0.00000	0.00000	-225.57	3642.09
----
-2447	2017.02.13 17:11	close at stop	1230	0.27	0.84791	0.00000	0.00000	-539.24	8785.81
-2462	2017.02.13 17:11	close at stop	1068	0.30	0.84791	0.00000	0.00000	-615.01	1982.57
----
-2934	2017.02.22 09:25	close at stop	1475	0.15	0.84158	0.00000	0.00000	-255.73	5917.20
-2950	2017.02.22 09:25	close at stop	1454	0.15	0.84158	0.00000	0.00000	-306.89	1274.51
