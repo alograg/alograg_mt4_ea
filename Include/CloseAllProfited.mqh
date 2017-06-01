@@ -112,3 +112,16 @@ void CloseAll(string comment = NULL) {
     }
   }
 }
+void CloseAllOldProfitedByType(int type, double minCents = 0.03) {
+  int TotalToClose = OrdersTotal(), iClosed = 0;
+  for (int indexToClose = totalOrders - 1; 0 <= indexToClose; indexToClose--) {
+    if (!OrderSelect(indexToClose, SELECT_BY_POS, MODE_TRADES))
+      continue;
+    if (MathAbs(OrderOpenTime() - time0) <= (60 * 60 * 24 * 3))
+      continue;
+    iClosed +=
+        CloseOneIfProfit(indexToClose, SELECT_BY_POS, NULL, false, minCents);
+  }
+  if (iClosed > 0)
+    yesReset();
+}

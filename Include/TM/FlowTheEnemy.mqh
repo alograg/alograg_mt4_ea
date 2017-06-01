@@ -59,6 +59,7 @@ void FlowTheEnemy() {
   int sourceTicket, enemyTicket, hasOrder, searchIn = OrdersTotal(),
                                            closeCount = 0;
   ;
+  double enemyLots = 0;
   for (int cnt_COT = 0; cnt_COT < searchIn; cnt_COT++) {
     if (!OrderSelect(cnt_COT, SELECT_BY_POS, MODE_TRADES))
       continue;
@@ -68,22 +69,18 @@ void FlowTheEnemy() {
       enemyTicket = 0;
       closeCount++;
       if (OrderType() == OP_BUY) {
-        enemyTicket =
-            OrderSendReliable(Symbol(), OP_SELL, OrderLots() + 0.01, Ask, 3, 0,
-                              0, FlowTheEnemyComment, MagicNumber, 0, Yellow);
+        enemyLots += OrderLots();
       } else if (OrderType() == OP_SELL) {
-        enemyTicket =
-            OrderSendReliable(Symbol(), OP_BUY, OrderLots() + 0.01, Bid, 3, 0,
-                              0, FlowTheEnemyComment, MagicNumber, 0, Yellow);
-      }
-      if (enemyTicket) {
-        Print("Close ", sourceTicket, " with ", enemyTicket);
-        // hasOrder = OrderCloseBy(sourceTicket, enemyTicket, Yellow);
+        enemyLots -= OrderLots();
       }
     }
   }
-  if (closeCount > 0) {
-    Print(FlowTheEnemyComment, ": ", closeCount);
-    yesReset();
+  Print("Enemy lots: ", searchIn, "->", closeCount, "->", enemyLots);
+  if(enemyLots != 0){
+      enemyTicket = OrderSendReliable(Symbol(),
+                                      enemyLots < 0 ? OP_BUY : OP_SELL,
+                                      MathAbs(enemyLots), enemyLots < 0 ? Bid :  Ask,
+                                      3, 0, 0,
+                                      FlowTheEnemyComment, MagicNumber, 0, Yellow);
   }
 }
