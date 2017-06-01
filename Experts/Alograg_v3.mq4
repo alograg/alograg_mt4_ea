@@ -77,7 +77,7 @@ void OnTick() {
 | Al timer  |
 +----------*/
 void OnTimer() {
-  workingMoney = MathMax(firstBalance, Deposits());
+  workingMoney = Deposits()?: firstBalance;
   SendAccountReport();
   if (false && !IsTradeAllowed()) {
     string Alarm = TerminalInfoString(TERMINAL_NAME) + "\n";
