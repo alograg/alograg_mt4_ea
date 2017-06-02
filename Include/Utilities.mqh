@@ -25,7 +25,8 @@ void initUtilsGlobals(bool isNew = false) {
     pip = getPipValue();
     slippage = getSlippage();
     calculateBetterTransactionTime();
-    workingMoney = Deposits()?: firstBalance;
+    workingMoney = Deposits();
+    workingMoney = workingMoney ? workingMoney : firstBalance;
   }
   getSpread(Ask - Bid);
   totalOrders = OrdersTotal();

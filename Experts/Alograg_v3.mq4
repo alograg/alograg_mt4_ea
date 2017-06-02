@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.89"
+#define propVersion "3.90"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -77,7 +77,11 @@ void OnTick() {
 | Al timer  |
 +----------*/
 void OnTimer() {
-  workingMoney = Deposits()?: firstBalance;
+  if(OrdersTotal() == 0){
+    workingMoney = Deposits();
+    workingMoney = workingMoney ? workingMoney : firstBalance;
+    workingMoney = MathMax(workingMoney, AccountBalance() - workingMoney);
+  }
   SendAccountReport();
   if (false && !IsTradeAllowed()) {
     string Alarm = TerminalInfoString(TERMINAL_NAME) + "\n";

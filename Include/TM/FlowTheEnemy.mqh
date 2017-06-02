@@ -13,7 +13,18 @@ string FlowTheEnemyComment = eaName + ": FlowTheEnemy";
 
 double arrayOut[];
 
+int enemyTicket, cleanEnemyOptions;
+
 void FlowTheEnemy() {
+  if (enemyTicket) {
+    cleanEnemyOptions = 0;
+    int currentOrder = OrderSelect(enemyTicket, SELECT_BY_TICKET);
+    int optionTime = OrderCloseTime();
+    if (!optionTime) {
+      enemyTicket = 0;
+      return;
+    }
+  }
   if (!CheckNewBar())
     return;
   int countLidersBuy = COT(OP_BUY, MagicNumber, FlowTheLiderComment),
@@ -56,9 +67,7 @@ void FlowTheEnemy() {
       SignalPrevious5 < SignalPrevious6 && SignalPrevious6 < SignalPrevious7;
   if (!canBuy && !canSell)
     return;
-  int sourceTicket, enemyTicket, hasOrder, searchIn = OrdersTotal(),
-                                           closeCount = 0;
-  ;
+  int sourceTicket, hasOrder, searchIn = OrdersTotal(), closeCount = 0;
   double enemyLots = 0;
   for (int cnt_COT = 0; cnt_COT < searchIn; cnt_COT++) {
     if (!OrderSelect(cnt_COT, SELECT_BY_POS, MODE_TRADES))
@@ -75,7 +84,7 @@ void FlowTheEnemy() {
       }
     }
   }
-  Print("Enemy lots: ", searchIn, "->", closeCount, "->", enemyLots);
+  //Print("Enemy lots: ", searchIn, "->", closeCount, "->", enemyLots);
   if(enemyLots != 0){
       enemyTicket = OrderSendReliable(Symbol(),
                                       enemyLots < 0 ? OP_BUY : OP_SELL,
