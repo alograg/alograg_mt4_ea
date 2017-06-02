@@ -98,10 +98,10 @@ void doStrategies() {
   if (!strategiesActivate)
     return;
   TwoWays();
+  FreeDayNigth();
   if (moneyOnRisk())
     return;
   MorningWork();
-  FreeDayNigth();
   FlowTheLider();
   CrossMover();
   // WeekendGap();
