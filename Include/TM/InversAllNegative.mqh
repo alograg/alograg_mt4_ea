@@ -14,6 +14,8 @@ string IanComment = eaName + ": IAN-TM";
 int ianTicket = 0;
 
 void InversAllNegative() {
+  if (!strategiesActivate)
+    return;
   if (!CheckNewBar())
     return;
   if (!(TimeHour(Time[0]) == 0 && TimeMinute(Time[0]) == 0 && CheckNewBar()))

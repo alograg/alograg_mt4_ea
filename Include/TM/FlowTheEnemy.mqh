@@ -16,6 +16,8 @@ double arrayOut[];
 int enemyTicket, cleanEnemyOptions;
 
 void FlowTheEnemy() {
+  if (!strategiesActivate)
+    return;
   if (enemyTicket) {
     cleanEnemyOptions = 0;
     int currentOrder = OrderSelect(enemyTicket, SELECT_BY_TICKET);
