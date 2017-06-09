@@ -87,7 +87,7 @@ void FlowTheEnemy() {
     }
   }
   //Print("Enemy lots: ", searchIn, "->", closeCount, "->", enemyLots);
-  if(enemyLots != 0){
+  if(enemyLots != 0 && (enemyLots < 0 && canBuy) || (enemyLots > 0 && canSell)){
       enemyTicket = OrderSendReliable(Symbol(),
                                       enemyLots < 0 ? OP_BUY : OP_SELL,
                                       MathAbs(enemyLots), enemyLots < 0 ? Bid :  Ask,

@@ -45,10 +45,11 @@ void InversAllNegative() {
   if (0 < money)
     return;
   AddNotify(IanComment + ": Lots " + lots + " money " + money);
-  if (0 > lots)
-    ianTicket = OrderSendReliable(Symbol(), OP_BUY, MathAbs(lots), Ask, 3, 0, 0,
-                                  IanComment, MagicNumber, 0, Green);
-  if (0 < lots)
-    ianTicket = OrderSendReliable(Symbol(), OP_SELL, MathAbs(lots), Bid, 3, 0,
-                                  0, IanComment, MagicNumber, 0, Green);
+  if(lots != 0){
+      enemyTicket = OrderSendReliable(Symbol(),
+                                      lots < 0 ? OP_BUY : OP_SELL,
+                                      MathAbs(lots), lots < 0 ? Bid :  Ask,
+                                      3, 0, 0,
+                                      IanComment, MagicNumber, 0, Green);
+  }
 }
