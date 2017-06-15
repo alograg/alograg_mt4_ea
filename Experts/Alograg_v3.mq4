@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.93"
+#define propVersion "3.95"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -44,7 +44,7 @@ int OnInit() {
   // Monto para utilizar en transacciones
   GlobalVariableSet(eaName + "_block_profit", workingMoney * 0.2);
   // Registro de evento
-  EventSetTimer(60 * 60 * 8);
+  EventSetTimer(60 * 60 * 12);
   tmInit();
   SendSimbolParams();
   Print(eaName + " " + propVersion);
@@ -70,6 +70,12 @@ void OnTick() {
     initUtilsGlobals();
     SendSimbolParams();
     SendNotification(fullNotification);
+    if(OrdersTotal() == 0 || AccountBalance() - workingMoney >= workingMoney)
+      workingMoney = Deposits();
+      workingMoney = workingMoney ? workingMoney : firstBalance;
+      workingMoney = MathMax(workingMoney, AccountBalance() - workingMoney);
+      SendNotification("Retira ahora!!!");
+    }
   }
   fullNotification = "";
 }
@@ -77,11 +83,9 @@ void OnTick() {
 | Al timer  |
 +----------*/
 void OnTimer() {
-  if(OrdersTotal() == 0){
-    workingMoney = Deposits();
-    workingMoney = workingMoney ? workingMoney : firstBalance;
-    workingMoney = MathMax(workingMoney, AccountBalance() - workingMoney);
-  }
+  workingMoney = Deposits();
+  workingMoney = workingMoney ? workingMoney : firstBalance;
+  workingMoney = MathMax(workingMoney, AccountBalance() - workingMoney);
   SendAccountReport();
   if (false && !IsTradeAllowed()) {
     string Alarm = TerminalInfoString(TERMINAL_NAME) + "\n";
