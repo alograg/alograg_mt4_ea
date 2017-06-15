@@ -70,7 +70,7 @@ void OnTick() {
     initUtilsGlobals();
     SendSimbolParams();
     SendNotification(fullNotification);
-    if(OrdersTotal() == 0 || AccountBalance() - workingMoney >= workingMoney)
+    if(OrdersTotal() == 0 || AccountBalance() - workingMoney >= workingMoney){
       workingMoney = Deposits();
       workingMoney = workingMoney ? workingMoney : firstBalance;
       workingMoney = MathMax(workingMoney, AccountBalance() - workingMoney);
