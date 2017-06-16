@@ -3,7 +3,7 @@
 | Copyright 2017, Alograg |
 |  https://www.alograg.me |
 +------------------------*/
-#define propVersion "3.95"
+#define propVersion "3.96"
 #define eaName "Alograg"
 #define MagicNumber 17808159
 // Propiedades
@@ -86,7 +86,9 @@ void OnTimer() {
   workingMoney = Deposits();
   workingMoney = workingMoney ? workingMoney : firstBalance;
   workingMoney = MathMax(workingMoney, AccountBalance() - workingMoney);
-  SendAccountReport();
+  int dayWeek = TimeDayOfWeek(TimeCurrent());
+  if(dayWeek != 6 && dayWeek!= 0)
+    SendAccountReport();
   if (false && !IsTradeAllowed()) {
     string Alarm = TerminalInfoString(TERMINAL_NAME) + "\n";
     Alarm += TerminalInfoString(TERMINAL_COMPANY) + "\n";
