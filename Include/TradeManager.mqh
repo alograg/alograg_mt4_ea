@@ -19,6 +19,6 @@
 void tmInit() { yesInit(); }
 void tmEvent() {
   yesProcess();
-  FlowTheEnemy();
+  //FlowTheEnemy();
   InversAllNegative();
 }
