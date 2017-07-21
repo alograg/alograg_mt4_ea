@@ -1,0 +1,19 @@
+// Coloque su configuración en este archivo para sobrescribir la configuración predeterminada y de usuario.
+{
+    "workbench.colorTheme": "Visual Studio Dark",
+    "workbench.iconTheme": "vs-minimal",
+    "workbench.sideBar.location": "left",
+    "files.autoSave": "onFocusChange",
+    "git.confirmSync": true,
+    "editor.renderWhitespace": "all",
+    "files.associations": {
+        "*.svg": "xml"
+    },
+    "window.zoomLevel": 0,
+    "[cpp]": {
+        "editor.quickSuggestions": true
+    },
+    "[c]": {
+        "editor.quickSuggestions": true
+    }
+}
