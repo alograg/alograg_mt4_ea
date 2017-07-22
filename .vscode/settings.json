@@ -6,6 +6,7 @@
     "files.autoSave": "onFocusChange",
     "git.confirmSync": true,
     "editor.renderWhitespace": "all",
+    "editor.formatOnSave": true,
     "files.associations": {
         "*.svg": "xml"
     },
