@@ -3,7 +3,7 @@
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
-#define propVersion "4.00"
+#define propVersion "4.01"
 #define eaName "Alograg"
 #define MagicNumber 17808160
 // Properties
@@ -41,11 +41,11 @@ void OnDeinit(const int reason) { EventKillTimer(); }
 +-----------*/
 void OnTick() {
   doStrategies();
-  //doManagment();
+  // doManagment();
   Print(isNewBar(PERIOD_M1));
   Print(isNewBar(PERIOD_M1));
-  if(isNewBar(PERIOD_M1))
-  doError[1];
+  if (isNewBar(PERIOD_M1))
+    doError[1];
   Print(isNewBar(PERIOD_M1));
   isNewBar();
   Print(isNewBar(PERIOD_M1));

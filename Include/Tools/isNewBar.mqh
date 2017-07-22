@@ -28,7 +28,8 @@ bool isNewBar(int period = 0) {
   }
   for (int i = 0; i < countPeriods; i++) {
     if (allPeriods[i] == period) {
-      Print("Evalua " + period + "=" + (periodsLastBars[i] != iTime(Symbol(), period, 0)));
+      Print("Evalua " + period + "=" +
+            (periodsLastBars[i] != iTime(Symbol(), period, 0)));
       return periodsLastBars[i] != iTime(Symbol(), period, 0);
     }
   }
