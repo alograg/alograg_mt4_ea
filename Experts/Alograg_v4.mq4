@@ -42,13 +42,7 @@ void OnDeinit(const int reason) { EventKillTimer(); }
 void OnTick() {
   doStrategies();
   // doManagment();
-  Print(isNewBar(PERIOD_M1));
-  Print(isNewBar(PERIOD_M1));
-  if (isNewBar(PERIOD_M1))
-    doError[1];
-  Print(isNewBar(PERIOD_M1));
   isNewBar();
-  Print(isNewBar(PERIOD_M1));
 }
 /*----------+
 | Al timer  |
@@ -58,7 +52,6 @@ void OnTimer() {}
 | Ejecuta las estrategias  |
 +-------------------------*/
 void doStrategies() {
-  Print("Evaluando PERIOD_D1 " + isNewBar(PERIOD_D1));
   if (!strategiesActivate || moneyOnRisk())
     return;
   strategiesEvent();
