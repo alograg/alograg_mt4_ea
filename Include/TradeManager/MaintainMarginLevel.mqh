@@ -19,7 +19,6 @@ void MaintainMarginLevel() {
   int stopOut = AccountStopoutMode() ? 50 : AccountStopoutLevel();
   if (MarginLevel > stopOut * 4)
     return;
-  Print("Margin: " + MarginLevel + "< " + stopOut);
   tradeCounterPositions(MarginLevel < stopOut * 2);
 }
 void tradeCounterPositions(bool strong = false) {

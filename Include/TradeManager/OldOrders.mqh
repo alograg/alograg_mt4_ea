@@ -14,38 +14,31 @@ string OldOrdersComment = eaName + ": S-OldOrders";
 // Function
 void OldOrders() {
   int total = OrdersTotal();
-  for (int position = 0; position < total; position++) {
-    if (OrderSelect(position, SELECT_BY_POS)) {
-      if (OrderSymbol() == Symbol()) {
-        int differenceInDays =
-            (iTime(Symbol(), PERIOD_H1, 0) - OrderOpenTime()) / (60 * 60 * 12);
-        if (differenceInDays < 1)
-          continue;
-        int mode = OrderType();
-        double stop,
-            priceToEval = OrderStopLoss() ? OrderStopLoss() : OrderOpenPrice(),
-            currentBreak =
-                (breakInSpread ? getSpread() / 3 : BreakEven) / pareto;
-        currentBreak += OrderSwap() * differenceInDays;
-        if (mode == OP_BUY) {
-          stop = Bid - Point * currentBreak;
-          stop -= BreakEven;
-          if (stop != OrderStopLoss())
-            OrderModifyReliable(OrderTicket(), OrderOpenPrice(),
-                                NormalizeDouble(stop, Digits),
-                                OrderTakeProfit(), 0, LightGreen);
-          continue;
-        }
-        if (mode == OP_SELL) {
-          stop = Ask + Point * currentBreak;
-          stop += BreakEven;
-          if (stop != OrderStopLoss())
-            OrderModifyReliable(OrderTicket(), OrderOpenPrice(),
-                                NormalizeDouble(stop, Digits),
-                                OrderTakeProfit(), 0, Yellow);
-          continue;
-        }
-      }
-    }
-  }
+  if (Hour() != 23 || total < 2)
+    return;
+  // TODO: ajustar bien la busqueda de valores negativos
+  OrderSelect(0, SELECT_BY_POS);
+  int order1Type = OrderType();
+  int order1Ticket = OrderTicket();
+  double order1Lots = OrderLots();
+  datetime order1OpenAt = OrderOpenTime();
+  double order1Profit = OrderProfit();
+  string order1Symbol = OrderSymbol();
+  int order1DaysOld =
+      MathFloor(iTime(Symbol(), PERIOD_H1, 0) - order1OpenAt / (60 * 60 * 24));
+  OrderSelect(1, SELECT_BY_POS);
+  int order2Type = OrderType();
+  int order2Ticket = OrderTicket();
+  double order2Lots = OrderLots();
+  datetime order2OpenAt = OrderOpenTime();
+  double order2Profit = OrderProfit();
+  string order2Symbol = OrderSymbol();
+  int order2DaysOld =
+      MathFloor(iTime(Symbol(), PERIOD_H1, 0) - order2OpenAt / (60 * 60 * 24));
+  if ((!order1DaysOld && !order2DaysOld) || order1Symbol != OrderSymbol() ||
+      order1Type == order2Type)
+    return;
+  int orderId = order1Profit > order2Profit ? order1Ticket : order2Ticket,
+      oppositeId = order1Profit < order2Profit ? order1Ticket : order2Ticket;
+  OrderCloseBy(orderId, oppositeId, Green);
 }
