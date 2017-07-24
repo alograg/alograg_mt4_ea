@@ -41,7 +41,7 @@ void OnDeinit(const int reason) { EventKillTimer(); }
 +-----------*/
 void OnTick() {
   doStrategies();
-  // doManagment();
+  doManagment();
   isNewBar();
 }
 /*----------+

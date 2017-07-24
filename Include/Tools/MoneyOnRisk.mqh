@@ -10,6 +10,12 @@
 #property strict
 // Parameter
 bool moneyOnRisk() {
+  int stopOut = AccountStopoutMode() ? 50 : AccountStopoutLevel();
+  double MarginLevel =
+      AccountMargin() > 0
+          ? NormalizeDouble(AccountEquity() / AccountMargin() * 100, 2)
+          : AccountEquity();
   return !(AccountMargin() <= AccountEquity() / 2 ||
-           AccountMargin() <= AccountBalance() / 2);
+           AccountMargin() <= AccountBalance() / 2 ||
+           MarginLevel <= stopOut * 1.5);
 }

@@ -18,29 +18,31 @@ void TrailStops(int ticket) {
   OrderSelect(ticket, SELECT_BY_TICKET);
   int mode = OrderType();
   if (OrderSymbol() == Symbol()) {
-    double stop, priceToEval, currentBreak = BreakEven;
-    int differenceInDays = (OrderOpenTime() - TimeCurrent()) / (60 * 60 * 24);
+    double stop,
+        priceToEval = OrderStopLoss() ? OrderStopLoss() : OrderOpenPrice(),
+        currentBreak = (breakInSpread ? getSpread() / 3 : BreakEven) / pareto;
+    int differenceInDays =
+        (iTime(Symbol(), PERIOD_D1, 0) - OrderOpenTime()) / (60 * 60 * 24);
+    currentBreak += OrderSwap() * differenceInDays;
     if (mode == OP_BUY) {
-      currentBreak += MarketInfo(Symbol(), MODE_SWAPLONG) * differenceInDays;
-      priceToEval = MathMax(OrderOpenPrice(), OrderStopLoss());
       if (Bid - priceToEval > Point * currentBreak) {
-        stop = priceToEval + Point * currentBreak;
-        OrderModifyReliable(OrderTicket(), OrderOpenPrice(),
-                            NormalizeDouble(stop, Digits), OrderTakeProfit(), 0,
-                            LightGreen);
+        stop = MathMax(priceToEval, OrderOpenPrice()) + Point * currentBreak;
+        stop += BreakEven;
+        if (stop != OrderStopLoss())
+          OrderModifyReliable(OrderTicket(), OrderOpenPrice(),
+                              NormalizeDouble(stop, Digits), OrderTakeProfit(),
+                              0, LightGreen);
         return;
       }
     }
     if (mode == OP_SELL) {
-      currentBreak += MarketInfo(Symbol(), MODE_SWAPSHORT) * differenceInDays;
-      priceToEval = MathMin(OrderOpenPrice(), OrderStopLoss());
-      if (priceToEval == 0)
-        priceToEval = OrderOpenPrice();
       if (priceToEval - Ask > Point * currentBreak) {
-        stop = priceToEval - Point * currentBreak;
-        OrderModifyReliable(OrderTicket(), OrderOpenPrice(),
-                            NormalizeDouble(stop, Digits), OrderTakeProfit(), 0,
-                            Yellow);
+        stop = MathMin(priceToEval, OrderOpenPrice()) - Point * currentBreak;
+        stop -= BreakEven;
+        if (stop != OrderStopLoss())
+          OrderModifyReliable(OrderTicket(), OrderOpenPrice(),
+                              NormalizeDouble(stop, Digits), OrderTakeProfit(),
+                              0, Yellow);
         return;
       }
     }

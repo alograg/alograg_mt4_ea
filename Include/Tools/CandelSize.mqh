@@ -1,5 +1,5 @@
 /*--------------------------+
-|           isOpenOrder.mqh |
+|            CandelSize.mqh |
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
@@ -11,7 +11,7 @@
 // Parameters
 // Constants
 // Function
-int isOpenOrder(int ticket) {
-  bool currentTicket = OrderSelect(ticket, SELECT_BY_TICKET);
-  return !!OrderCloseTime() ? 0 : ticket;
+double getCandelSize(int period = PERIOD_H1) {
+  return NormalizeDouble(
+      MathAbs(iHigh(Symbol(), period, 1) - iLow(Symbol(), period, 1)), Digits);
 }

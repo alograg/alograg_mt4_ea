@@ -1,5 +1,5 @@
 /*--------------------------+
-|           isOpenOrder.mqh |
+|                DixPip.mqh |
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
@@ -11,7 +11,11 @@
 // Parameters
 // Constants
 // Function
-int isOpenOrder(int ticket) {
-  bool currentTicket = OrderSelect(ticket, SELECT_BY_TICKET);
-  return !!OrderCloseTime() ? 0 : ticket;
+void DixPip() {
+  int total = OrdersTotal();
+  for (int position = 0; position < total; position++) {
+    if (OrderSelect(position, SELECT_BY_POS)) {
+      TrailStops(OrderTicket());
+    }
+  }
 }

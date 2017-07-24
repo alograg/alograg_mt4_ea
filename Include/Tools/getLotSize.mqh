@@ -1,5 +1,5 @@
 /*--------------------------+
-|           isOpenOrder.mqh |
+|            getLotSize.mqh |
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
@@ -11,7 +11,6 @@
 // Parameters
 // Constants
 // Function
-int isOpenOrder(int ticket) {
-  bool currentTicket = OrderSelect(ticket, SELECT_BY_TICKET);
-  return !!OrderCloseTime() ? 0 : ticket;
+double getLotSize() {
+  return moneyOnRisk() ? 0 : MathMax(AccountEquity() / 4000, 0);
 }

@@ -14,6 +14,8 @@
 #include "Tools\isOpenOrder.mqh"
 #include "Tools\MoneyOnRisk.mqh"
 #include "Tools\TrailStops.mqh"
+#include "Tools\getLotSize.mqh"
+#include "Tools\CandelSize.mqh"
 #include "External\TradersTech.mqh"
 // Constantes
 double pareto = 0.8;
