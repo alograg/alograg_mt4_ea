@@ -17,7 +17,7 @@
 // Methods
 void tmInit() { BreakEven = breakInSpread ? getSpread() : manualBreakEven; }
 void tmEvent() {
-  OldOrders();
+  // OldOrders();
   MaintainMarginLevel();
   DixPip();
 }
