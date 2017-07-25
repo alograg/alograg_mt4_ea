@@ -14,8 +14,10 @@ int morningOrderBuy = -1;
 int morningOrderSell = -1;
 void Morning() {
   if (!isNewBar(PERIOD_D1)) {
-    morningOrderBuy = OrderIsOpen(morningOrderBuy);
-    morningOrderSell = OrderIsOpen(morningOrderSell);
+    if (morningOrderBuy)
+      morningOrderBuy = OrderIsOpen(morningOrderBuy);
+    if (morningOrderSell)
+      morningOrderSell = OrderIsOpen(morningOrderSell);
     return;
   }
   if (morningOrderBuy <= 0)

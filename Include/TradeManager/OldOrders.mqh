@@ -12,10 +12,25 @@
 // Constants
 string OldOrdersComment = eaName + ": S-OldOrders";
 // Function
-void OldOrders() {
+bool OldOrders() {
   int total = OrdersTotal();
-  if (Hour() != 23 || total < 2)
-    return;
-  // TODO: ajustar bien la busqueda de valores negativos
-  // OrderCloseBy(orderId, oppositeId, Green);
+  MqlDateTime currentTimeing;
+  TimeToStruct(iTime(Symbol(), PERIOD_M1, 0), currentTimeing);
+  if (!(currentTimeing.hour == 23 && currentTimeing.min == 56) || total < 2)
+    return false;
+  int orderId = 0, oppositeId = 0, sellPips = 0, buyPips = 0;
+  for (; total >= 0; total--) {
+    if (!OrderSelect(total, SELECT_BY_POS))
+      continue;
+    int mode = OrderType(), pips = OrderProfitPips();
+    if (mode == OP_SELL && sellPips > pips) {
+      orderId = OrderTicket();
+      sellPips = pips;
+    }
+    if (mode == OP_BUY && buyPips > pips) {
+      oppositeId = OrderTicket();
+      buyPips = pips;
+    }
+  }
+  return OrderCloseBy(orderId, oppositeId, Green);
 }

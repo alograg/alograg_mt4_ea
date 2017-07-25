@@ -21,5 +21,9 @@ int OrderAge(int period = 0) {
 int OrderIsOpen(int ticket = 0) {
   if (ticket)
     bool currentTicket = OrderSelect(ticket, SELECT_BY_TICKET);
-  return !!OrderCloseTime() ? 0 : OrderTicket();
+  return !OrderCloseTime() ? OrderTicket() : 0;
+}
+double OrderProfitPips() {
+  return (OrderProfit() - OrderCommission()) / OrderLots() /
+         MarketInfo(OrderSymbol(), MODE_TICKVALUE);
 }

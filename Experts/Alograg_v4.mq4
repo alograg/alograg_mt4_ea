@@ -15,12 +15,12 @@
 #include "..\Include\Strategies.mqh"
 #include "..\Include\Tools.mqh"
 #include "..\Include\TradeManager.mqh"
+#include "..\Include\UnitTest.mqh"
 #include <stderror.mqh>
 #include <stdlib.mqh>
 // Parameters
 extern bool strategiesActivate = FALSE; // Strategies Activate
 // Constants
-int doError[];
 /*----------------+
 | Inicialización  |
 +----------------*/
