@@ -15,7 +15,9 @@
 // Constantes
 // Constants
 // Methods
-void tmInit() { BreakEven = breakInSpread ? getSpread() : manualBreakEven; }
+void tmInit() {
+  BreakEven = breakInSpread ? getSpread() : Point * manualBreakEven;
+}
 void tmEvent() {
   OldOrders();
   MaintainMarginLevel();

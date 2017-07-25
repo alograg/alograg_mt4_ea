@@ -20,12 +20,13 @@ void Morning() {
       morningOrderSell = OrderIsOpen(morningOrderSell);
     return;
   }
+  // TODO: evitar gaps
+  double lotSize = MathMin(getLotSize(),0.05);
   if (morningOrderBuy <= 0)
-    morningOrderBuy =
-        OrderSendReliable(Symbol(), OP_BUY, getLotSize(), Ask, 0, 0, 0,
-                          MorningComment, MagicNumber, 0, Blue);
+    morningOrderBuy = OrderSendReliable(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
+                                        MorningComment, MagicNumber, 0, Blue);
   if (morningOrderSell <= 0)
     morningOrderSell =
-        OrderSendReliable(Symbol(), OP_SELL, getLotSize(), Bid, 0, 0, 0,
+        OrderSendReliable(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
                           MorningComment, MagicNumber, 0, Red);
 }

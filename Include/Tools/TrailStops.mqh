@@ -10,9 +10,9 @@
 #property strict
 // Parameter
 extern bool breakInSpread = FALSE;  // Use spread as break
-extern double manualBreakEven = 15; // Manual Break
+extern double manualBreakEven = 12; // Manual Break
 // Constants
-double BreakEven = 15;
+double BreakEven = 12;
 // Function
 void TrailStops(int ticket) {
   int current = OrderSelect(ticket, SELECT_BY_TICKET);
@@ -20,7 +20,7 @@ void TrailStops(int ticket) {
   if (OrderSymbol() == Symbol()) {
     double stop,
         priceToEval = OrderStopLoss() ? OrderStopLoss() : OrderOpenPrice(),
-        currentBreak = (breakInSpread ? getSpread() / 3 : BreakEven) / pareto;
+        currentBreak = ((breakInSpread ? getSpread() : BreakEven) / 3) / pareto;
     int differenceInDays = OrderAge();
     currentBreak += OrderSwap() * differenceInDays;
     if (mode == OP_BUY) {
