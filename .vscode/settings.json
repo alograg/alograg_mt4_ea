@@ -8,6 +8,8 @@
     "editor.renderWhitespace": "all",
     "editor.formatOnSave": true,
     "files.associations": {
+        "mqh": "cpp",
+        "mq4": "cpp",
         "*.svg": "xml"
     },
     "window.zoomLevel": 0,

@@ -8,19 +8,6 @@
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict
-// Includes
-#include "Tools\isNewBar.mqh"
-#include "Tools\Spread.mqh"
-#include "Tools\isOpenOrder.mqh"
-#include "Tools\MoneyOnRisk.mqh"
-#include "Tools\TrailStops.mqh"
-#include "Tools\getLotSize.mqh"
-#include "Tools\CandelSize.mqh"
-#include "External\TradersTech.mqh"
-// Constantes
-double pareto = 0.8;
-// Constants
-// Methods
 // Definitions
 template <typename E>
 int EnumToArray(E dummy, int &values[], const int start = INT_MIN,
@@ -39,4 +26,14 @@ int EnumToArray(E dummy, int &values[], const int start = INT_MIN,
     }
   }
   return count;
-}
+} // Includes
+#include "External\TradersTech.mqh"
+#include "Tools\AccountExtras.mqh"
+#include "Tools\CandelSize.mqh"
+#include "Tools\OrderExtras.mqh"
+#include "Tools\TrailStops.mqh"
+#include "Tools\isNewBar.mqh"
+// Constantes
+double pareto = 0.8;
+// Constants
+// Methods

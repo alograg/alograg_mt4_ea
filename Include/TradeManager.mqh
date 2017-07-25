@@ -9,15 +9,16 @@
 #property version propVersion
 #property strict
 // Includes
-#include "TradeManager\OldOrders.mqh"
 #include "TradeManager\DixPip.mqh"
 #include "TradeManager\MaintainMarginLevel.mqh"
+#include "TradeManager\OldOrders.mqh"
 // Constantes
 // Constants
 // Methods
 void tmInit() { BreakEven = breakInSpread ? getSpread() : manualBreakEven; }
 void tmEvent() {
-  // OldOrders();
+  if (IsTesting())
+    OldOrders();
   MaintainMarginLevel();
   DixPip();
 }

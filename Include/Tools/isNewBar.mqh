@@ -13,7 +13,7 @@
 int allPeriods[];
 int periodsLastBars[];
 int countPeriods = 0;
-int LAST_PERIOD_M1, LAST_PERIOD_M5, LAST_PERIOD_M15, LAST_PERIOD_M30,
+datetime LAST_PERIOD_M1, LAST_PERIOD_M5, LAST_PERIOD_M15, LAST_PERIOD_M30,
     LAST_PERIOD_H1, LAST_PERIOD_H4, LAST_PERIOD_D1;
 // Function
 bool isNewBar(int period = 0) {
@@ -24,7 +24,7 @@ bool isNewBar(int period = 0) {
     ENUM_TIMEFRAMES periodList;
     countPeriods = EnumToArray(periodList, allPeriods, PERIOD_M1, PERIOD_D1);
   }
-  int lastPeriod;
+  datetime lastPeriod;
   switch (period) {
   case PERIOD_M1:
     lastPeriod = LAST_PERIOD_M1;
@@ -53,7 +53,6 @@ bool isNewBar(int period = 0) {
 
   return lastPeriod != iTime(Symbol(), period, 0);
 }
-
 void setLatsPeriods(int period = 0) {
   LAST_PERIOD_M1 = iTime(Symbol(), PERIOD_M1, period);
   LAST_PERIOD_M5 = iTime(Symbol(), PERIOD_M5, period);

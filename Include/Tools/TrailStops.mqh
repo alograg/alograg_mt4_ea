@@ -15,14 +15,13 @@ extern double manualBreakEven = 15; // Manual Break
 double BreakEven = 15;
 // Function
 void TrailStops(int ticket) {
-  OrderSelect(ticket, SELECT_BY_TICKET);
+  int current = OrderSelect(ticket, SELECT_BY_TICKET);
   int mode = OrderType();
   if (OrderSymbol() == Symbol()) {
     double stop,
         priceToEval = OrderStopLoss() ? OrderStopLoss() : OrderOpenPrice(),
         currentBreak = (breakInSpread ? getSpread() / 3 : BreakEven) / pareto;
-    int differenceInDays =
-        (iTime(Symbol(), PERIOD_D1, 0) - OrderOpenTime()) / (60 * 60 * 24);
+    int differenceInDays = OrderAge();
     currentBreak += OrderSwap() * differenceInDays;
     if (mode == OP_BUY) {
       if (Bid - priceToEval > Point * currentBreak) {

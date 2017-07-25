@@ -12,11 +12,11 @@
 #property version propVersion
 #property strict
 // Includes
-#include <stdlib.mqh>
-#include <stderror.mqh>
+#include "..\Include\Strategies.mqh"
 #include "..\Include\Tools.mqh"
 #include "..\Include\TradeManager.mqh"
-#include "..\Include\Strategies.mqh"
+#include <stderror.mqh>
+#include <stdlib.mqh>
 // Parameters
 extern bool strategiesActivate = FALSE; // Strategies Activate
 // Constants

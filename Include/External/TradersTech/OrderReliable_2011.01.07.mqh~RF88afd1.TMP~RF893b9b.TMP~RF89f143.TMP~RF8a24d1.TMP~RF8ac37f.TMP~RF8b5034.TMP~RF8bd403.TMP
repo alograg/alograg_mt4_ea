@@ -523,7 +523,7 @@ int OrderSendReliable(string symbol, int cmd, double volume, double price,
 bool OrderModifyReliable(int ticket, double price, double stoploss,
                          double takeprofit, datetime expiration,
                          color arrow_color = CLR_NONE) {
-  int currentOrder;
+                           int currentOrder;
   OrderReliable_Fname = "OrderModifyReliable";
 
   OrderReliablePrint(" attempted modify of #" + (string)ticket +

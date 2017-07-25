@@ -15,3 +15,18 @@ double getCandelSize(int period = PERIOD_H1) {
   return NormalizeDouble(
       MathAbs(iHigh(Symbol(), period, 1) - iLow(Symbol(), period, 1)), Digits);
 }
+double getFlagSize(int period = PERIOD_H1) {
+  return NormalizeDouble(
+      MathAbs(iOpen(Symbol(), period, 1) - iClose(Symbol(), period, 1)),
+      Digits);
+}
+double getLowerShadowSize(int period = PERIOD_H1) {
+  double bodyDown =
+      MathMin(iOpen(Symbol(), period, 1), iClose(Symbol(), period, 1));
+  return NormalizeDouble(MathAbs(bodyDown - iLow(Symbol(), period, 1)), Digits);
+}
+double getUpperShadowSize(int period = PERIOD_H1) {
+  double bodyUp =
+      MathMin(iOpen(Symbol(), period, 1), iClose(Symbol(), period, 1));
+  return NormalizeDouble(MathAbs(bodyUp - iHigh(Symbol(), period, 1)), Digits);
+}
