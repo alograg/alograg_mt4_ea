@@ -10,9 +10,11 @@
 #property strict
 // Parameter
 extern int SpreadSize = 100; // Size of spread reference
+// extern int RiskSize = 40;    // Size of moneyRisk
 // Constants
 int SpreadSampleSize = 0;
 double Spread[];
+// int sizeOfTheRisk = 40;
 // Functions
 bool moneyOnRisk() {
   int stopOut = AccountStopoutMode() ? 50 : AccountStopoutLevel();
@@ -24,8 +26,19 @@ bool moneyOnRisk() {
            AccountMargin() <= AccountBalance() / 2 ||
            MarginLevel <= stopOut * 1.5);
 }
+double Deposits() {
+  double total = 0;
+  for (int i = 0; i < OrdersHistoryTotal(); i++) {
+    if (OrderSelect(i, SELECT_BY_POS, MODE_HISTORY)) {
+      if (OrderType() > 5) {
+        total += OrderProfit();
+      }
+    }
+  }
+  return MathMax(total, 40);
+}
 double getLotSize() {
-  return moneyOnRisk() ? 0 : MathMax(AccountEquity() / 4000, 0);
+  return moneyOnRisk() ? 0 : MathMax(AccountEquity() / (100 * 40), 0);
 }
 double getSpread(double AddValue = 0) {
   double LastValue;
@@ -37,7 +50,6 @@ double getSpread(double AddValue = 0) {
     return NormalizeDouble(Ask - Bid, Digits);
   if (AddValue == 0)
     return NormalizeDouble(ArrayTotal / ArraySize(Spread), Digits);
-
   ArrayTotal = ArrayTotal + AddValue;
   ArraySetAsSeries(Spread, true);
   if (ArraySize(Spread) == SpreadSampleSize) {
