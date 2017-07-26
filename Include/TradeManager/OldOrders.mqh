@@ -22,7 +22,9 @@ bool OldOrders() {
   for (; total >= 0; total--) {
     if (!OrderSelect(total, SELECT_BY_POS))
       continue;
-    int mode = OrderType(), pips = OrderProfitPips();
+    if (!OrderAge())
+      continue;
+    int mode = OrderType(), age = OrderAge(), pips = OrderProfitPips();
     if (mode == OP_SELL && sellPips > pips) {
       orderId = OrderTicket();
       sellPips = pips;
@@ -32,5 +34,7 @@ bool OldOrders() {
       buyPips = pips;
     }
   }
+  if (!orderId && !oppositeId)
+    return false;
   return OrderCloseBy(orderId, oppositeId, Green);
 }
