@@ -29,7 +29,8 @@ void tradeCounterPositions(bool strong = false) {
   lotSize = NormalizeDouble(lotSize, 2);
   if (lotSize != 0) {
     OrderSendReliable(Symbol(), lotSize < 0 ? OP_BUY : OP_SELL,
-                      MathAbs(lotSize), lotSize < 0 ? Bid : Ask, 0, 0, 0,
+                      NormalizeDouble(MathAbs(lotSize), 2),
+                      lotSize < 0 ? Bid : Ask, 0, 0, 0,
                       MaintainMarginLevelComment, MagicNumber, 0, Green);
   }
 }

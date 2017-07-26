@@ -10,7 +10,7 @@
 #property strict
 // Parameter
 extern bool breakInSpread = FALSE;  // Use spread as break
-extern double manualBreakEven = 12; // Manual Break
+extern double manualBreakEven = 12; // Manual Break (pips)
 // Constants
 double BreakEven = 12;
 // Function
@@ -18,32 +18,26 @@ void TrailStops(int ticket) {
   int current = OrderSelect(ticket, SELECT_BY_TICKET);
   int mode = OrderType();
   if (OrderSymbol() == Symbol()) {
-    double stop,
-        priceToEval = OrderStopLoss() ? OrderStopLoss() : OrderOpenPrice(),
-        currentBreak = ((breakInSpread ? getSpread() : BreakEven) / 3) / pareto;
+    double stop = 0,
+           priceToEval = OrderStopLoss() ? OrderStopLoss() : OrderOpenPrice(),
+           currentBreak =
+               ((breakInSpread ? getSpread() : BreakEven) / 3) / pareto;
     int differenceInDays = OrderAge();
     currentBreak += OrderSwap() * differenceInDays;
     if (mode == OP_BUY) {
       if (Bid - priceToEval > Point * currentBreak) {
         stop = MathMax(priceToEval, OrderOpenPrice()) + Point * currentBreak;
         stop += BreakEven;
-        if (stop != OrderStopLoss())
-          OrderModifyReliable(OrderTicket(), OrderOpenPrice(),
-                              NormalizeDouble(stop, Digits), OrderTakeProfit(),
-                              0, Yellow);
-        return;
       }
-    }
-    if (mode == OP_SELL) {
+    } else if (mode == OP_SELL) {
       if (priceToEval - Ask > Point * currentBreak) {
         stop = MathMin(priceToEval, OrderOpenPrice()) - Point * currentBreak;
         stop -= BreakEven;
-        if (stop != OrderStopLoss())
-          OrderModifyReliable(OrderTicket(), OrderOpenPrice(),
-                              NormalizeDouble(stop, Digits), OrderTakeProfit(),
-                              0, Yellow);
-        return;
       }
     }
+    if (stop && stop != OrderStopLoss())
+      OrderModifyReliable(OrderTicket(), OrderOpenPrice(),
+                          NormalizeDouble(stop, Digits), OrderTakeProfit(), 0,
+                          Yellow);
   }
 }

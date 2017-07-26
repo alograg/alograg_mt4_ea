@@ -12,6 +12,7 @@
 #include "TradeManager\DixPip.mqh"
 #include "TradeManager\MaintainMarginLevel.mqh"
 #include "TradeManager\OldOrders.mqh"
+#include "TradeManager\ReasonableLoss.mqh"
 // Constantes
 // Constants
 // Methods
@@ -19,7 +20,8 @@ void tmInit() {
   BreakEven = breakInSpread ? getSpread() : Point * manualBreakEven;
 }
 void tmEvent() {
+  DixPip();
+  ReasonableLoss();
   OldOrders();
   MaintainMarginLevel();
-  DixPip();
 }

@@ -23,7 +23,7 @@ int OrderIsOpen(int ticket = 0) {
     bool currentTicket = OrderSelect(ticket, SELECT_BY_TICKET);
   return !OrderCloseTime() ? OrderTicket() : 0;
 }
-double OrderProfitPips() {
-  return (OrderProfit() - OrderCommission()) / OrderLots() /
-         MarketInfo(OrderSymbol(), MODE_TICKVALUE);
+int OrderProfitPips() {
+  return (int)((OrderProfit() - OrderCommission()) / OrderLots() /
+               MarketInfo(OrderSymbol(), MODE_TICKVALUE));
 }

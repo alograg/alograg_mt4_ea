@@ -1,0 +1,4 @@
+SpreadSize=100
+breakInSpread=false
+manualBreakEven=12.0
+strategiesActivate=true

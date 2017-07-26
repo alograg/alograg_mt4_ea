@@ -11,6 +11,7 @@
 // Parameters
 // Constants
 string OldOrdersComment = eaName + ": S-OldOrders";
+extern int resitsDays = 2; // Days without operations
 // Function
 bool OldOrders() {
   int total = OrdersTotal();
@@ -22,7 +23,7 @@ bool OldOrders() {
   for (; total >= 0; total--) {
     if (!OrderSelect(total, SELECT_BY_POS))
       continue;
-    if (!OrderAge())
+    if (OrderAge() >= resitsDays)
       continue;
     int mode = OrderType(), age = OrderAge(), pips = OrderProfitPips();
     if (mode == OP_SELL && sellPips > pips) {

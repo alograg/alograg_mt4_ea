@@ -65,3 +65,40 @@ double getSpread(double AddValue = 0) {
   Spread[0] = AddValue;
   return NormalizeDouble(ArrayTotal / ArraySize(Spread), Digits);
 }
+double getPeriodProfit(int period = PERIOD_D1, int shift = 0) {
+  MqlDateTime startTime, endTime, orderTime;
+  TimeToStruct(iTime(Symbol(), period, shift - 1), startTime);
+  TimeToStruct(iTime(Symbol(), period, shift), endTime);
+  double profit = 0;
+  for (int position = OrdersHistoryTotal(); position >= 0; position--) {
+    if (!OrderSelect(position, SELECT_BY_POS, MODE_HISTORY))
+      continue;
+    TimeToStruct(OrderCloseTime(), orderTime);
+    bool grateThanStart =
+        orderTime.year >= startTime.year && orderTime.mon >= startTime.mon &&
+        orderTime.day >= startTime.day && orderTime.hour >= startTime.hour &&
+        orderTime.min >= startTime.min;
+    bool lowerThanStart =
+        orderTime.year >= endTime.year && orderTime.mon >= endTime.mon &&
+        orderTime.day >= endTime.day && orderTime.hour >= endTime.hour &&
+        orderTime.min >= endTime.min;
+    if (grateThanStart && lowerThanStart)
+      continue;
+    profit += OrderProfit() + OrderCommission() + OrderSwap();
+  }
+  return profit;
+}
+double getDayProfit(int shift = 0) {
+  MqlDateTime dayTime, orderTime;
+  TimeToStruct(iTime(Symbol(), PERIOD_D1, shift), dayTime);
+  double profit = 0;
+  for (int position = OrdersHistoryTotal(); position >= 0; position--) {
+    if (!OrderSelect(position, SELECT_BY_POS, MODE_HISTORY))
+      continue;
+    TimeToStruct(OrderCloseTime(), orderTime);
+    if (orderTime.day_of_year != dayTime.day_of_year)
+      continue;
+    profit += OrderProfit() + OrderCommission() + OrderSwap();
+  }
+  return profit;
+}

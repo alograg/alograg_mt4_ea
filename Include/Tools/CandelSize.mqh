@@ -11,22 +11,25 @@
 // Parameters
 // Constants
 // Function
-double getCandelSize(int period = PERIOD_H1) {
+double getCandelSize(int period = PERIOD_H1, int shift = 1) {
   return NormalizeDouble(
-      MathAbs(iHigh(Symbol(), period, 1) - iLow(Symbol(), period, 1)), Digits);
-}
-double getFlagSize(int period = PERIOD_H1) {
-  return NormalizeDouble(
-      MathAbs(iOpen(Symbol(), period, 1) - iClose(Symbol(), period, 1)),
+      MathAbs(iHigh(Symbol(), period, shift) - iLow(Symbol(), period, shift)),
       Digits);
 }
-double getLowerShadowSize(int period = PERIOD_H1) {
-  double bodyDown =
-      MathMin(iOpen(Symbol(), period, 1), iClose(Symbol(), period, 1));
-  return NormalizeDouble(MathAbs(bodyDown - iLow(Symbol(), period, 1)), Digits);
+double getFlagSize(int period = PERIOD_H1, int shift = 1) {
+  return NormalizeDouble(
+      MathAbs(iOpen(Symbol(), period, shift) - iClose(Symbol(), period, shift)),
+      Digits);
 }
-double getUpperShadowSize(int period = PERIOD_H1) {
+double getLowerShadowSize(int period = PERIOD_H1, int shift = 1) {
+  double bodyDown =
+      MathMin(iOpen(Symbol(), period, shift), iClose(Symbol(), period, shift));
+  return NormalizeDouble(MathAbs(bodyDown - iLow(Symbol(), period, shift)),
+                         Digits);
+}
+double getUpperShadowSize(int period = PERIOD_H1, int shift = 1) {
   double bodyUp =
-      MathMin(iOpen(Symbol(), period, 1), iClose(Symbol(), period, 1));
-  return NormalizeDouble(MathAbs(bodyUp - iHigh(Symbol(), period, 1)), Digits);
+      MathMin(iOpen(Symbol(), period, shift), iClose(Symbol(), period, shift));
+  return NormalizeDouble(MathAbs(bodyUp - iHigh(Symbol(), period, shift)),
+                         Digits);
 }
