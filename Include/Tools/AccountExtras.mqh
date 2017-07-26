@@ -14,6 +14,7 @@ extern int SpreadSize = 100; // Size of spread reference
 // Constants
 int SpreadSampleSize = 0;
 double Spread[];
+double depositMoney;
 // int sizeOfTheRisk = 40;
 // Functions
 bool moneyOnRisk() {
@@ -101,4 +102,47 @@ double getDayProfit(int shift = 0) {
     profit += OrderProfit() + OrderCommission() + OrderSwap();
   }
   return profit;
+}
+// Account Report
+void SendAccountReport() {
+  string balanceReport;
+  depositMoney = Deposits();
+  balanceReport = "Report " + eaName + " v." + propVersion;
+  balanceReport +=
+      StringFormat("\nBroker; %s (%s)\n", AccountInfoString(ACCOUNT_COMPANY),
+                   AccountInfoString(ACCOUNT_CURRENCY));
+  balanceReport += " Date " + TimeToString(Time[0]) + "\n";
+  balanceReport += StringFormat("\nFlag = %G", getFlagSize(PERIOD_D1));
+  balanceReport += StringFormat("\nDeposit = %G (%s)", depositMoney,
+                                moneyOnRisk() ? "Riesgo" : "Tranquilo");
+  balanceReport += StringFormat("\nB = %G", AccountBalance());
+  balanceReport += StringFormat("|P = %G", AccountProfit());
+  balanceReport += StringFormat("|E = %G", AccountEquity());
+  balanceReport += StringFormat("\nM = %G", AccountMargin());
+  balanceReport += StringFormat("|F = %G", AccountFreeMargin());
+  balanceReport +=
+      StringFormat("|L = %G", AccountInfoDouble(ACCOUNT_MARGIN_LEVEL));
+  SendNotification(balanceReport);
+}
+// Simbol params
+void SendSimbolParams() {
+  string comm = eaName + " v." + propVersion;
+  comm += StringFormat("\nSymbol: %s", Symbol());
+  bool spreadfloat = SymbolInfoInteger(Symbol(), SYMBOL_SPREAD_FLOAT);
+  comm += StringFormat("\nSpread %s = %I64d points, %.5f",
+                       spreadfloat ? "floating" : "fixed",
+                       SymbolInfoInteger(Symbol(), SYMBOL_SPREAD),
+                       NormalizeDouble(getSpread(), Digits));
+  comm +=
+      StringFormat("\nStop level: %G", MarketInfo(Symbol(), MODE_STOPLEVEL));
+  comm += StringFormat("\nStop Out: %G",
+                       AccountStopoutMode() ? 50 : AccountStopoutLevel());
+  comm += StringFormat("\nSwap: byu %G sell %G",
+                       MarketInfo(Symbol(), MODE_SWAPLONG),
+                       MarketInfo(Symbol(), MODE_SWAPSHORT));
+  comm += StringFormat("\nMoney: %G", depositMoney);
+  comm += StringFormat("\nCandel: %G", getCandelSize(PERIOD_D1));
+  comm += StringFormat("\nSteps: %f",
+                       NormalizeDouble((BreakEven / 3) / pareto, Digits));
+  Comment(comm);
 }

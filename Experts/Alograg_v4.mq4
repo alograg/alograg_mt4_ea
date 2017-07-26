@@ -3,7 +3,7 @@
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
-#define propVersion "4.04"
+#define propVersion "4.05"
 #define eaName "Alograg"
 #define MagicNumber 17808160
 // Properties
@@ -44,6 +44,7 @@ void OnTick() {
     doTest();
   doManagment();
   doStrategies();
+  doReport();
   isNewBar();
 }
 /*----------+
@@ -62,6 +63,13 @@ void doStrategies() {
 | Administra las operaciones  |
 +----------------------------*/
 void doManagment() { tmEvent(); }
+
+void doReport() {
+  if (isNewBar(PERIOD_D1))
+    SendAccountReport();
+  if (isNewBar(PERIOD_M1))
+    SendSimbolParams();
+}
 
 void doTest() {
   // orderOn(StringToTime("2017.02.24 18:20"), getLotSize());
