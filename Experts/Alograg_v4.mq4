@@ -25,6 +25,7 @@ extern bool strategiesActivate = FALSE; // Strategies Activate
 | Inicialización  |
 +----------------*/
 int OnInit() {
+  Print(eaName + " v." + propVersion);
   // Registro de evento
   EventSetTimer(60 * 60 * 12);
   isNewBar();
