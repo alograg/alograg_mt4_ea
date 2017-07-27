@@ -20,6 +20,11 @@ void tmInit() {
   BreakEven = breakInSpread ? getSpread() : Point * manualBreakEven;
 }
 void tmEvent() {
+  if (isNewBar(LAST_PERIOD_W1) && AccountProfit() == 0 &&
+      getLotSize() >= 0.05) {
+    int eq = (int)AccountEquity();
+    sizeOfTheRisk = MathMax((int)(eq - (eq % (40))) / 2, 40);
+  }
   DixPip();
   ReasonableLoss();
   OldOrders();

@@ -14,7 +14,8 @@ int allPeriods[];
 int periodsLastBars[];
 int countPeriods = 0;
 datetime LAST_PERIOD_M1, LAST_PERIOD_M5, LAST_PERIOD_M15, LAST_PERIOD_M30,
-    LAST_PERIOD_H1, LAST_PERIOD_H4, LAST_PERIOD_D1;
+    LAST_PERIOD_H1, LAST_PERIOD_H4, LAST_PERIOD_D1, LAST_PERIOD_W1,
+    LAST_PERIOD_MN1;
 // Function
 bool isNewBar(int period = 0) {
   if (period == 0) {
@@ -47,6 +48,12 @@ bool isNewBar(int period = 0) {
   case PERIOD_D1:
     lastPeriod = LAST_PERIOD_D1;
     break;
+  case PERIOD_W1:
+    lastPeriod = LAST_PERIOD_W1;
+    break;
+  case PERIOD_MN1:
+    lastPeriod = LAST_PERIOD_MN1;
+    break;
   default:
     return true;
   }
@@ -61,4 +68,6 @@ void setLatsPeriods(int period = 0) {
   LAST_PERIOD_H1 = iTime(Symbol(), PERIOD_H1, period);
   LAST_PERIOD_H4 = iTime(Symbol(), PERIOD_H4, period);
   LAST_PERIOD_D1 = iTime(Symbol(), PERIOD_D1, period);
+  LAST_PERIOD_W1 = iTime(Symbol(), PERIOD_W1, period);
+  LAST_PERIOD_MN1 = iTime(Symbol(), PERIOD_MN1, period);
 }
