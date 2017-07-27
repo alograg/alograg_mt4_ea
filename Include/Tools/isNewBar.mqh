@@ -20,6 +20,7 @@ datetime LAST_PERIOD_M1, LAST_PERIOD_M5, LAST_PERIOD_M15, LAST_PERIOD_M30,
 bool isNewBar(int period = 0) {
   if (period == 0) {
     setLatsPeriods(countPeriods == 0);
+    return true;
   }
   if (!countPeriods) {
     ENUM_TIMEFRAMES periodList;
@@ -55,7 +56,7 @@ bool isNewBar(int period = 0) {
     lastPeriod = LAST_PERIOD_MN1;
     break;
   default:
-    return true;
+    return false;
   }
 
   return lastPeriod != iTime(Symbol(), period, 0);
