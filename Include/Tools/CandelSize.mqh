@@ -33,3 +33,9 @@ double getUpperShadowSize(int period = PERIOD_H1, int shift = 1) {
   return NormalizeDouble(MathAbs(bodyUp - iHigh(Symbol(), period, shift)),
                          Digits);
 }
+bool isBlackCandel(int period = PERIOD_H1, int shift = 1) {
+  return iOpen(Symbol(), period, shift) > iClose(Symbol(), period, shift);
+}
+bool isWhiteCandel(int period = PERIOD_H1, int shift = 1) {
+  return iOpen(Symbol(), period, shift) < iClose(Symbol(), period, shift);
+}

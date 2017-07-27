@@ -9,9 +9,15 @@
 #property version propVersion
 #property strict
 // Includes
+#include "Strategies\M5B3.mqh"
+#include "Strategies\Midnight.mqh"
 #include "Strategies\Morning.mqh"
 // Constantes
 // Constants
 // Methods
 void strategiesInit() {}
-void strategiesEvent() { Morning(); }
+void strategiesEvent() {
+  Morning();
+  Midnight();
+  // M5B3();
+}

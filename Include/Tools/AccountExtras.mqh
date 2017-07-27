@@ -92,7 +92,8 @@ double getPeriodProfit(int period = PERIOD_D1, int shift = 0) {
 }
 double getDayProfit(int shift = 0) {
   MqlDateTime dayTime, orderTime;
-  TimeToStruct(iTime(Symbol(), PERIOD_D1, shift), dayTime);
+  TimeToStruct(iTime(Symbol(), PERIOD_M1, 0), dayTime);
+  dayTime.day -= shift;
   double profit = 0;
   for (int position = OrdersHistoryTotal(); position >= 0; position--) {
     if (!OrderSelect(position, SELECT_BY_POS, MODE_HISTORY))
