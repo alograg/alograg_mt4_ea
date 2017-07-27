@@ -3,7 +3,7 @@
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
-#define propVersion "4.07"
+#define propVersion "4.08"
 #define eaName "Alograg"
 #define MagicNumber 17808160
 // Properties
@@ -41,11 +41,11 @@ void OnDeinit(const int reason) { EventKillTimer(); }
 | Cada dato  |
 +-----------*/
 void OnTick() {
+  doReport();
   if (IsTesting())
     doTest();
   doManagment();
   doStrategies();
-  doReport();
   isNewBar();
 }
 /*----------+

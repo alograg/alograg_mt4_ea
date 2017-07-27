@@ -111,10 +111,17 @@ void SendAccountReport() {
   depositMoney = Deposits();
   balanceReport = "Report " + eaName + " v." + propVersion;
   balanceReport +=
+      StringFormat(" (%s, Spread %s)\n", strategiesActivate ? "On" : "Off",
+                   breakInSpread ? "Auto" : "Manual");
+  balanceReport +=
       StringFormat("\nBroker; %s (%s)\n", AccountInfoString(ACCOUNT_COMPANY),
                    AccountInfoString(ACCOUNT_CURRENCY));
   balanceReport += " Date " + TimeToString(Time[0]) + "\n";
   balanceReport += StringFormat("\nFlag = %G", getFlagSize(PERIOD_D1));
+  balanceReport +=
+      StringFormat("\nDeposit = %G (%s) %G", depositMoney,
+                   moneyOnRisk() ? "Riesgo" : "Tranquilo", sizeOfTheRisk);
+  balanceReport += StringFormat("\nB = %G", AccountBalance());
   balanceReport += StringFormat("\nDeposit = %G (%s)", depositMoney,
                                 moneyOnRisk() ? "Riesgo" : "Tranquilo");
   balanceReport += StringFormat("\nB = %G", AccountBalance());
@@ -130,6 +137,8 @@ void SendAccountReport() {
 void SendSimbolParams() {
   string comm = "|                                           " + eaName +
                 " v." + propVersion;
+  comm += StringFormat(" (%s, Spread %s)\n", strategiesActivate ? "On" : "Off",
+                       breakInSpread ? "Auto" : "Manual");
   comm += StringFormat(
       "\n|                                           Symbol: %s", Symbol());
   bool spreadfloat = SymbolInfoInteger(Symbol(), SYMBOL_SPREAD_FLOAT);
@@ -150,6 +159,9 @@ void SendSimbolParams() {
       MarketInfo(Symbol(), MODE_SWAPSHORT));
   comm += StringFormat(
       "\n|                                           Money: %G", depositMoney);
+  comm += StringFormat(
+      "\n|                                           Reference: %G",
+      sizeOfTheRisk);
   comm +=
       StringFormat("\n|                                           Candel: %G",
                    getCandelSize(PERIOD_D1));
