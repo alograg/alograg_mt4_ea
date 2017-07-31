@@ -22,7 +22,7 @@ void Morning() {
   }
   // TODO: evitar gaps
   double lotSize = getLotSize();
-  if (!lotSize)
+  if (lotSize <= 0)
     return;
   if (morningOrderBuy <= 0)
     morningOrderBuy = OrderSendReliable(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,

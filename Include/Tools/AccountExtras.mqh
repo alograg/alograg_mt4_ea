@@ -122,9 +122,6 @@ void SendAccountReport() {
       StringFormat("\nDeposit = %G (%s) %G", depositMoney,
                    moneyOnRisk() ? "Riesgo" : "Tranquilo", sizeOfTheRisk);
   balanceReport += StringFormat("\nB = %G", AccountBalance());
-  balanceReport += StringFormat("\nDeposit = %G (%s)", depositMoney,
-                                moneyOnRisk() ? "Riesgo" : "Tranquilo");
-  balanceReport += StringFormat("\nB = %G", AccountBalance());
   balanceReport += StringFormat("|P = %G", AccountProfit());
   balanceReport += StringFormat("|E = %G", AccountEquity());
   balanceReport += StringFormat("\nM = %G", AccountMargin());
