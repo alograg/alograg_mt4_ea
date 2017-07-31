@@ -10,7 +10,7 @@
 #property strict
 // Parameter
 extern int SpreadSize = 100; // Size of spread reference
-// extern int RiskSize = 40;    // Size of moneyRisk
+extern int RiskSize = 40;    // Size of risk
 // Constants
 int SpreadSampleSize = 0;
 double Spread[];
@@ -165,5 +165,8 @@ void SendSimbolParams() {
   comm +=
       StringFormat("\n|                                           Steps: %f",
                    NormalizeDouble((BreakEven / 3) / pareto, Digits));
+  comm +=
+      StringFormat("\n|                                           Lot Size: %f",
+                   NormalizeDouble(getLotSize(), 2));
   Comment(comm);
 }
