@@ -31,4 +31,6 @@ void Morning() {
     morningOrderSell =
         OrderSendReliable(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
                           MorningComment, MagicNumber, 0, Red);
+  SendNotification("morningOrderBuy: " + morningOrderBuy +
+                   ", morningOrderSell: " + morningOrderSell);
 }

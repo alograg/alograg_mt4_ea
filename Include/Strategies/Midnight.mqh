@@ -19,11 +19,11 @@ void Midnight() {
   }
   MqlDateTime currentTimeing;
   TimeToStruct(iTime(Symbol(), PERIOD_M1, 0), currentTimeing);
-  if (!(currentTimeing.hour == 23 && currentTimeing.min == 59))
+  if (!(currentTimeing.hour == 23 && currentTimeing.min == 58))
     return;
   // TODO: evitar gaps
   double lotSize = getLotSize();
-  if (!lotSize)
+  if (lotSize <= 0)
     return;
   if (MidnightOrderSell <= 0)
     MidnightOrderSell =
@@ -44,5 +44,6 @@ void Midnight() {
       OrderModifyReliable(OrderTicket(), OrderOpenPrice(), lostClose,
                           OrderTakeProfit(), 0, Yellow);
     }
+    SendNotification("MidnightOrderSell: " + MidnightOrderSell);
   }
 }

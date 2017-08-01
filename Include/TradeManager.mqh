@@ -18,6 +18,8 @@
 // Methods
 void tmInit() {
   BreakEven = breakInSpread ? getSpread() : Point * manualBreakEven;
+  int eq = (int)AccountEquity();
+  sizeOfTheRisk = MathMax((int)(eq - (eq % (RiskSize))) / 2, RiskSize);
 }
 void tmEvent() {
   if (isNewBar(LAST_PERIOD_W1) && AccountProfit() == 0 &&

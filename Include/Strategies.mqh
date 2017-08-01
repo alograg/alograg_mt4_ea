@@ -9,6 +9,7 @@
 #property version propVersion
 #property strict
 // Includes
+#include "Strategies\DojiOperation.mqh"
 #include "Strategies\M5B3.mqh"
 #include "Strategies\Midnight.mqh"
 #include "Strategies\Morning.mqh"
@@ -19,5 +20,6 @@ void strategiesInit() {}
 void strategiesEvent() {
   Morning();
   Midnight();
+  // DojiOperation();
   // M5B3();
 }
