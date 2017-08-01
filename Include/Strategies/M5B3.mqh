@@ -32,10 +32,10 @@ void M5B3() {
     black += (int)isBlackCandel(period, i);
   }
   if (!M5B3OrderBuy && white == BarsReference)
-    M5B3OrderBuy = OrderSendReliable(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
-                                     M5B3Comment, MagicNumber, 0, Blue);
+    M5B3OrderBuy = OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
+                             M5B3Comment, MagicNumber, 0, Blue);
   if (!M5B3OrderSell && black == BarsReference)
-    M5B3OrderSell = OrderSendReliable(
-        Symbol(), OP_SELL, NormalizeDouble(MathAbs(lotSize), 2), Bid, 0, 0, 0,
-        M5B3Comment, MagicNumber, 0, Red);
+    M5B3OrderSell =
+        OrderSend(Symbol(), OP_SELL, NormalizeDouble(MathAbs(lotSize), 2), Bid,
+                  0, 0, 0, M5B3Comment, MagicNumber, 0, Red);
 }

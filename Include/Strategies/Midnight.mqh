@@ -26,9 +26,8 @@ void Midnight() {
   if (lotSize <= 0)
     return;
   if (MidnightOrderSell <= 0)
-    MidnightOrderSell =
-        OrderSendReliable(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
-                          MidnightComment, MagicNumber, 0, Red);
+    MidnightOrderSell = OrderSend(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
+                                  MidnightComment, MagicNumber, 0, Red);
   else if (OrderSelect(MidnightOrderSell, SELECT_BY_TICKET)) {
     if (OrderAge() >= 1) {
       int mode = OrderType();
@@ -41,8 +40,8 @@ void Midnight() {
         lostClose -= Point * currentBreak;
         lostClose -= BreakEven;
       }
-      OrderModifyReliable(OrderTicket(), OrderOpenPrice(), lostClose,
-                          OrderTakeProfit(), 0, Yellow);
+      OrderModify(OrderTicket(), OrderOpenPrice(), lostClose, OrderTakeProfit(),
+                  0, Yellow);
     }
     SendNotification("MidnightOrderSell: " + MidnightOrderSell);
   }

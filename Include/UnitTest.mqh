@@ -30,10 +30,10 @@ void orderOn(datetime dateTime, double lotSize = 0, bool onlyOnece = true) {
   if (dayTime.year == inTime.year && dayTime.mon == inTime.mon &&
       dayTime.day == inTime.day && dayTime.hour == inTime.hour &&
       dayTime.min == inTime.min)
-    manualOrder = OrderSendReliable(Symbol(), lotSize > 0 ? OP_BUY : OP_SELL,
-                                    NormalizeDouble(MathAbs(lotSize), 2),
-                                    lotSize > 0 ? Bid : Ask, 0, 0, 0,
-                                    TestComment, MagicNumber, 0, White);
+    manualOrder =
+        OrderSend(Symbol(), lotSize > 0 ? OP_BUY : OP_SELL,
+                  NormalizeDouble(MathAbs(lotSize), 2), lotSize > 0 ? Bid : Ask,
+                  0, 0, 0, TestComment, MagicNumber, 0, White);
   if (!onlyOnece)
     manualOrder = 0;
 }

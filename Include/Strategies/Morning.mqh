@@ -25,12 +25,11 @@ void Morning() {
   if (lotSize <= 0)
     return;
   if (morningOrderBuy <= 0)
-    morningOrderBuy = OrderSendReliable(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
-                                        MorningComment, MagicNumber, 0, Blue);
+    morningOrderBuy = OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
+                                MorningComment, MagicNumber, 0, Blue);
   if (morningOrderSell <= 0)
-    morningOrderSell =
-        OrderSendReliable(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
-                          MorningComment, MagicNumber, 0, Red);
+    morningOrderSell = OrderSend(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
+                                 MorningComment, MagicNumber, 0, Red);
   SendNotification("morningOrderBuy: " + morningOrderBuy +
                    ", morningOrderSell: " + morningOrderSell);
 }

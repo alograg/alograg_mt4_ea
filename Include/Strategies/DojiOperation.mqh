@@ -42,12 +42,12 @@ void DojiOperation() {
      return;*/
   if (!DojiOperationOrderBuy)
     DojiOperationOrderBuy =
-        OrderSendReliable(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
-                          DojiOperationComment, MagicNumber, 0, Blue);
+        OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0, DojiOperationComment,
+                  MagicNumber, 0, Blue);
   if (!DojiOperationOrderSell)
-    DojiOperationOrderSell = OrderSendReliable(
-        Symbol(), OP_SELL, NormalizeDouble(MathAbs(lotSize), 2), Bid, 0, 0, 0,
-        DojiOperationComment, MagicNumber, 0, Red);
+    DojiOperationOrderSell =
+        OrderSend(Symbol(), OP_SELL, NormalizeDouble(MathAbs(lotSize), 2), Bid,
+                  0, 0, 0, DojiOperationComment, MagicNumber, 0, Red);
 }
 bool dogi(double o, double c) { return o == c; }
 bool nearDoji(double o, double c, double h, double l) {
