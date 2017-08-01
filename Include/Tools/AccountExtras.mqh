@@ -39,11 +39,12 @@ double Deposits() {
   return MathMax(total, 40);
 }
 double getLotSize() {
-  return moneyOnRisk()
-             ? 0
-             : sizeOfTheRisk > 40
-                   ? MathMax(AccountEquity() / (100 * sizeOfTheRisk), 0)
-                   : 0.01;
+  return NormalizeDouble(
+      moneyOnRisk() ? 0
+                    : sizeOfTheRisk > 40
+                          ? MathMax(AccountEquity() / (100 * sizeOfTheRisk), 0)
+                          : 0.01,
+      2);
 }
 double getSpread(double AddValue = 0) {
   double LastValue;

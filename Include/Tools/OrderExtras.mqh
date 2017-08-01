@@ -19,9 +19,13 @@ int OrderAge(int period = 0) {
   return DaysOpen;
 }
 int OrderIsOpen(int ticket = 0) {
-  if (ticket)
-    bool currentTicket = OrderSelect(ticket, SELECT_BY_TICKET);
-  return !OrderCloseTime() ? OrderTicket() : 0;
+  if (ticket) {
+    if (OrderSelect(ticket, SELECT_BY_TICKET))
+      return !OrderCloseTime() ? OrderTicket() : 0;
+  }
+  if (OrderTicket())
+    return !OrderCloseTime() ? OrderTicket() : 0;
+  return ticket > 0 ? ticket : OrderTicket();
 }
 int OrderProfitPips() {
   return (int)((OrderProfit() - OrderCommission()) / OrderLots() /
