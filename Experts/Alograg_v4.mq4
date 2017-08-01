@@ -58,7 +58,8 @@ void OnTimer() {}
 void doStrategies() {
   if (!strategiesActivate || moneyOnRisk())
     return;
-  strategiesEvent();
+  if (IsTradeAllowed())
+    strategiesEvent();
 }
 /*----------------------------+
 | Administra las operaciones  |

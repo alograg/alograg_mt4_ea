@@ -111,6 +111,8 @@ double getDayProfit(int shift = 0) {
 }
 // Account Report
 void SendAccountReport() {
+  if (!IsTradeAllowed())
+    return;
   string balanceReport;
   depositMoney = Deposits();
   balanceReport = "Report " + eaName + " v." + propVersion;
