@@ -11,7 +11,7 @@
 // Parameters
 // Constants
 string OldOrdersComment = eaName + ": S-OldOrders";
-extern int resitsDays = 2; // Days without operations
+extern int resitsDays = 3; // Days without operations
 // Function
 bool OldOrders() {
   int total = OrdersTotal();
