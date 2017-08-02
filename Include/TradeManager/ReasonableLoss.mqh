@@ -67,8 +67,8 @@ bool ReasonableLoss() {
       lostClose -= Point * currentBreak;
       lostClose -= BreakEven;
     }
-    OrderModifyReliable(OrderTicket(), OrderOpenPrice(), lostClose,
-                        OrderTakeProfit(), 0, Yellow);
+    OrderModify(OrderTicket(), OrderOpenPrice(), lostClose, OrderTakeProfit(),
+                0, Yellow);
     return true;
   }
   return false;

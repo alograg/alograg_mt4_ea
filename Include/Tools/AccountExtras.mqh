@@ -10,7 +10,7 @@
 #property strict
 // Parameter
 extern int SpreadSize = 100; // Size of spread reference
-// extern int RiskSize = 40;    // Size of moneyRisk
+extern int RiskSize = 40;    // Size of risk
 // Constants
 int SpreadSampleSize = 0;
 double Spread[];
@@ -39,8 +39,12 @@ double Deposits() {
   return MathMax(total, 40);
 }
 double getLotSize() {
-  return moneyOnRisk() ? 0
-                       : MathMax(AccountEquity() / (100 * sizeOfTheRisk), 0);
+  return NormalizeDouble(
+      moneyOnRisk() ? 0
+                    : sizeOfTheRisk > 40
+                          ? MathMax(AccountEquity() / (100 * sizeOfTheRisk), 0)
+                          : 0.01,
+      2);
 }
 double getSpread(double AddValue = 0) {
   double LastValue;
@@ -107,6 +111,8 @@ double getDayProfit(int shift = 0) {
 }
 // Account Report
 void SendAccountReport() {
+  if (!IsTradeAllowed())
+    return;
   string balanceReport;
   depositMoney = Deposits();
   balanceReport = "Report " + eaName + " v." + propVersion;
@@ -121,9 +127,6 @@ void SendAccountReport() {
   balanceReport +=
       StringFormat("\nDeposit = %G (%s) %G", depositMoney,
                    moneyOnRisk() ? "Riesgo" : "Tranquilo", sizeOfTheRisk);
-  balanceReport += StringFormat("\nB = %G", AccountBalance());
-  balanceReport += StringFormat("\nDeposit = %G (%s)", depositMoney,
-                                moneyOnRisk() ? "Riesgo" : "Tranquilo");
   balanceReport += StringFormat("\nB = %G", AccountBalance());
   balanceReport += StringFormat("|P = %G", AccountProfit());
   balanceReport += StringFormat("|E = %G", AccountEquity());
@@ -168,5 +171,8 @@ void SendSimbolParams() {
   comm +=
       StringFormat("\n|                                           Steps: %f",
                    NormalizeDouble((BreakEven / 3) / pareto, Digits));
+  comm +=
+      StringFormat("\n|                                           Lot Size: %f",
+                   NormalizeDouble(getLotSize(), 2));
   Comment(comm);
 }

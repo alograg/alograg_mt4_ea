@@ -184,7 +184,7 @@ int OrderSendReliable(string symbol, int cmd, double volume, double price,
                      (string)volume + " lots @" + (string)price +
                      " sl:" + (string)stoploss + " tp:" + (string)takeprofit);
   // limit/stop order.
-  int ticket = -1, currentOrder;
+  int ticket = -1;
   int err = GetLastError(); // clear the global variable.
 
   if (bridge == true) {
@@ -195,13 +195,13 @@ int OrderSendReliable(string symbol, int cmd, double volume, double price,
                                  comment, magic, expiration, arrow_color);
     //      Print("ticket = ",ticket," Ln 174, stoploss = ",stoploss,",
     // takeprofit = ",takeprofit);
-    currentOrder = OrderSelect(ticket, SELECT_BY_TICKET);
+    ticket = OrderSelect(ticket, SELECT_BY_TICKET);
     //      Print("OrderReSendReliable ticket = ",OrderTicket(),", price =
     // ",OrderOpenPrice(),", stoploss = ",stoploss,", takeprofit =
     // ",takeprofit);
     if (ticket != -1)
       OrderModifyReliable(ticket, price, stoploss, takeprofit, expiration);
-    currentOrder = OrderSelect(ticket, SELECT_BY_TICKET);
+    ticket = OrderSelect(ticket, SELECT_BY_TICKET);
     //      Print("OrderModifyReliable ticket = ",OrderTicket(),", price =
     // ",OrderOpenPrice(),", stoploss = ",OrderStopLoss(),", takeprofit =
     // ",OrderTakeProfit());
@@ -396,14 +396,14 @@ int OrderSendReliable(string symbol, int cmd, double volume, double price,
                                   comment, magic, expiration, arrow_color);
           //               Print("ticket = ",ticket," Ln 386, stoploss =
           // ",stoploss,", takeprofit = ",takeprofit);
-          currentOrder = OrderSelect(ticket, SELECT_BY_TICKET);
+          ticket = OrderSelect(ticket, SELECT_BY_TICKET);
           //               Print("OrderReSendReliable ticket =
           // ",OrderTicket(),", price = ",OrderOpenPrice(),", stoploss =
           // ",stoploss,", takeprofit = ",takeprofit);
           if (ticket != -1)
             OrderModifyReliable(ticket, price, stoploss, takeprofit,
                                 expiration);
-          currentOrder = OrderSelect(ticket, SELECT_BY_TICKET);
+          ticket = OrderSelect(ticket, SELECT_BY_TICKET);
           //            	Print("OrderModifyReliable ticket =
           // ",OrderTicket(),", price = ",OrderOpenPrice(),", stoploss =
           // ",OrderStopLoss(),", takeprofit = ",OrderTakeProfit());

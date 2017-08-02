@@ -56,7 +56,7 @@ bool isNewBar(int period = 0) {
     lastPeriod = LAST_PERIOD_MN1;
     break;
   default:
-    return false;
+    return true;
   }
 
   return lastPeriod != iTime(Symbol(), period, 0);

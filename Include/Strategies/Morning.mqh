@@ -14,21 +14,22 @@ int morningOrderBuy = -1;
 int morningOrderSell = -1;
 void Morning() {
   if (!isNewBar(PERIOD_D1)) {
-    if (morningOrderBuy)
+    if (morningOrderBuy > 0)
       morningOrderBuy = OrderIsOpen(morningOrderBuy);
-    if (morningOrderSell)
+    if (morningOrderSell > 0)
       morningOrderSell = OrderIsOpen(morningOrderSell);
     return;
   }
   // TODO: evitar gaps
   double lotSize = getLotSize();
-  if (!lotSize)
+  if (lotSize <= 0)
     return;
   if (morningOrderBuy <= 0)
-    morningOrderBuy = OrderSendReliable(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
-                                        MorningComment, MagicNumber, 0, Blue);
+    morningOrderBuy = OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
+                                MorningComment, MagicNumber, 0, Blue);
   if (morningOrderSell <= 0)
-    morningOrderSell =
-        OrderSendReliable(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
-                          MorningComment, MagicNumber, 0, Red);
+    morningOrderSell = OrderSend(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
+                                 MorningComment, MagicNumber, 0, Red);
+  SendNotification("morningOrderBuy: " + morningOrderBuy +
+                   ", morningOrderSell: " + morningOrderSell);
 }

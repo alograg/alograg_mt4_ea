@@ -19,16 +19,15 @@ void Midnight() {
   }
   MqlDateTime currentTimeing;
   TimeToStruct(iTime(Symbol(), PERIOD_M1, 0), currentTimeing);
-  if (!(currentTimeing.hour == 23 && currentTimeing.min == 59))
+  if (!(currentTimeing.hour == 23 && currentTimeing.min == 58))
     return;
   // TODO: evitar gaps
   double lotSize = getLotSize();
-  if (!lotSize)
+  if (lotSize <= 0)
     return;
   if (MidnightOrderSell <= 0)
-    MidnightOrderSell =
-        OrderSendReliable(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
-                          MidnightComment, MagicNumber, 0, Red);
+    MidnightOrderSell = OrderSend(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
+                                  MidnightComment, MagicNumber, 0, Red);
   else if (OrderSelect(MidnightOrderSell, SELECT_BY_TICKET)) {
     if (OrderAge() >= 1) {
       int mode = OrderType();
@@ -41,8 +40,9 @@ void Midnight() {
         lostClose -= Point * currentBreak;
         lostClose -= BreakEven;
       }
-      OrderModifyReliable(OrderTicket(), OrderOpenPrice(), lostClose,
-                          OrderTakeProfit(), 0, Yellow);
+      OrderModify(OrderTicket(), OrderOpenPrice(), lostClose, OrderTakeProfit(),
+                  0, Yellow);
     }
+    SendNotification("MidnightOrderSell: " + MidnightOrderSell);
   }
 }

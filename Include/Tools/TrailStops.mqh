@@ -36,8 +36,7 @@ void TrailStops(int ticket) {
       }
     }
     if (stop && stop != OrderStopLoss())
-      OrderModifyReliable(OrderTicket(), OrderOpenPrice(),
-                          NormalizeDouble(stop, Digits), OrderTakeProfit(), 0,
-                          Yellow);
+      OrderModify(OrderTicket(), OrderOpenPrice(),
+                  NormalizeDouble(stop, Digits), OrderTakeProfit(), 0, Yellow);
   }
 }
