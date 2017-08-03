@@ -8,6 +8,8 @@
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict
+// Parameters
+extern bool sendReportErrors = TRUE; // Send Report Errors
 // Definitions
 template <typename E>
 int EnumToArray(E dummy, int &values[], const int start = INT_MIN,
@@ -27,7 +29,9 @@ int EnumToArray(E dummy, int &values[], const int start = INT_MIN,
   }
   return count;
 }
-void ReportError(err){
+void ReportError(string from, int err) {
+  if (err != ERR_NO_ERROR && sendReportErrors)
+    SendNotification("[" + from + "] Error: " + ErrorDescription(err));
 }
 // Includes
 #include "External\TradersTech.mqh"
