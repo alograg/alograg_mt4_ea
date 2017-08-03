@@ -30,20 +30,19 @@ void Morning() {
   double lotSize = getLotSize();
   if (lotSize <= 0)
     return;
-  while (!morningOrderBuy && !morningOrderSell) {
-    if (!morningOrderBuy) {
+  while (morningOrderBuy <= 0 && morningOrderSell <= 0) {
+    if (morningOrderBuy <= 0)
       morningOrderBuy = OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
                                   MorningComment, MagicNumber, 0, Blue);
-    }
-    if (!morningOrderSell) {
+
+    if (morningOrderSell <= 0)
       morningOrderSell = OrderSend(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
                                    MorningComment, MagicNumber, 0, Red);
-    }
     Sleep(500);
   }
-  if (!morningOrderBuy)
+  if (morningOrderBuy <= 0)
     ReportError("morningOrderBuy", GetLastError());
-  if (!morningOrderSell)
+  if (morningOrderSell <= 0)
     ReportError("morningOrderSell", GetLastError());
   if (IsTradeAllowed())
     SendNotification("morningOrderBuy: " + (string)morningOrderBuy +
