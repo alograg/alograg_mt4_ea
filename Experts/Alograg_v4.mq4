@@ -3,7 +3,7 @@
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
-#define propVersion "4.13"
+#define propVersion "4.14"
 #define eaName "Alograg"
 #define MagicNumber 17808160
 // Properties
@@ -12,12 +12,12 @@
 #property version propVersion
 #property strict
 // Includes
-#include <stderror.mqh>
-#include <stdlib.mqh>
 #include "..\Include\Strategies.mqh"
 #include "..\Include\Tools.mqh"
 #include "..\Include\TradeManager.mqh"
 #include "..\Include\UnitTest.mqh"
+#include <stderror.mqh>
+#include <stdlib.mqh>
 // Parameters
 extern bool strategiesActivate = FALSE; // Strategies Activate
 // Constants
@@ -26,13 +26,10 @@ extern bool strategiesActivate = FALSE; // Strategies Activate
 +----------------*/
 int OnInit() {
   Print(eaName + " v." + propVersion);
-  SendNotification(eaName + " v." + propVersion + " INICIALIZADO");
+  if (IsTradeAllowed())
+    SendNotification(eaName + " v." + propVersion + " INICIALIZADO");
   // Registro de evento
   EventSetTimer(60 * 60 * 12);
-  if (!countPeriods) {
-    ENUM_TIMEFRAMES periodList;
-    countPeriods = EnumToArray(periodList, allPeriods, PERIOD_M1, PERIOD_D1);
-  }
   setLatsPeriods();
   tmInit();
   strategiesInit();

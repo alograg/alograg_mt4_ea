@@ -24,23 +24,24 @@ bool OldOrders() {
   for (; total >= 0; total--) {
     if (!OrderSelect(total, SELECT_BY_POS))
       continue;
-    if (OrderAge() >= resitsDays)
+    if (OrderAge() <= resitsDays)
       continue;
     int mode = OrderType(), pips = OrderProfitPips();
     if (mode == OP_SELL && sellPips > pips) {
       orderId = OrderTicket();
       sellPips = pips;
-      sellReport = "#" + orderId + " pips: " + (string)pips + ", age " +
+      sellReport = "#" + (string)orderId + " pips: " + (string)pips + ", age " +
                    (string)OrderAge();
     }
     if (mode == OP_BUY && buyPips > pips) {
       oppositeId = OrderTicket();
       buyPips = pips;
-      buyReport = "#" + orderId + " pips: " + (string)pips + ", age " +
+      buyReport = "#" + (string)orderId + " pips: " + (string)pips + ", age " +
                   (string)OrderAge();
     }
   }
-  SendNotification("Old orders\n" + sellReport + "\n" + buyReport);
+  if (IsTradeAllowed())
+    SendNotification("Old orders\n" + sellReport + "\n" + buyReport);
   if (!orderId && !oppositeId)
     return false;
   return OrderCloseBy(orderId, oppositeId, Green);

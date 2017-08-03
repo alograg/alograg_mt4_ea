@@ -12,7 +12,6 @@
 // Constants
 int allPeriods[];
 int periodsLastBars[];
-int countPeriods = 0;
 datetime LAST_PERIOD_M1, LAST_PERIOD_M5, LAST_PERIOD_M15, LAST_PERIOD_M30,
     LAST_PERIOD_H1, LAST_PERIOD_H4, LAST_PERIOD_D1, LAST_PERIOD_W1,
     LAST_PERIOD_MN1;

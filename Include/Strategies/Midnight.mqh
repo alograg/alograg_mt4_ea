@@ -40,9 +40,11 @@ void Midnight() {
         lostClose -= Point * currentBreak;
         lostClose -= BreakEven;
       }
-      OrderModify(OrderTicket(), OrderOpenPrice(), lostClose, OrderTakeProfit(),
-                  0, Yellow);
+      if (!OrderModify(OrderTicket(), OrderOpenPrice(), lostClose,
+                       OrderTakeProfit(), 0, Yellow))
+        ReportError("MidnightOrderModify", GetLastError());
     }
   }
-  SendNotification("MidnightOrderSell: " + MidnightOrderSell);
+  if (IsTradeAllowed())
+    SendNotification("MidnightOrderSell: " + (string)MidnightOrderSell);
 }

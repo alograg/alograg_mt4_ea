@@ -134,7 +134,8 @@ void SendAccountReport() {
   balanceReport += StringFormat("|F = %G", AccountFreeMargin());
   balanceReport +=
       StringFormat("|L = %G", AccountInfoDouble(ACCOUNT_MARGIN_LEVEL));
-  SendNotification(balanceReport);
+  if (IsTradeAllowed())
+    SendNotification(balanceReport);
 }
 // Simbol params
 void SendSimbolParams() {

@@ -21,7 +21,8 @@ void Morning() {
     return;
   }
   if (Hour() != 0 && Minute() != 0) {
-    SendNotification("Not time to morning work");
+    if (IsTradeAllowed())
+      SendNotification("Not time to morning work");
 
     return;
   }
@@ -29,18 +30,22 @@ void Morning() {
   double lotSize = getLotSize();
   if (lotSize <= 0)
     return;
-  if (morningOrderBuy <= 0) {
-    morningOrderBuy = OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
-                                MorningComment, MagicNumber, 0, Blue);
-    if (morningOrderBuy < 0)
-      ReportError("morningOrderBuy", GetLastError());
+  while (!morningOrderBuy && !morningOrderSell) {
+    if (!morningOrderBuy) {
+      morningOrderBuy = OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
+                                  MorningComment, MagicNumber, 0, Blue);
+    }
+    if (!morningOrderSell) {
+      morningOrderSell = OrderSend(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
+                                   MorningComment, MagicNumber, 0, Red);
+    }
+    Sleep(500);
   }
-  if (morningOrderSell <= 0) {
-    morningOrderSell = OrderSend(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
-                                 MorningComment, MagicNumber, 0, Red);
-    if (morningOrderSell < 0)
-      ReportError("morningOrderSell", GetLastError());
-  }
-  SendNotification("morningOrderBuy: " + morningOrderBuy +
-                   ", morningOrderSell: " + morningOrderSell);
+  if (!morningOrderBuy)
+    ReportError("morningOrderBuy", GetLastError());
+  if (!morningOrderSell)
+    ReportError("morningOrderSell", GetLastError());
+  if (IsTradeAllowed())
+    SendNotification("morningOrderBuy: " + (string)morningOrderBuy +
+                     ", morningOrderSell: " + (string)morningOrderSell);
 }

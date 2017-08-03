@@ -31,7 +31,8 @@ int EnumToArray(E dummy, int &values[], const int start = INT_MIN,
 }
 void ReportError(string from, int err) {
   if (err != ERR_NO_ERROR && sendReportErrors)
-    SendNotification("[" + from + "] Error: " + ErrorDescription(err));
+    if (IsTradeAllowed())
+      SendNotification("[" + from + "] Error: " + ErrorDescription(err));
 }
 // Includes
 #include "External\TradersTech.mqh"

@@ -28,9 +28,11 @@ void tradeCounterPositions(bool strong = false) {
   lotSize /= strong ? 1 : 2;
   lotSize = NormalizeDouble(lotSize, 2);
   if (lotSize != 0) {
-    OrderSend(Symbol(), lotSize < 0 ? OP_BUY : OP_SELL,
-              NormalizeDouble(MathAbs(lotSize), 2), lotSize < 0 ? Bid : Ask, 0,
-              0, 0, MaintainMarginLevelComment, MagicNumber, 0, Green);
+    if (!OrderSend(Symbol(), lotSize < 0 ? OP_BUY : OP_SELL,
+                   NormalizeDouble(MathAbs(lotSize), 2),
+                   lotSize < 0 ? Bid : Ask, 0, 0, 0, MaintainMarginLevelComment,
+                   MagicNumber, 0, Green))
+      ReportError("MaintainMarginLevel", GetLastError());
   }
 }
 double countOpenPositions(int mode = -1) {
@@ -42,7 +44,7 @@ double countOpenPositions(int mode = -1) {
       else
         openSellLots += OrderLots();
     }
-  return mode == OP_BUY ? openBuyLots : mode == OP_SELL
-                                            ? openSellLots
-                                            : openBuyLots - openSellLots;
+  return mode == OP_BUY
+             ? openBuyLots
+             : mode == OP_SELL ? openSellLots : openBuyLots - openSellLots;
 }
