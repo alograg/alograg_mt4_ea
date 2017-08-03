@@ -138,41 +138,31 @@ void SendAccountReport() {
 }
 // Simbol params
 void SendSimbolParams() {
+  string startLine = "\n|                                           ";
   string comm = "|                                           " + eaName +
                 " v." + propVersion;
   comm += StringFormat(" (%s, Spread %s)\n", strategiesActivate ? "On" : "Off",
                        breakInSpread ? "Auto" : "Manual");
-  comm += StringFormat(
-      "\n|                                           Symbol: %s", Symbol());
+  comm += StringFormat(startLine + "Symbol: %s", Symbol());
   bool spreadfloat = SymbolInfoInteger(Symbol(), SYMBOL_SPREAD_FLOAT);
-  comm += StringFormat("\n|                                           Spread "
-                       "%s = %I64d points, %.5f",
+  comm += StringFormat(startLine + "Spread "
+                                   "%s = %I64d points, %.5f",
                        spreadfloat ? "floating" : "fixed",
                        SymbolInfoInteger(Symbol(), SYMBOL_SPREAD),
                        NormalizeDouble(getSpread(), Digits));
-  comm += StringFormat(
-      "\n|                                           Stop level: %G",
-      MarketInfo(Symbol(), MODE_STOPLEVEL));
-  comm +=
-      StringFormat("\n|                                           Stop Out: %G",
-                   AccountStopoutMode() ? 50 : AccountStopoutLevel());
-  comm += StringFormat(
-      "\n|                                           Swap: byu %G sell %G",
-      MarketInfo(Symbol(), MODE_SWAPLONG),
-      MarketInfo(Symbol(), MODE_SWAPSHORT));
-  comm += StringFormat(
-      "\n|                                           Money: %G", depositMoney);
-  comm += StringFormat(
-      "\n|                                           Reference: %G",
-      sizeOfTheRisk);
-  comm +=
-      StringFormat("\n|                                           Candel: %G",
-                   getCandelSize(PERIOD_D1));
-  comm +=
-      StringFormat("\n|                                           Steps: %f",
-                   NormalizeDouble((BreakEven / 3) / pareto, Digits));
-  comm +=
-      StringFormat("\n|                                           Lot Size: %f",
-                   NormalizeDouble(getLotSize(), 2));
+  comm += StringFormat(startLine + "Stop level: %G",
+                       MarketInfo(Symbol(), MODE_STOPLEVEL));
+  comm += StringFormat(startLine + "Stop Out: %G",
+                       AccountStopoutMode() ? 50 : AccountStopoutLevel());
+  comm += StringFormat(startLine + "Swap: byu %G sell %G",
+                       MarketInfo(Symbol(), MODE_SWAPLONG),
+                       MarketInfo(Symbol(), MODE_SWAPSHORT));
+  comm += StringFormat(startLine + "Money: %G", depositMoney);
+  comm += StringFormat(startLine + "Reference: %G", sizeOfTheRisk);
+  comm += StringFormat(startLine + "Candel: %G", getCandelSize(PERIOD_D1));
+  comm += StringFormat(startLine + "Steps: %f",
+                       NormalizeDouble((BreakEven / 3) / pareto, Digits));
+  comm += StringFormat(startLine + "Lot Size: %f",
+                       NormalizeDouble(getLotSize(), 2));
   Comment(comm);
 }

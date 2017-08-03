@@ -3,7 +3,7 @@
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
-#define propVersion "4.12"
+#define propVersion "4.13"
 #define eaName "Alograg"
 #define MagicNumber 17808160
 // Properties
@@ -26,6 +26,7 @@ extern bool strategiesActivate = FALSE; // Strategies Activate
 +----------------*/
 int OnInit() {
   Print(eaName + " v." + propVersion);
+  SendNotification(eaName + " v." + propVersion + " INICIALIZADO");
   // Registro de evento
   EventSetTimer(60 * 60 * 12);
   if (!countPeriods) {

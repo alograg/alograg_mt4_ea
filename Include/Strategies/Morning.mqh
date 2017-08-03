@@ -20,8 +20,11 @@ void Morning() {
       morningOrderSell = OrderIsOpen(morningOrderSell);
     return;
   }
-  if (Hour() != 0 && Minute() != 0)
+  if (Hour() != 0 && Minute() != 0) {
+    SendNotification("Not time to morning work");
+
     return;
+  }
   // TODO: evitar gaps
   double lotSize = getLotSize();
   if (lotSize <= 0)
