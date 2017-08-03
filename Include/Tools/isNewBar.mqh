@@ -18,14 +18,6 @@ datetime LAST_PERIOD_M1, LAST_PERIOD_M5, LAST_PERIOD_M15, LAST_PERIOD_M30,
     LAST_PERIOD_MN1;
 // Function
 bool isNewBar(int period = 0) {
-  if (period == 0) {
-    setLatsPeriods(countPeriods == 0);
-    return true;
-  }
-  if (!countPeriods) {
-    ENUM_TIMEFRAMES periodList;
-    countPeriods = EnumToArray(periodList, allPeriods, PERIOD_M1, PERIOD_D1);
-  }
   datetime lastPeriod;
   switch (period) {
   case PERIOD_M1:

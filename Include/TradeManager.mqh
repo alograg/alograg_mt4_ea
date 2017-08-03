@@ -28,7 +28,7 @@ void tmEvent() {
     sizeOfTheRisk = MathMax((int)(eq - (eq % (RiskSize))) / 2, RiskSize);
   }
   DixPip();
-  ReasonableLoss();
+  // ReasonableLoss();
   OldOrders();
   MaintainMarginLevel();
 }

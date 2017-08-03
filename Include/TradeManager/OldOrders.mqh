@@ -25,7 +25,7 @@ bool OldOrders() {
       continue;
     if (OrderAge() >= resitsDays)
       continue;
-    int mode = OrderType(), age = OrderAge(), pips = OrderProfitPips();
+    int mode = OrderType(), pips = OrderProfitPips();
     if (mode == OP_SELL && sellPips > pips) {
       orderId = OrderTicket();
       sellPips = pips;

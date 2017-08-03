@@ -117,12 +117,12 @@ void SendAccountReport() {
   depositMoney = Deposits();
   balanceReport = "Report " + eaName + " v." + propVersion;
   balanceReport +=
-      StringFormat(" (%s, Spread %s)\n", strategiesActivate ? "On" : "Off",
+      StringFormat(" (%s, Spread %s)", strategiesActivate ? "On" : "Off",
                    breakInSpread ? "Auto" : "Manual");
   balanceReport +=
       StringFormat("\nBroker; %s (%s)\n", AccountInfoString(ACCOUNT_COMPANY),
                    AccountInfoString(ACCOUNT_CURRENCY));
-  balanceReport += " Date " + TimeToString(Time[0]) + "\n";
+  balanceReport += " Date " + TimeToString(Time[0]);
   balanceReport += StringFormat("\nFlag = %G", getFlagSize(PERIOD_D1));
   balanceReport +=
       StringFormat("\nDeposit = %G (%s) %G", depositMoney,

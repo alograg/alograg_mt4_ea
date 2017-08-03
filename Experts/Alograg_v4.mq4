@@ -3,7 +3,7 @@
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
-#define propVersion "4.11"
+#define propVersion "4.12"
 #define eaName "Alograg"
 #define MagicNumber 17808160
 // Properties
@@ -28,7 +28,11 @@ int OnInit() {
   Print(eaName + " v." + propVersion);
   // Registro de evento
   EventSetTimer(60 * 60 * 12);
-  isNewBar();
+  if (!countPeriods) {
+    ENUM_TIMEFRAMES periodList;
+    countPeriods = EnumToArray(periodList, allPeriods, PERIOD_M1, PERIOD_D1);
+  }
+  setLatsPeriods();
   tmInit();
   strategiesInit();
   return (INIT_SUCCEEDED);
@@ -37,6 +41,10 @@ int OnInit() {
 | Cierre  |
 +--------*/
 void OnDeinit(const int reason) { EventKillTimer(); }
+/*----------+
+| Al timer  |
++----------*/
+void OnTimer() {}
 /*-----------+
 | Cada dato  |
 +-----------*/
@@ -46,12 +54,27 @@ void OnTick() {
     doTest();
   doManagment();
   doStrategies();
-  isNewBar();
+  setLatsPeriods();
 }
 /*----------+
-| Al timer  |
+| Reporta   |
 +----------*/
-void OnTimer() {}
+void doReport() {
+  if (isNewBar(PERIOD_D1))
+    SendAccountReport();
+  if (isNewBar(PERIOD_M1))
+    SendSimbolParams();
+}
+/*--------------+
+| Para pruebas  |
++--------------*/
+void doTest() {
+  // orderOn(StringToTime("2017.02.24 18:20"), getLotSize());
+}
+/*----------------------------+
+| Administra las operaciones  |
++----------------------------*/
+void doManagment() { tmEvent(); }
 /*-------------------------+
 | Ejecuta las estrategias  |
 +-------------------------*/
@@ -60,19 +83,4 @@ void doStrategies() {
     return;
   if (IsTradeAllowed())
     strategiesEvent();
-}
-/*----------------------------+
-| Administra las operaciones  |
-+----------------------------*/
-void doManagment() { tmEvent(); }
-
-void doReport() {
-  if (isNewBar(PERIOD_D1))
-    SendAccountReport();
-  if (isNewBar(PERIOD_M1))
-    SendSimbolParams();
-}
-
-void doTest() {
-  // orderOn(StringToTime("2017.02.24 18:20"), getLotSize());
 }

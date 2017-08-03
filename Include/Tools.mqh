@@ -26,7 +26,10 @@ int EnumToArray(E dummy, int &values[], const int start = INT_MIN,
     }
   }
   return count;
-} // Includes
+}
+void ReportError(err){
+}
+// Includes
 #include "External\TradersTech.mqh"
 #include "Tools\AccountExtras.mqh"
 #include "Tools\CandelSize.mqh"
