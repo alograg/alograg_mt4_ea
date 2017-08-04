@@ -13,6 +13,8 @@
 #include "TradeManager\MaintainMarginLevel.mqh"
 #include "TradeManager\OldOrders.mqh"
 #include "TradeManager\ReasonableLoss.mqh"
+// Parameter
+extern double maLots = 0.05; // Max lots allowed
 // Constantes
 // Constants
 // Methods
@@ -23,7 +25,7 @@ void tmInit() {
 }
 void tmEvent() {
   if (isNewBar(LAST_PERIOD_W1) && AccountProfit() == 0 &&
-      getLotSize() >= 0.05) {
+      getLotSize() > maLots) {
     int eq = (int)AccountEquity();
     sizeOfTheRisk = MathMax((int)(eq - (eq % (RiskSize))) / 2, RiskSize);
   }

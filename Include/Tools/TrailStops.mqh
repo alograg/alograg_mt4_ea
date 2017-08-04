@@ -38,7 +38,8 @@ void TrailStops(int ticket) {
     if (stop && stop != OrderStopLoss())
       if (!OrderModify(OrderTicket(), OrderOpenPrice(),
                        NormalizeDouble(stop, Digits), OrderTakeProfit(), 0,
-                       Yellow))
-        ReportError("MidnightOrderModify", GetLastError());
+                       Yellow) &&
+          FALSE)
+        ReportError("TrailStopsModify", GetLastError());
   }
 }

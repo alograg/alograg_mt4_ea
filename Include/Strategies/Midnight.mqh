@@ -24,12 +24,14 @@ void Midnight() {
   if (lotSize <= 0)
     return;
   if (MidnightOrderSell <= 0) {
-    MidnightOrderSell = OrderSend(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
-                                  MidnightComment, MagicNumber, 0, Red);
+    MidnightOrderSell =
+        OrderSend(Symbol(), OP_SELL, NormalizeDouble(lotSize * 1.5, 2), Bid, 0,
+                  0, 0, MidnightComment, MagicNumber, 0, Red);
     if (MidnightOrderSell < 0)
       ReportError("MidnightOrderSell", GetLastError());
   } else if (OrderSelect(MidnightOrderSell, SELECT_BY_TICKET)) {
-    if (OrderAge() >= 1) {
+    int age = OrderAge();
+    if (age >= 1) {
       int mode = OrderType();
       double lostClose = NormalizeDouble(mode ? Ask : Bid, Digits),
              currentBreak = breakInSpread ? getSpread() : BreakEven;
