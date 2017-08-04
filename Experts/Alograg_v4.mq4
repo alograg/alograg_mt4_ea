@@ -3,7 +3,7 @@
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
-#define propVersion "4.16"
+#define propVersion "4.17"
 #define eaName "Alograg"
 #define MagicNumber 17808160
 // Properties
@@ -29,6 +29,7 @@ int OnInit() {
   if (IsTradeAllowed())
     SendNotification(eaName + " v." + propVersion + " INICIALIZADO");
   // Registro de evento
+  AccountInvestment();
   EventSetTimer(60 * 60 * 12);
   setLatsPeriods();
   tmInit();

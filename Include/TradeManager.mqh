@@ -20,14 +20,13 @@ extern double maLots = 0.05; // Max lots allowed
 // Methods
 void tmInit() {
   BreakEven = breakInSpread ? getSpread() : Point * manualBreakEven;
-  int eq = (int)AccountEquity();
+  int eq = AccountMoneyToInvestment();
   sizeOfTheRisk = MathMax((int)(eq - (eq % (RiskSize))) / 2, RiskSize);
 }
 void tmEvent() {
   if (isNewBar(LAST_PERIOD_W1) && AccountProfit() == 0 &&
       getLotSize() > maLots) {
-    int eq = (int)AccountEquity();
-    sizeOfTheRisk = MathMax((int)(eq - (eq % (RiskSize))) / 2, RiskSize);
+    tmInit();
   }
   DixPip();
   // ReasonableLoss();

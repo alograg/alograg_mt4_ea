@@ -12,9 +12,12 @@
 extern int SpreadSize = 100; // Size of spread reference
 extern int RiskSize = 40;    // Size of risk
 // Constants
+#define INVESTMENT_TOTAL 0
+#define INVESTMENT_DEPOSIT 1
+#define INVESTMENT_WITHDRAWAL 2
 int SpreadSampleSize = 0;
 double Spread[];
-double depositMoney;
+double investment = 0, deposit = 0, withdrawal = 0;
 int sizeOfTheRisk = 40;
 // Functions
 bool moneyOnRisk() {
@@ -27,23 +30,43 @@ bool moneyOnRisk() {
            AccountMargin() <= AccountBalance() / 2 ||
            MarginLevel <= stopOut * 1.5);
 }
-double Deposits() {
-  double total = 0;
-  for (int i = 0; i < OrdersHistoryTotal(); i++) {
-    if (OrderSelect(i, SELECT_BY_POS, MODE_HISTORY)) {
-      if (OrderType() > 5) {
-        total += OrderProfit();
+double AccountInvestment(int type = INVESTMENT_TOTAL) {
+  if (IsTesting()) {
+    deposit = 300;
+    withdrawal = deposit * 0.1;
+    investment = deposit - withdrawal;
+    return type ? (type == 1 ? investment : 0) : investment;
+  }
+  if (isNewBar(PERIOD_D1)) {
+    for (int i = 0; i < OrdersHistoryTotal(); i++) {
+      if (OrderSelect(i, SELECT_BY_POS, MODE_HISTORY)) {
+        if (OrderType() > 5) {
+          double amount = OrderProfit();
+          investment += amount;
+          if (amount > 0) {
+            deposit += amount;
+          } else {
+            withdrawal += amount;
+          }
+        }
       }
     }
   }
-  return MathMax(total, 40);
+  return type ? (type == INVESTMENT_DEPOSIT ? deposit : withdrawal)
+              : investment;
+}
+int AccountMoneyToInvestment() {
+  double eq = AccountEquity(), tmpInv = investment / pareto;
+  return eq < investment ? eq : investment + ((eq - investment) * pareto);
 }
 double getLotSize() {
   return NormalizeDouble(
-      moneyOnRisk() ? 0
-                    : sizeOfTheRisk > 40
-                          ? MathMax(AccountEquity() / (100 * sizeOfTheRisk), 0)
-                          : 0.01,
+      moneyOnRisk()
+          ? 0
+          : sizeOfTheRisk > 40 ? MathMax((double)AccountMoneyToInvestment() /
+                                             (100 * (double)sizeOfTheRisk),
+                                         0)
+                               : 0.01,
       2);
 }
 double getSpread(double AddValue = 0) {
@@ -114,7 +137,6 @@ void SendAccountReport() {
   if (!IsTradeAllowed())
     return;
   string balanceReport;
-  depositMoney = Deposits();
   balanceReport = "Report " + eaName + " v." + propVersion;
   balanceReport +=
       StringFormat(" (%s, Spread %s)", strategiesActivate ? "On" : "Off",
@@ -125,7 +147,7 @@ void SendAccountReport() {
   balanceReport += " Date " + TimeToString(Time[0]);
   balanceReport += StringFormat("\nFlag = %G", getFlagSize(PERIOD_D1));
   balanceReport +=
-      StringFormat("\nDeposit = %G (%s) %G", depositMoney,
+      StringFormat("\nDeposit = %G (%s) %G", AccountInvestment(),
                    moneyOnRisk() ? "Riesgo" : "Tranquilo", sizeOfTheRisk);
   balanceReport += StringFormat("\nB = %G", AccountBalance());
   balanceReport += StringFormat("|P = %G", AccountProfit());
@@ -158,7 +180,7 @@ void SendSimbolParams() {
   comm += StringFormat(startLine + "Swap: byu %G sell %G",
                        MarketInfo(Symbol(), MODE_SWAPLONG),
                        MarketInfo(Symbol(), MODE_SWAPSHORT));
-  comm += StringFormat(startLine + "Money: %G", depositMoney);
+  comm += StringFormat(startLine + "Money: %G", investment);
   comm += StringFormat(startLine + "Reference: %G", sizeOfTheRisk);
   comm += StringFormat(startLine + "Candel: %G", getCandelSize(PERIOD_D1));
   comm += StringFormat(startLine + "Steps: %f",
