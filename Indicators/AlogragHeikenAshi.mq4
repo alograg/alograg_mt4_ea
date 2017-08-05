@@ -11,19 +11,21 @@
 #property description " - on 'Color' Tab select 'Black' for 'Line Graph'"
 #property description " - on 'Common' Tab disable 'Chart on Foreground'"
 #property description "   checkbox and select 'Line Chart' radiobutton"
-#property version "1.00"
+#property version "1.01"
 #property strict
 
 #property indicator_chart_window
-#property indicator_buffers 4
+#property indicator_buffers 5
 #property indicator_color1 Red
 #property indicator_color2 Blue
 #property indicator_color3 Red
 #property indicator_color4 Blue
+#property indicator_color5 Green
 #property indicator_width1 1
 #property indicator_width2 1
-#property indicator_width3 7
-#property indicator_width4 7
+#property indicator_width3 3
+#property indicator_width4 3
+#property indicator_width5 5
 
 // Parameter
 input color bearColor = Red;  // Bear color
@@ -35,6 +37,7 @@ double ExtLowHighBuffer[];
 double ExtHighLowBuffer[];
 double ExtOpenBuffer[];
 double ExtCloseBuffer[];
+double ExtTypeBuffer[];
 // Constantes
 // Constants
 // Methods
@@ -45,24 +48,28 @@ void OnInit(void) {
   IndicatorShortName("AlogragHeikenAshi");
   IndicatorDigits(Digits);
   //--- indicator lines
-  SetIndexStyle(0, DRAW_HISTOGRAM, 0, 1, bearColor);
+  SetIndexStyle(0, DRAW_HISTOGRAM, 0, indicator_width1, bearColor);
   SetIndexBuffer(0, ExtLowHighBuffer);
-  SetIndexStyle(1, DRAW_HISTOGRAM, 0, 1, bullColor);
+  SetIndexStyle(1, DRAW_HISTOGRAM, 0, indicator_width2, bullColor);
   SetIndexBuffer(1, ExtHighLowBuffer);
-  SetIndexStyle(2, DRAW_HISTOGRAM, 0, 3, bearColor);
+  SetIndexStyle(2, DRAW_HISTOGRAM, 0, indicator_width3, bearColor);
   SetIndexBuffer(2, ExtOpenBuffer);
-  SetIndexStyle(3, DRAW_HISTOGRAM, 0, 3, bullColor);
+  SetIndexStyle(3, DRAW_HISTOGRAM, 0, indicator_width4, bullColor);
   SetIndexBuffer(3, ExtCloseBuffer);
+  SetIndexStyle(4, DRAW_ARROW, 0, 3, Green);
+  SetIndexBuffer(4, ExtTypeBuffer);
   //---
   SetIndexLabel(0, "Low/High");
   SetIndexLabel(1, "High/Low");
   SetIndexLabel(2, "Open");
   SetIndexLabel(3, "Close");
+  SetIndexLabel(4, "Type");
   //--- indicator buffers mapping
   SetIndexDrawBegin(0, 10);
   SetIndexDrawBegin(1, 10);
   SetIndexDrawBegin(2, 10);
   SetIndexDrawBegin(3, 10);
+  SetIndexDrawBegin(4, 10);
   //--- initialization done
 }
 /*------------------------------------+
@@ -83,6 +90,7 @@ int OnCalculate(const int rates_total, const int prev_calculated,
   ArraySetAsSeries(ExtHighLowBuffer, false);
   ArraySetAsSeries(ExtOpenBuffer, false);
   ArraySetAsSeries(ExtCloseBuffer, false);
+  ArraySetAsSeries(ExtTypeBuffer, false);
   ArraySetAsSeries(open, false);
   ArraySetAsSeries(high, false);
   ArraySetAsSeries(low, false);
@@ -101,6 +109,7 @@ int OnCalculate(const int rates_total, const int prev_calculated,
     }
     ExtOpenBuffer[0] = open[0];
     ExtCloseBuffer[0] = close[0];
+    ExtTypeBuffer[0] = open[0] <= close[0];
     //---
     pos = 1;
   }
@@ -131,6 +140,7 @@ int OnCalculate(const int rates_total, const int prev_calculated,
     }
     ExtOpenBuffer[i] = haOpen;
     ExtCloseBuffer[i] = haClose;
+    ExtTypeBuffer[i] = haOpen <= haClose;
   }
   //--- done
   return (rates_total);

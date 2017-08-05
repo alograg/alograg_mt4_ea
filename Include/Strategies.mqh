@@ -20,6 +20,6 @@ void strategiesInit() {}
 void strategiesEvent() {
   Morning();
   Midnight();
-  // DojiOperation();
+  DojiOperation();
   // M5B3();
 }

@@ -25,26 +25,32 @@ void DojiOperation() {
   if (getDayProfit() > DojiOperationProfitStop)
     return;
   double lotSize = getLotSize();
-  int white = 0, black = 0; /*
-   double HALowHigh =
-       iCustom(NULL, period, "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-               Red, Blue, false, 0, 0);
-   double HAHighLow =
-       iCustom(NULL, period, "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-               Red, Blue, false, 1, 0);
-   double HAOpen =
-       iCustom(NULL, period, "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-               Red, Blue, false, 2, 0);
-   double HAClose =
-       iCustom(NULL, period, "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-               Red, Blue, false, 3, 0);
-   if (HALowHigh != HAOpen)
-     return;*/
-  if (!DojiOperationOrderBuy)
+  double haSoft1 = iCustom(NULL, period,
+                           "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
+                           Red, Blue, true, 3, 1) haSoft2 =
+      iCustom(NULL, period, "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
+              Red, Blue, true, 3, 2) haSoft3 =
+          iCustom(NULL, period,
+                  "Projects\\Alograg\\Indicators\\AlogragHeikenAshi", Red, Blue,
+                  true, 3, 3);
+  haHard1 = iCustom(NULL, period,
+                    "Projects\\Alograg\\Indicators\\AlogragHeikenAshi", Red,
+                    Blue, true, 3, 1) haHard2 =
+      iCustom(NULL, period, "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
+              Red, Blue, true, 3, 2) haHard3 =
+          iCustom(NULL, period,
+                  "Projects\\Alograg\\Indicators\\AlogragHeikenAshi", Red, Blue,
+                  true, 3, 3);
+  bool canOperate =
+           haSoft1 == haHard1 && haSoft2 == haHard2 && haSoft3 == haHard3,
+       isBuy = haHard3 > 0;
+  if (!canOperate)
+    return;
+  if (!DojiOperationOrderBuy && isBuy)
     DojiOperationOrderBuy =
         OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0, DojiOperationComment,
                   MagicNumber, 0, Blue);
-  if (!DojiOperationOrderSell)
+  if (!DojiOperationOrderSell && !isBuy)
     DojiOperationOrderSell =
         OrderSend(Symbol(), OP_SELL, NormalizeDouble(MathAbs(lotSize), 2), Bid,
                   0, 0, 0, DojiOperationComment, MagicNumber, 0, Red);
