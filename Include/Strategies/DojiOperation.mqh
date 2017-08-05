@@ -42,7 +42,7 @@ void DojiOperation() {
                   "Projects\\Alograg\\Indicators\\AlogragHeikenAshi", Red, Blue,
                   true, 3, 3);
   bool canOperate =
-           haSoft1 == haHard1 && haSoft2 == haHard2 && haSoft3 == haHard3,
+           haSoft1 == haHard1 && haSoft2 != haHard2 && haSoft3 == haHard3,
        isBuy = haHard3 > 0;
   if (!canOperate)
     return;
