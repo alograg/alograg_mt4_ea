@@ -17,7 +17,7 @@ int DojiOperationOrderSell = -1;
 extern double DojiOperationProfitStop = 1; // Profit per day
 extern int dojisPerDay = 2;                // Dojis operations per day
 void DojiOperation() {
-  int period = PERIOD_M15;
+  int period = PERIOD_H1;
   if (!isNewBar(period)) {
     if (DojiOperationOrderBuy)
       DojiOperationOrderBuy = OrderIsOpen(DojiOperationOrderBuy);
@@ -33,27 +33,13 @@ void DojiOperation() {
   double lotSize = getLotSize();
   if (!lotSize)
     return;
-  double haSoft1 = iCustom(NULL, period,
-                           "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-                           Red, Blue, true, 4, 1),
-         haSoft2 = iCustom(NULL, period,
-                           "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-                           Red, Blue, true, 4, 2),
-         haSoft3 = iCustom(NULL, period,
-                           "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-                           Red, Blue, true, 4, 3),
-         haHard1 = iCustom(NULL, period,
-                           "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-                           Red, Blue, false, 4, 1),
-         haHard2 = iCustom(NULL, period,
-                           "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-                           Red, Blue, false, 4, 2),
-         haHard3 = iCustom(NULL, period,
-                           "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-                           Red, Blue, false, 4, 3);
-  bool canOperate =
-           haSoft1 == haHard1 && haSoft2 != haHard2 && haSoft3 == haHard3,
-       isBuy = haHard3 > 0;
+  double haCurrent = iCustom(NULL, period,
+                             "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
+                             Red, Blue, true, 4, 0),
+         haMaster = iCustom(NULL, PERIOD_H1,
+                            "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
+                            Red, Blue, true, 4, 0);
+  bool canOperate = haCurrent == haMaster, isBuy = haCurrent > 0;
   if (!canOperate)
     return;
   if (!DojiOperationOrderBuy && isBuy) {

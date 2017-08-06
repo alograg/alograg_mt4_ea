@@ -48,13 +48,13 @@ void OnInit(void) {
   IndicatorShortName("AlogragHeikenAshi");
   IndicatorDigits(Digits);
   //--- indicator lines
-  SetIndexStyle(0, DRAW_HISTOGRAM, 0, indicator_width1, bearColor);
+  SetIndexStyle(0, DRAW_HISTOGRAM, 0, indicator_width1 + smooth, bearColor);
   SetIndexBuffer(0, ExtLowHighBuffer);
-  SetIndexStyle(1, DRAW_HISTOGRAM, 0, indicator_width2, bullColor);
+  SetIndexStyle(1, DRAW_HISTOGRAM, 0, indicator_width2 + smooth, bullColor);
   SetIndexBuffer(1, ExtHighLowBuffer);
-  SetIndexStyle(2, DRAW_HISTOGRAM, 0, indicator_width3, bearColor);
+  SetIndexStyle(2, DRAW_HISTOGRAM, 0, indicator_width3 + smooth, bearColor);
   SetIndexBuffer(2, ExtOpenBuffer);
-  SetIndexStyle(3, DRAW_HISTOGRAM, 0, indicator_width4, bullColor);
+  SetIndexStyle(3, DRAW_HISTOGRAM, 0, indicator_width4 + smooth, bullColor);
   SetIndexBuffer(3, ExtCloseBuffer);
   SetIndexStyle(4, DRAW_ARROW, 0, 3, Green);
   SetIndexBuffer(4, ExtTypeBuffer);
