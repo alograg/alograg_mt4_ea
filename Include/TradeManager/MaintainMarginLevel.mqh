@@ -44,7 +44,7 @@ double countOpenPositions(int mode = -1) {
       else
         openSellLots += OrderLots();
     }
-  return mode == OP_BUY
-             ? openBuyLots
-             : mode == OP_SELL ? openSellLots : openBuyLots - openSellLots;
+  return mode == OP_BUY ? openBuyLots : mode == OP_SELL
+                                            ? openSellLots
+                                            : openBuyLots - openSellLots;
 }

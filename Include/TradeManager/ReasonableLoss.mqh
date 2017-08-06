@@ -56,21 +56,7 @@ bool ReasonableLoss() {
       }
     }
   }
-  if (ticket) {
-    int mode = OrderType();
-    double lostClose = NormalizeDouble(mode ? Ask : Bid, Digits),
-           currentBreak = breakInSpread ? getSpread() : BreakEven;
-    if (mode == OP_SELL) {
-      lostClose += Point * currentBreak;
-      lostClose += BreakEven;
-    } else if (mode == OP_BUY) {
-      lostClose -= Point * currentBreak;
-      lostClose -= BreakEven;
-    }
-    if (!OrderModify(OrderTicket(), OrderOpenPrice(), lostClose,
-                     OrderTakeProfit(), 0, Yellow))
-      ReportError("MidnightOrderModify", GetLastError());
-    return true;
-  }
+  if (ticket)
+    return OrderOptimizeClose(ticket);
   return false;
 }

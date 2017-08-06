@@ -9,9 +9,9 @@
 #property version propVersion
 #property strict
 // Parameters
+extern int resitsDays = 3; // Days without operations
 // Constants
 string OldOrdersComment = eaName + ": S-OldOrders";
-extern int resitsDays = 3; // Days without operations
 // Function
 bool OldOrders() {
   int total = OrdersTotal();

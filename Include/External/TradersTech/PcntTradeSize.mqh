@@ -21,11 +21,11 @@ double PcntTradeSize(string symbol, int PipRisk, double Pcnt, int NumOfPos = 1,
 
   if (Diagnose > 1) {
     Print("---PcntTradeSize() AccountBalance()=", AccountBalance(),
-          ", AccountEquity()=", AccountEquity(),
-          ", MODE_TICKVALUE=", MarketInfo(symbol, MODE_TICKVALUE));
+          ", AccountEquity()=", AccountEquity(), ", MODE_TICKVALUE=",
+          MarketInfo(symbol, MODE_TICKVALUE));
     Print("---PcntTradeSize() MODE_MAXLOT=", MarketInfo(symbol, MODE_MAXLOT),
-          ", MODE_MINLOT=", MarketInfo(symbol, MODE_MINLOT),
-          ", MODE_LOTSTEP=", MarketInfo(symbol, MODE_LOTSTEP));
+          ", MODE_MINLOT=", MarketInfo(symbol, MODE_MINLOT), ", MODE_LOTSTEP=",
+          MarketInfo(symbol, MODE_LOTSTEP));
   } // if(Diagnose)
 
   // Use lower of AccountBalanc() & AccountEquity()
@@ -42,8 +42,8 @@ double PcntTradeSize(string symbol, int PipRisk, double Pcnt, int NumOfPos = 1,
   else
     TradeSize = Pcnt / PipRisk / (MarketInfo(symbol, MODE_TICKVALUE) * FiveDig);
   if (Diagnose > 1)
-    Print("---PcntTradeSize() Interim TradeSize=", TradeSize,
-          ", NumOfPos=", NumOfPos);
+    Print("---PcntTradeSize() Interim TradeSize=", TradeSize, ", NumOfPos=",
+          NumOfPos);
   TradeSize = TradeSize / NumOfPos;
   if (Diagnose > 1)
     Print("PcntTradeSize() - Initial TradeSize=", TradeSize);
@@ -62,9 +62,8 @@ double PcntTradeSize(string symbol, int PipRisk, double Pcnt, int NumOfPos = 1,
   TradeSize = TradeSize * MarketInfo(symbol, MODE_LOTSTEP);
 
   if (Diagnose > 0)
-    Print("PcntTradeSize() ", Version, " ", symbol,
-          " Calc Trade Size=", TradeSize, ", PipRisk=", PipRisk,
-          ", Acct Pcnt=", Pcnt);
+    Print("PcntTradeSize() ", Version, " ", symbol, " Calc Trade Size=",
+          TradeSize, ", PipRisk=", PipRisk, ", Acct Pcnt=", Pcnt);
 
   // Normalize TradeSize
   NormalizeDouble(TradeSize, 2);

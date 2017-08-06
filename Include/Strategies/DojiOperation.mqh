@@ -10,9 +10,12 @@
 #property strict
 // Constants
 string DojiOperationComment = eaName + ": S-DojiOperation";
-int DojiOperationProfitStop = 1;
+int DojiInThisDay = 0;
 int DojiOperationOrderBuy = -1;
 int DojiOperationOrderSell = -1;
+// Parameters
+extern double DojiOperationProfitStop = 1; // Profit per day
+extern int dojisPerDay = 2;                // Dojis operations per day
 void DojiOperation() {
   int period = PERIOD_M15;
   if (!isNewBar(period)) {
@@ -22,38 +25,49 @@ void DojiOperation() {
       DojiOperationOrderSell = OrderIsOpen(DojiOperationOrderSell);
     return;
   }
-  if (getDayProfit() > DojiOperationProfitStop)
-    return;
+  if (!isNewBar(PERIOD_D1))
+    DojiInThisDay = 0;
+  // if (DojiInThisDay >= dojisPerDay || getDayProfit() >=
+  // DojiOperationProfitStop)
+  //    return;
   double lotSize = getLotSize();
+  if (!lotSize)
+    return;
   double haSoft1 = iCustom(NULL, period,
                            "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-                           Red, Blue, true, 3, 1) haSoft2 =
-      iCustom(NULL, period, "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-              Red, Blue, true, 3, 2) haSoft3 =
-          iCustom(NULL, period,
-                  "Projects\\Alograg\\Indicators\\AlogragHeikenAshi", Red, Blue,
-                  true, 3, 3);
-  haHard1 = iCustom(NULL, period,
-                    "Projects\\Alograg\\Indicators\\AlogragHeikenAshi", Red,
-                    Blue, true, 3, 1) haHard2 =
-      iCustom(NULL, period, "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-              Red, Blue, true, 3, 2) haHard3 =
-          iCustom(NULL, period,
-                  "Projects\\Alograg\\Indicators\\AlogragHeikenAshi", Red, Blue,
-                  true, 3, 3);
+                           Red, Blue, true, 4, 1),
+         haSoft2 = iCustom(NULL, period,
+                           "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
+                           Red, Blue, true, 4, 2),
+         haSoft3 = iCustom(NULL, period,
+                           "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
+                           Red, Blue, true, 4, 3),
+         haHard1 = iCustom(NULL, period,
+                           "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
+                           Red, Blue, false, 4, 1),
+         haHard2 = iCustom(NULL, period,
+                           "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
+                           Red, Blue, false, 4, 2),
+         haHard3 = iCustom(NULL, period,
+                           "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
+                           Red, Blue, false, 4, 3);
   bool canOperate =
            haSoft1 == haHard1 && haSoft2 != haHard2 && haSoft3 == haHard3,
        isBuy = haHard3 > 0;
   if (!canOperate)
     return;
-  if (!DojiOperationOrderBuy && isBuy)
+  if (!DojiOperationOrderBuy && isBuy) {
     DojiOperationOrderBuy =
-        OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0, DojiOperationComment,
+        OrderSend(Symbol(), OP_BUY, 0.01, Ask, 0, 0, 0, DojiOperationComment,
                   MagicNumber, 0, Blue);
-  if (!DojiOperationOrderSell && !isBuy)
+    DojiInThisDay++;
+  }
+  if (!DojiOperationOrderSell && !isBuy) {
     DojiOperationOrderSell =
-        OrderSend(Symbol(), OP_SELL, NormalizeDouble(MathAbs(lotSize), 2), Bid,
-                  0, 0, 0, DojiOperationComment, MagicNumber, 0, Red);
+        OrderSend(Symbol(), OP_SELL, 0.01, Bid, 0, 0, 0, DojiOperationComment,
+                  MagicNumber, 0, Red);
+    DojiInThisDay++;
+  }
 }
 bool dogi(double o, double c) { return o == c; }
 bool nearDoji(double o, double c, double h, double l) {

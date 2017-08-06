@@ -31,3 +31,21 @@ int OrderProfitPips() {
   return (int)((OrderProfit() - OrderCommission()) / OrderLots() /
                MarketInfo(OrderSymbol(), MODE_TICKVALUE));
 }
+bool OrderOptimizeClose(int ticket) {
+  if (!OrderSelect(ticket, SELECT_BY_TICKET))
+    return false;
+  int mode = OrderType();
+  double lostClose = NormalizeDouble(mode ? Ask : Bid, Digits),
+         currentBreak = breakInSpread ? getSpread() : BreakEven;
+  if (mode == OP_SELL) {
+    lostClose += Point * currentBreak;
+    lostClose += BreakEven;
+  } else if (mode == OP_BUY) {
+    lostClose -= Point * currentBreak;
+    lostClose -= BreakEven;
+  }
+  if (!OrderModify(OrderTicket(), OrderOpenPrice(), lostClose,
+                   OrderTakeProfit(), 0, Yellow))
+    ReportError("ReasonableLoss", GetLastError());
+  return true;
+}

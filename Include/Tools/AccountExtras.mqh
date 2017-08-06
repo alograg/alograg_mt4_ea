@@ -61,12 +61,11 @@ int AccountMoneyToInvestment() {
 }
 double getLotSize() {
   return NormalizeDouble(
-      moneyOnRisk()
-          ? 0
-          : sizeOfTheRisk > 40 ? MathMax((double)AccountMoneyToInvestment() /
-                                             (100 * (double)sizeOfTheRisk),
-                                         0)
-                               : 0.01,
+      moneyOnRisk() ? 0 : sizeOfTheRisk > 40
+                              ? MathMax((double)AccountMoneyToInvestment() /
+                                            (100 * (double)sizeOfTheRisk),
+                                        0)
+                              : 0.01,
       2);
 }
 double getSpread(double AddValue = 0) {
