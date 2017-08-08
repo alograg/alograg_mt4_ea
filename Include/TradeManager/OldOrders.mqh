@@ -42,7 +42,7 @@ bool OldOrders() {
   }
   if (IsTradeAllowed())
     SendNotification("Old orders\n" + sellReport + "\n" + buyReport);
-  if (!orderId && !oppositeId)
+  if (!orderId || !oppositeId)
     return false;
   return OrderCloseBy(orderId, oppositeId, Green);
 }

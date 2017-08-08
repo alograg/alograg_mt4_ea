@@ -181,8 +181,8 @@ int OrderSendReliable(string symbol, int cmd, double volume, double price,
   // ------------------------------------------------
   OrderReliable_Fname = "OrderSendReliable";
   OrderReliablePrint("attempted " + OrderReliable_CommandString(cmd) + " " +
-                     (string)volume + " lots @" + (string)price + " sl:" +
-                     (string)stoploss + " tp:" + (string)takeprofit);
+                     (string)volume + " lots @" + (string)price +
+                     " sl:" + (string)stoploss + " tp:" + (string)takeprofit);
   // limit/stop order.
   int ticket = -1;
   int err = GetLastError(); // clear the global variable.
@@ -323,8 +323,8 @@ int OrderSendReliable(string symbol, int cmd, double volume, double price,
 
       if (!exit_loop) {
         OrderReliablePrint("retryable error (" + (string)cnt + "/" +
-                           (string)retry_attempts + "): " +
-                           OrderReliableErrTxt(err));
+                           (string)retry_attempts +
+                           "): " + OrderReliableErrTxt(err));
         OrderReliable_SleepRandomTime(sleep_time, sleep_maximum);
         RefreshRates();
       }
@@ -526,9 +526,9 @@ bool OrderModifyReliable(int ticket, double price, double stoploss,
   int currentOrder;
   OrderReliable_Fname = "OrderModifyReliable";
 
-  OrderReliablePrint(" attempted modify of #" + (string)ticket + " price:" +
-                     (string)price + " sl:" + (string)stoploss + " tp:" +
-                     (string)takeprofit);
+  OrderReliablePrint(" attempted modify of #" + (string)ticket +
+                     " price:" + (string)price + " sl:" + (string)stoploss +
+                     " tp:" + (string)takeprofit);
 
   /*	if (!IsConnected())
       {
@@ -633,8 +633,8 @@ bool OrderModifyReliable(int ticket, double price, double stoploss,
 
     if (!exit_loop) {
       OrderReliablePrint("retryable error (" + (string)cnt + "/" +
-                         (string)retry_attempts + "): " +
-                         OrderReliableErrTxt(err));
+                         (string)retry_attempts +
+                         "): " + OrderReliableErrTxt(err));
       OrderReliable_SleepRandomTime(sleep_time, sleep_maximum);
       RefreshRates();
     }
@@ -742,9 +742,9 @@ bool OrderCloseReliable(int ticket, double lots, double price, int slippage,
     }
   }
 
-  OrderReliablePrint(" attempted close of #" + (string)ticket + " price:" +
-                     (string)price + " lots:" + (string)lots + " slippage:" +
-                     (string)slippage);
+  OrderReliablePrint(" attempted close of #" + (string)ticket +
+                     " price:" + (string)price + " lots:" + (string)lots +
+                     " slippage:" + (string)slippage);
 
   /*	if (!IsConnected())
       {
@@ -874,9 +874,9 @@ bool OrderCloseReliable(int ticket, double lots, double price, int slippage,
                      " retries");
   OrderReliablePrint("failed close: Ticket #" + (string)ticket + ", Price: " +
                      (string)price + ", Slippage: " + (string)slippage);
-  OrderReliablePrint("last error: " + OrderReliableErrTxt(err) + " (price = " +
-                     (string)price + ", Ask = " + (string)Ask + ", and Bid = " +
-                     (string)Bid + ")");
+  OrderReliablePrint("last error: " + OrderReliableErrTxt(err) +
+                     " (price = " + (string)price + ", Ask = " + (string)Ask +
+                     ", and Bid = " + (string)Bid + ")");
 
   return (false);
 }
@@ -1045,8 +1045,8 @@ int OrderReSendReliable(string symbol, int cmd, double volume, double price,
   // ------------------------------------------------
   OrderReliable_Fname = "OrderReSendReliable";
   OrderReliablePrint(" attempted " + OrderReliable_CommandString(cmd) + " " +
-                     (string)volume + " lots @" + (string)price + " sl:" +
-                     (string)stoploss + " tp:" + (string)takeprofit);
+                     (string)volume + " lots @" + (string)price +
+                     " sl:" + (string)stoploss + " tp:" + (string)takeprofit);
 
   /*	if (!IsConnected())
       {
@@ -1165,8 +1165,8 @@ int OrderReSendReliable(string symbol, int cmd, double volume, double price,
 
       if (!exit_loop) {
         OrderReliablePrint("retryable error (" + (string)cnt + "/" +
-                           (string)retry_attempts + "): " +
-                           OrderReliableErrTxt(err));
+                           (string)retry_attempts +
+                           "): " + OrderReliableErrTxt(err));
         OrderReliable_SleepRandomTime(sleep_time, sleep_maximum);
         RefreshRates();
       }

@@ -30,7 +30,7 @@ void Morning() {
   double lotSize = getLotSize();
   if (lotSize <= 0)
     return;
-  while (morningOrderBuy <= 0 && morningOrderSell <= 0) {
+  while (morningOrderBuy <= 0 || morningOrderSell <= 0) {
     if (morningOrderBuy <= 0)
       morningOrderBuy = OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
                                   MorningComment, MagicNumber, 0, Blue);

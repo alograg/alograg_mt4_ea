@@ -15,9 +15,9 @@ int DojiOperationOrderBuy = -1;
 int DojiOperationOrderSell = -1;
 // Parameters
 extern double DojiOperationProfitStop = 1; // Profit per day
-extern int dojisPerDay = 2;                // Dojis operations per day
+extern int dojisPerDay = 3;                // Dojis operations per day
 void DojiOperation() {
-  int period = PERIOD_H1;
+  int period = PERIOD_M5;
   if (!isNewBar(period)) {
     if (DojiOperationOrderBuy)
       DojiOperationOrderBuy = OrderIsOpen(DojiOperationOrderBuy);
@@ -27,28 +27,40 @@ void DojiOperation() {
   }
   if (!isNewBar(PERIOD_D1))
     DojiInThisDay = 0;
-  // if (DojiInThisDay >= dojisPerDay || getDayProfit() >=
-  // DojiOperationProfitStop)
-  //    return;
+  if (DojiInThisDay >= dojisPerDay || getDayProfit() >= DojiOperationProfitStop)
+    return;
   double lotSize = getLotSize();
   if (!lotSize)
     return;
-  double haCurrent = iCustom(NULL, period,
-                             "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-                             Red, Blue, true, 4, 0),
-         haMaster = iCustom(NULL, PERIOD_H1,
-                            "Projects\\Alograg\\Indicators\\AlogragHeikenAshi",
-                            Red, Blue, true, 4, 0);
-  bool canOperate = haCurrent == haMaster, isBuy = haCurrent > 0;
+  double hac1 = iCustom(NULL, period,
+                        "Projects\\Alograg\\Indicators\\AlogragHeikenAshi", Red,
+                        Blue, true, 4, 1),
+         hac2 = iCustom(NULL, period,
+                        "Projects\\Alograg\\Indicators\\AlogragHeikenAshi", Red,
+                        Blue, true, 4, 2),
+         sma0 = iMA(NULL, period, 100, 0, MODE_SMA, PRICE_CLOSE, 0),
+         sma1 = iMA(NULL, period, 100, 0, MODE_SMA, PRICE_CLOSE, 1),
+         sma2 = iMA(NULL, period, 100, 0, MODE_SMA, PRICE_CLOSE, 2),
+         stochs1a = iStochastic(NULL, period, 8, 3, 3, MODE_SMA, 0, 0, 1),
+         stochs2a = iStochastic(NULL, period, 8, 3, 3, MODE_SMA, 0, 0, 2),
+         stochs1b = iStochastic(NULL, period, 8, 3, 3, MODE_SMA, 0, 1, 1),
+         stochs2b = iStochastic(NULL, period, 8, 3, 3, MODE_SMA, 0, 1, 2);
+  bool canOperate = hac1 != hac2,
+       canBuy = hac1 > 0 && stochs1b < 30 && stochs1a > stochs2a &&
+                stochs1a > stochs1b && sma1 > sma2 &&
+                iOpen(NULL, period, 0) > sma0,
+       canSell = hac1 <= 0 && stochs1a > 30 && stochs1a < stochs2a &&
+                 stochs1a < stochs1b && sma1 < sma2 &&
+                 iOpen(NULL, period, 0) < sma0;
   if (!canOperate)
     return;
-  if (!DojiOperationOrderBuy && isBuy) {
+  if (!DojiOperationOrderBuy && canBuy) {
     DojiOperationOrderBuy =
         OrderSend(Symbol(), OP_BUY, 0.01, Ask, 0, 0, 0, DojiOperationComment,
                   MagicNumber, 0, Blue);
     DojiInThisDay++;
   }
-  if (!DojiOperationOrderSell && !isBuy) {
+  if (!DojiOperationOrderSell && canSell) {
     DojiOperationOrderSell =
         OrderSend(Symbol(), OP_SELL, 0.01, Bid, 0, 0, 0, DojiOperationComment,
                   MagicNumber, 0, Red);
