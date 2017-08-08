@@ -18,8 +18,8 @@
 // Methods
 void strategiesInit() {}
 void strategiesEvent() {
-  // Morning();
-  // Midnight();
-  DojiOperation();
+  Morning();
+  Midnight();
+  // DojiOperation();
   // M5B3();
 }

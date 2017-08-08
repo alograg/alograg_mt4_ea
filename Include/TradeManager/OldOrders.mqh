@@ -40,9 +40,12 @@ bool OldOrders() {
                   (string)OrderAge();
     }
   }
-  if (IsTradeAllowed())
-    SendNotification("Old orders\n" + sellReport + "\n" + buyReport);
   if (!orderId || !oppositeId)
     return false;
-  return OrderCloseBy(orderId, oppositeId, Green);
+  if (IsTradeAllowed())
+    SendNotification("Old orders\n" + sellReport + "\n" + buyReport);
+  bool temp = OrderCloseBy(orderId, oppositeId, Green);
+  if (temp <= 0)
+    ReportError("OldOrders", GetLastError());
+  return temp;
 }
