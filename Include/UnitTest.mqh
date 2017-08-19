@@ -8,7 +8,10 @@
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict
-// Constants
+// Parameter
+extern double testDeposit = 782.28;   // Deposit for test
+extern double testWithdrawal = 82.28; // Withdrawal for test
+// Constants 348.07
 int die[];
 string TestComment = eaName + ": Manual test";
 int manualOrder = 0;
@@ -36,4 +39,28 @@ void orderOn(datetime dateTime, double lotSize = 0, bool onlyOnece = true) {
                   0, 0, 0, TestComment, MagicNumber, 0, White);
   if (!onlyOnece)
     manualOrder = 0;
+}
+void addFounds(double amount, datetime dateTime = NULL) {
+  if (dateTime) {
+    MqlDateTime dayTime, inTime;
+    TimeToStruct(iTime(Symbol(), PERIOD_M1, 0), dayTime);
+    TimeToStruct(dateTime, inTime);
+    if (dayTime.year != inTime.year && dayTime.mon != inTime.mon &&
+        dayTime.day != inTime.day && dayTime.hour != inTime.hour &&
+        dayTime.min != inTime.min)
+      return;
+  }
+  deposit += amount;
+}
+void doWithdrawal(double amount, datetime dateTime = NULL) {
+  if (dateTime) {
+    MqlDateTime dayTime, inTime;
+    TimeToStruct(iTime(Symbol(), PERIOD_M1, 0), dayTime);
+    TimeToStruct(dateTime, inTime);
+    if (dayTime.year != inTime.year && dayTime.mon != inTime.mon &&
+        dayTime.day != inTime.day && dayTime.hour != inTime.hour &&
+        dayTime.min != inTime.min)
+      return;
+  }
+  withdrawal -= amount;
 }

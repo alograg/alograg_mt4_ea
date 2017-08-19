@@ -33,7 +33,7 @@ int OnInit() {
   EventSetTimer(60 * 60 * 12);
   setLatsPeriods();
   tmInit();
-  strategiesInit();
+  // strategiesInit();
   return (INIT_SUCCEEDED);
 }
 /*--------+
@@ -52,7 +52,7 @@ void OnTick() {
   if (IsTesting())
     doTest();
   doManagment();
-  doStrategies();
+  // doStrategies();
   setLatsPeriods();
 }
 /*----------+
@@ -69,6 +69,18 @@ void doReport() {
 +--------------*/
 void doTest() {
   // orderOn(StringToTime("2017.02.24 18:20"), getLotSize());
+  // addFounds(50, StringToTime("2017.01.14 14:10"));
+  if (isNewBar(PERIOD_W1)) {
+    doWithdrawal(10);
+    Print("deposit: ", deposit);
+    Print("withdrawal: ", withdrawal);
+    Print("investment: ", investment);
+    Print("investment: ", investment);
+    Print("AccountEquity: ", AccountEquity());
+    Print("AccountBalance: ", AccountBalance());
+    Print("AccountMoneyToInvestment: ", AccountMoneyToInvestment());
+    Print("getLotSize: ", getLotSize());
+  }
 }
 /*----------------------------+
 | Administra las operaciones  |
