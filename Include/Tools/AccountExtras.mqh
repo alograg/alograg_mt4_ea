@@ -22,8 +22,8 @@ int sizeOfTheRisk = 40;
 // Functions
 double AccountInvestment(int type = INVESTMENT_TOTAL) {
   if (IsTesting()) {
-    deposit = !deposit ? testDeposit : deposit;
-    withdrawal = !withdrawal ? testWithdrawal : withdrawal;
+    deposit = 0 == deposit ? testDeposit : deposit;
+    withdrawal = 0 == withdrawal ? testWithdrawal : withdrawal;
     investment = deposit + withdrawal;
   } else if (isNewBar(PERIOD_D1)) {
     investment = 0;
@@ -47,30 +47,36 @@ double AccountInvestment(int type = INVESTMENT_TOTAL) {
               : investment;
 }
 int AccountMoneyToInvestment() {
-  // return (int)investment;
   double eq = AccountEquity(), tmpInv = investment / pareto;
   return eq < investment ? eq : investment + ((eq - investment) * pareto);
 }
 bool moneyOnRisk() {
   int stopOut = AccountStopoutMode() ? 50 : AccountStopoutLevel();
-  double MarginLevel =
-      AccountMargin() > 0
-          ? NormalizeDouble(AccountEquity() / AccountMargin() * 100, 2)
-          : AccountEquity();
-  return !(AccountMargin() <= AccountEquity() / 2 ||
-           AccountMargin() <= AccountBalance() / 2 ||
+  double MarginLevel = NormalizeDouble(
+      (AccountEquity() /
+       (AccountFreeMargin() > 0 ? AccountFreeMargin() : stopOut)) *
+          100,
+      2);
+  return !(AccountFreeMargin() >= AccountEquity() / 2 ||
+           AccountFreeMargin() >= AccountBalance() / 2 ||
            MarginLevel <= stopOut * 1.5);
 }
 double getLotSize() {
-  return NormalizeDouble(
-      moneyOnRisk() ? 0
-                    : sizeOfTheRisk >= 40
-                          ? MathMin(MathMax((double)AccountMoneyToInvestment() /
-                                                (100 * (double)sizeOfTheRisk),
-                                            0),
-                                    maLots)
-                          : 0.01,
-      2);
+  double lotSize = 0;
+  if (moneyOnRisk())
+    return lotSize;
+  lotSize = (double)AccountMoneyToInvestment() / (100 * (double)sizeOfTheRisk);
+  lotSize = MathMax(lotSize, 0.01);
+  if (lotSize >= 0.05 && lotSize < 0.1) {
+    lotSize = 0.05;
+  }
+  if (lotSize > 0.1) {
+    lotSize *= 100;
+    lotSize = lotSize - ((int)lotSize % 10);
+    lotSize /= 100;
+  }
+  lotSize = MathMin(maLots, lotSize);
+  return NormalizeDouble(lotSize, 2);
 }
 double getSpread(double AddValue = 0) {
   double LastValue;

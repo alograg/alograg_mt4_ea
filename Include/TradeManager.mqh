@@ -14,7 +14,7 @@
 #include "TradeManager\OldOrders.mqh"
 #include "TradeManager\ReasonableLoss.mqh"
 // Parameter
-extern double maLots = 0.05; // Max lots allowed
+extern double maLots = 10; // Max lots allowed
 // Constantes
 // Constants
 // Methods
@@ -31,5 +31,5 @@ void tmEvent() {
   DixPip();
   // ReasonableLoss();
   OldOrders();
-  MaintainMarginLevel();
+  // MaintainMarginLevel();
 }

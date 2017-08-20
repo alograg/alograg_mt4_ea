@@ -16,6 +16,8 @@ void MaintainMarginLevel() {
   double MarginLevel = 0;
   if (AccountMargin() > 0)
     MarginLevel = NormalizeDouble(AccountEquity() / AccountMargin() * 100, 2);
+  if (!MarginLevel)
+    return;
   int stopOut = AccountStopoutMode() ? 50 : AccountStopoutLevel();
   if (MarginLevel > stopOut * 4)
     return;
@@ -23,16 +25,16 @@ void MaintainMarginLevel() {
 }
 void tradeCounterPositions(bool strong = false) {
   double lotSize = countOpenPositions();
-  if (!lotSize)
+  if (0 == lotSize)
     return;
   lotSize /= strong ? 1 : 2;
   lotSize = NormalizeDouble(lotSize, 2);
   if (lotSize != 0) {
-    if (!OrderSend(Symbol(), lotSize < 0 ? OP_BUY : OP_SELL,
-                   NormalizeDouble(MathAbs(lotSize), 2),
-                   lotSize < 0 ? Bid : Ask, 0, 0, 0, MaintainMarginLevelComment,
-                   MagicNumber, 0, Green))
+    if (!OrderSend(Symbol(), lotSize < 0 ? OP_BUY : OP_SELL, MathAbs(lotSize),
+                   lotSize < 0 ? Ask : Bid, 0, 0, 0, MaintainMarginLevelComment,
+                   MagicNumber, 0, Green)) {
       ReportError("MaintainMarginLevel", GetLastError());
+    }
   }
 }
 double countOpenPositions(int mode = -1) {

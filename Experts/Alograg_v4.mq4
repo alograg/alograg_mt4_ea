@@ -3,7 +3,7 @@
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
-#define propVersion "4.18"
+#define propVersion "4.19"
 #define eaName "Alograg"
 #define MagicNumber 17808160
 // Properties
@@ -52,13 +52,14 @@ void OnTick() {
   if (IsTesting())
     doTest();
   doManagment();
-  // doStrategies();
+  doStrategies();
   setLatsPeriods();
 }
 /*----------+
 | Reporta   |
 +----------*/
 void doReport() {
+  AccountInvestment();
   if (isNewBar(PERIOD_D1))
     SendAccountReport();
   if (isNewBar(PERIOD_M1))
@@ -68,16 +69,17 @@ void doReport() {
 | Para pruebas  |
 +--------------*/
 void doTest() {
-  // orderOn(StringToTime("2017.02.24 18:20"), getLotSize());
-  // addFounds(50, StringToTime("2017.01.14 14:10"));
-  if (isNewBar(PERIOD_W1)) {
-    doWithdrawal(10);
+  // orderOn(StringToTime("2017.03.24 18:20"), getLotSize());
+  // closeOrderOn(StringToTime("2017.02.24 08:40"), 104);
+  if (isNewBar(PERIOD_D1)) {
+    // doWithdrawal(10);
     Print("deposit: ", deposit);
     Print("withdrawal: ", withdrawal);
     Print("investment: ", investment);
-    Print("investment: ", investment);
+    Print("AccountInvestment: ", AccountInvestment());
     Print("AccountEquity: ", AccountEquity());
     Print("AccountBalance: ", AccountBalance());
+    Print("AccountMargin: ", AccountMargin());
     Print("AccountMoneyToInvestment: ", AccountMoneyToInvestment());
     Print("getLotSize: ", getLotSize());
   }

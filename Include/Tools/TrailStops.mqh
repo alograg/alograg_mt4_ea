@@ -16,8 +16,8 @@ double BreakEven = 12;
 // Function
 void TrailStops(int ticket) {
   int current = OrderSelect(ticket, SELECT_BY_TICKET);
-  int mode = OrderType();
   if (OrderSymbol() == Symbol()) {
+    int mode = OrderType();
     double stop = 0,
            priceToEval = OrderStopLoss() ? OrderStopLoss() : OrderOpenPrice(),
            currentBreak =

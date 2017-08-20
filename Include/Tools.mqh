@@ -39,6 +39,7 @@ void ReportError(string from, int err) {
 #include "Tools\AccountExtras.mqh"
 #include "Tools\CandelSize.mqh"
 #include "Tools\OrderExtras.mqh"
+#include "Tools\StarRecovery.mqh"
 #include "Tools\TrailStops.mqh"
 #include "Tools\isNewBar.mqh"
 // Constantes
