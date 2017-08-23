@@ -10,3 +10,6 @@ La definición de cantidad de lotes debe ser de 0.01 hasta 0.05, después debe i
 El monto a invertir es;
 Máximo del mínimo entre balance y depósitos menos retiros
 Dividido a la mitad
+
+Mantener margen cada 30 minutos al la cuenta tiene un profit negativo mayor al 25% del balance. 
+El mantener el margen es una tercera parte del monto de títulos, mínimo 0.01 Si el riesgo de pérdida es algo, duplicar. 
