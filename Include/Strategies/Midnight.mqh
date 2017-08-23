@@ -25,7 +25,7 @@ void Midnight() {
     return;
   if (MidnightOrderSell <= 0) {
     MidnightOrderSell =
-        OrderSend(Symbol(), OP_SELL, NormalizeDouble(lotSize * 1.5, 2), Bid, 0,
+        OrderSend(Symbol(), OP_SELL, NormalizeDouble(lotSize * 1.25, 2), Bid, 0,
                   0, 0, MidnightComment, MagicNumber, 0, Red);
     if (MidnightOrderSell < 0)
       ReportError("MidnightOrderSell", GetLastError());
@@ -36,11 +36,9 @@ void Midnight() {
       double lostClose = NormalizeDouble(mode ? Ask : Bid, Digits),
              currentBreak = breakInSpread ? getSpread() : BreakEven;
       if (mode == OP_SELL) {
-        lostClose += Point * currentBreak;
-        lostClose += BreakEven;
+        lostClose += currentBreak;
       } else if (mode == OP_BUY) {
-        lostClose -= Point * currentBreak;
-        lostClose -= BreakEven;
+        lostClose -= currentBreak;
       }
       if (!OrderModify(OrderTicket(), OrderOpenPrice(), lostClose,
                        OrderTakeProfit(), 0, Yellow))
