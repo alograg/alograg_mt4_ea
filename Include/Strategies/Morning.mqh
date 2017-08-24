@@ -37,6 +37,8 @@ void Morning() {
     if (morningOrderSell <= 0)
       morningOrderSell = OrderSend(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
                                    MorningComment, MagicNumber, 0, Red);
+    if (AccountFreeMargin() < 40)
+      break;
     Sleep(500);
   }
   if (morningOrderBuy <= 0)
