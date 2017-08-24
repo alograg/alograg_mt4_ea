@@ -78,6 +78,19 @@ double getLotSize() {
   lotSize = MathMin(maLots, lotSize);
   return NormalizeDouble(lotSize, 2);
 }
+double AccountOpenPositions(int mode = -1) {
+  double openBuyLots = 0, openSellLots = 0;
+  for (int iPos = OrdersTotal() - 1; iPos >= 0; iPos--)
+    if (OrderSelect(iPos, SELECT_BY_POS) && OrderSymbol() == Symbol()) {
+      if (OrderType() == OP_BUY)
+        openBuyLots += OrderLots();
+      else
+        openSellLots += OrderLots();
+    }
+  return mode == OP_BUY
+             ? openBuyLots
+             : mode == OP_SELL ? openSellLots : openBuyLots - openSellLots;
+}
 double getSpread(double AddValue = 0) {
   double LastValue;
   static double ArrayTotal = 0;

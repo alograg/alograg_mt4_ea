@@ -11,9 +11,14 @@ El monto a invertir es;
 Máximo del mínimo entre balance y depósitos menos retiros
 Dividido a la mitad
 
+<<<<<<< HEAD
 Mantener margen cada 30 minutos al la cuenta tiene un profit negativo mayor al 25% del balance. 
 El mantener el margen es una tercera parte del monto de títulos, mínimo 0.01 Si el riesgo de pérdida es algo, duplicar. 
 
 comprar cada minuto si el valor se encuentra entre el mayor y el menor de las últimas 2 horas y la cantidad de operaciones que existen = 0
 el modo de compra debe de ir de acuerdo al dirección en direccional somatic
 la compra debe de hacerse antes de las 7:45 de cada día y después de las 23 horas antes de las 23:30
+=======
+Mantener margen cada 30 minutos al la cuenta tiene un profit negativo mayor al 25% del balance.
+El mantener el margen es una tercera parte del monto de títulos, mínimo 0.01 Si el riesgo de pérdida es algo, duplicar.
+>>>>>>> branch 'MetaTrade4' of https://slsapp.com/git/alograh/works.git

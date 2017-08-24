@@ -24,7 +24,7 @@ bool OldOrders() {
   for (; total >= 0; total--) {
     if (!OrderSelect(total, SELECT_BY_POS))
       continue;
-    if (OrderAge() <= resitsDays)
+    if (OrderAge() <= resitsDays || OrderSymbol() != Symbol())
       continue;
     int mode = OrderType(), pips = OrderProfitPips();
     if (mode == OP_SELL && sellPips > pips) {
