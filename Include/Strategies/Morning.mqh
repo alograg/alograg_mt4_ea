@@ -34,7 +34,6 @@ void Morning() {
     if (morningOrderBuy <= 0)
       morningOrderBuy = OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
                                   MorningComment, MagicNumber, 0, Blue);
-
     if (morningOrderSell <= 0)
       morningOrderSell = OrderSend(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
                                    MorningComment, MagicNumber, 0, Red);
