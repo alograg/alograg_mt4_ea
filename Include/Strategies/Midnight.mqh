@@ -21,8 +21,9 @@ void Midnight() {
     return;
   // TODO: evitar gaps
   double lotSize = getLotSize();
-  if (lotSize <= 0 ||(AccountFreeMarginCheck(Symbol(), OP_SELL, lotSize*1.25) <= 0 ||
-                  GetLastError() == 134))
+  if (lotSize <= 0 ||
+      (AccountFreeMarginCheck(Symbol(), OP_SELL, lotSize * 1.25) <= 0 ||
+       GetLastError() == 134))
     return;
   if (MidnightOrderSell <= 0) {
     MidnightOrderSell =
