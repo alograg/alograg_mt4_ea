@@ -30,6 +30,12 @@ void Morning() {
   double lotSize = getLotSize();
   if (lotSize <= 0)
     return;
+  bool cantBuy = AccountFreeMarginCheck(Symbol(), OP_BUY, lotSize) <= 0 ||
+                 GetLastError() == 134,
+       cantSell = AccountFreeMarginCheck(Symbol(), OP_SELL, lotSize) <= 0 ||
+                  GetLastError() == 134;
+  if (cantBuy || cantSell)
+    return;
   while (morningOrderBuy <= 0 || morningOrderSell <= 0) {
     if (morningOrderBuy <= 0)
       morningOrderBuy = OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,

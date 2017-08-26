@@ -47,7 +47,7 @@ double AccountInvestment(int type = INVESTMENT_TOTAL) {
               : investment;
 }
 int AccountMoneyToInvestment() {
-  double eq = AccountEquity(), tmpInv = investment / pareto;
+  double eq = AccountFreeMargin(), tmpInv = investment / pareto;
   return eq < investment ? eq : investment + ((eq - investment) * pareto);
 }
 bool moneyOnRisk() {
@@ -67,9 +67,8 @@ double getLotSize() {
     return lotSize;
   lotSize = (double)AccountMoneyToInvestment() / (100 * (double)sizeOfTheRisk);
   lotSize = MathMax(lotSize, 0.01);
-  if (lotSize >= 0.05 && lotSize < 0.1) {
+  if (lotSize >= 0.05 && lotSize < 0.1)
     lotSize = 0.05;
-  }
   if (lotSize > 0.1) {
     lotSize *= 100;
     lotSize = lotSize - ((int)lotSize % 10);

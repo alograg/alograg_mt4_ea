@@ -19,10 +19,9 @@ int OrderAge(int period = 0) {
   return DaysOpen;
 }
 int OrderIsOpen(int ticket = 0) {
-  if (ticket) {
+  if (ticket)
     if (OrderSelect(ticket, SELECT_BY_TICKET))
       return !OrderCloseTime() ? OrderTicket() : 0;
-  }
   if (OrderTicket())
     return !OrderCloseTime() ? OrderTicket() : 0;
   return ticket > 0 ? ticket : OrderTicket();
@@ -37,15 +36,12 @@ bool OrderOptimizeClose(int ticket) {
   int mode = OrderType();
   double lostClose = NormalizeDouble(mode ? Ask : Bid, Digits),
          currentBreak = breakInSpread ? getSpread() : BreakEven;
-  if (mode == OP_SELL) {
-    lostClose += Point * currentBreak;
-    lostClose += BreakEven;
-  } else if (mode == OP_BUY) {
-    lostClose -= Point * currentBreak;
-    lostClose -= BreakEven;
-  }
+  if (mode == OP_SELL)
+    lostClose += currentBreak * 1.5;
+  else if (mode == OP_BUY)
+    lostClose -= currentBreak * 1.5;
   if (!OrderModify(OrderTicket(), OrderOpenPrice(), lostClose,
                    OrderTakeProfit(), 0, Yellow))
-    ReportError("ReasonableLoss", GetLastError());
+    ReportError("MidnightOrderModify", GetLastError());
   return true;
 }

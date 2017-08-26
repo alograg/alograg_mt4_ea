@@ -21,7 +21,8 @@ void Midnight() {
     return;
   // TODO: evitar gaps
   double lotSize = getLotSize();
-  if (lotSize <= 0)
+  if (lotSize <= 0 ||(AccountFreeMarginCheck(Symbol(), OP_SELL, lotSize*1.25) <= 0 ||
+                  GetLastError() == 134))
     return;
   if (MidnightOrderSell <= 0) {
     MidnightOrderSell =
@@ -31,19 +32,8 @@ void Midnight() {
       ReportError("MidnightOrderSell", GetLastError());
   } else if (OrderSelect(MidnightOrderSell, SELECT_BY_TICKET)) {
     int age = OrderAge();
-    if (age >= 1) {
-      int mode = OrderType();
-      double lostClose = NormalizeDouble(mode ? Ask : Bid, Digits),
-             currentBreak = breakInSpread ? getSpread() : BreakEven;
-      if (mode == OP_SELL) {
-        lostClose += currentBreak;
-      } else if (mode == OP_BUY) {
-        lostClose -= currentBreak;
-      }
-      if (!OrderModify(OrderTicket(), OrderOpenPrice(), lostClose,
-                       OrderTakeProfit(), 0, Yellow))
-        ReportError("MidnightOrderModify", GetLastError());
-    }
+    if (age >= 1)
+      OrderOptimizeClose(MidnightOrderSell);
   }
   if (IsTradeAllowed())
     SendNotification("MidnightOrderSell: " + (string)MidnightOrderSell);
