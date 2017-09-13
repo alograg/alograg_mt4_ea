@@ -31,3 +31,5 @@ Tamaño Trade: lote * tamaño de contrato
 ValorPip: ( Pip en decimales * Tamaño Trade) / Precio Mercado
 
 PIPs: PerdidaMaxima / ValorPip
+
+Se necesita una ganacia de 200 euros al dia, un promedio de 71.5 euros por transacción
