@@ -46,10 +46,7 @@ double AccountInvestment(int type = INVESTMENT_TOTAL) {
   return type ? (type == INVESTMENT_DEPOSIT ? deposit : withdrawal)
               : investment;
 }
-int AccountMoneyToInvestment() {
-  double eq = AccountFreeMargin(), tmpInv = investment / pareto;
-  return eq < investment ? eq : investment + ((eq - investment) * pareto);
-}
+int AccountMoneyToInvestment() { return (int)(AccountFreeMargin() * 0.3); }
 bool moneyOnRisk() {
   int stopOut = AccountStopoutMode() ? 50 : AccountStopoutLevel();
   double MarginLevel = NormalizeDouble(
@@ -61,19 +58,23 @@ bool moneyOnRisk() {
            AccountFreeMargin() >= AccountBalance() / 2 ||
            MarginLevel <= stopOut * 1.5);
 }
+double AccountMaxLostMoney() { return AccountEquity() * 0.02; }
+int AccountMaxLostPips() {
+  return (int)(AccountMaxLostMoney() / SymbolPipValue());
+}
+double SymbolPipValue() {
+  double tradeSize = (symbolLoteSize / accountLeverage) * Point,
+         exchange = (Ask + Bid) / 2;
+  return NormalizeDouble((tradeSize) / exchange, Digits);
+}
 double getLotSize() {
   double lotSize = 0;
   if (moneyOnRisk())
     return lotSize;
-  lotSize = (double)AccountMoneyToInvestment() / (100 * (double)sizeOfTheRisk);
+  lotSize = (double)AccountMoneyToInvestment() /
+            ((symbolLoteSize / accountLeverage) * 0.01);
+  lotSize *= 0.01;
   lotSize = MathMax(lotSize, 0.01);
-  if (lotSize >= 0.05 && lotSize < 0.1)
-    lotSize = 0.05;
-  if (lotSize > 0.1) {
-    lotSize *= 100;
-    lotSize = lotSize - ((int)lotSize % 10);
-    lotSize /= 100;
-  }
   lotSize = MathMin(maLots, lotSize);
   return NormalizeDouble(lotSize, 2);
 }
@@ -129,9 +130,9 @@ double getPeriodProfit(int period = PERIOD_D1, int shift = 0) {
         orderTime.day >= startTime.day && orderTime.hour >= startTime.hour &&
         orderTime.min >= startTime.min;
     bool lowerThanStart =
-        orderTime.year >= endTime.year && orderTime.mon >= endTime.mon &&
-        orderTime.day >= endTime.day && orderTime.hour >= endTime.hour &&
-        orderTime.min >= endTime.min;
+        orderTime.year <= endTime.year && orderTime.mon <= endTime.mon &&
+        orderTime.day <= endTime.day && orderTime.hour <= endTime.hour &&
+        orderTime.min <= endTime.min;
     if (grateThanStart && lowerThanStart)
       continue;
     profit += OrderProfit() + OrderCommission() + OrderSwap();
@@ -140,16 +141,16 @@ double getPeriodProfit(int period = PERIOD_D1, int shift = 0) {
 }
 double getDayProfit(int shift = 0) {
   MqlDateTime dayTime, orderTime;
-  TimeToStruct(iTime(Symbol(), PERIOD_M1, 0), dayTime);
-  dayTime.day -= shift;
+  TimeToStruct(iTime(Symbol(), PERIOD_D1, shift), dayTime);
+  Print("Dia: ", dayTime.year, "-", dayTime.day_of_year);
   double profit = 0;
   for (int position = OrdersHistoryTotal(); position >= 0; position--) {
     if (!OrderSelect(position, SELECT_BY_POS, MODE_HISTORY))
       continue;
     TimeToStruct(OrderCloseTime(), orderTime);
-    if (orderTime.day_of_year != dayTime.day_of_year)
-      continue;
-    profit += OrderProfit() + OrderCommission() + OrderSwap();
+    if (orderTime.day_of_year == dayTime.day_of_year &&
+        orderTime.year == dayTime.year)
+      profit += OrderProfit() + OrderCommission() + OrderSwap();
   }
   return profit;
 }
@@ -163,18 +164,21 @@ void SendAccountReport() {
       StringFormat(" (%s, Spread %s)", strategiesActivate ? "On" : "Off",
                    breakInSpread ? "Auto" : "Manual");
   balanceReport +=
-      StringFormat("\nBroker; %s (%s)\n", AccountInfoString(ACCOUNT_COMPANY),
+      StringFormat("\nBroker; %s (%s)", AccountInfoString(ACCOUNT_COMPANY),
                    AccountInfoString(ACCOUNT_CURRENCY));
-  balanceReport += " Date " + TimeToString(Time[0]);
-  balanceReport += StringFormat("\nFlag = %G", getFlagSize(PERIOD_D1));
-  balanceReport +=
-      StringFormat("\nDeposit = %G (%s) %G", AccountInvestment(),
-                   moneyOnRisk() ? "Riesgo" : "Tranquilo", sizeOfTheRisk);
-  balanceReport += StringFormat("\nB = %G", AccountBalance());
-  balanceReport += StringFormat("|P = %G", AccountProfit());
-  balanceReport += StringFormat("|E = %G", AccountEquity());
-  balanceReport += StringFormat("\nM = %G", AccountMargin());
-  balanceReport += StringFormat("|F = %G", AccountFreeMargin());
+  balanceReport += "\nDate " + TimeToString(Time[0]);
+  balanceReport += StringFormat("|Profit: %G ", getDayProfit(1));
+  balanceReport += StringFormat("\nFlag: %G %s", getFlagSize(PERIOD_D1) * Point,
+                                isBlackCandel(PERIOD_D1) ? "!" : "¡");
+  balanceReport += StringFormat("\nDeposit: %.2f (%s)", AccountInvestment(),
+                                moneyOnRisk() ? "Riesgo" : "Tranquilo");
+  balanceReport += StringFormat("|MaxLost: %.2f (%G)", AccountMaxLostMoney(),
+                                AccountMaxLostPips());
+  balanceReport += StringFormat("\nB: %G", AccountBalance());
+  balanceReport += StringFormat("|P: %G", AccountProfit());
+  balanceReport += StringFormat("|E: %G", AccountEquity());
+  balanceReport += StringFormat("\nM: %G", AccountMargin());
+  balanceReport += StringFormat("|F: %G", AccountFreeMargin());
   balanceReport +=
       StringFormat("|L = %G", AccountInfoDouble(ACCOUNT_MARGIN_LEVEL));
   if (IsTradeAllowed())
@@ -188,6 +192,13 @@ void SendSimbolParams() {
   comm += StringFormat(" (%s, Spread %s)\n", strategiesActivate ? "On" : "Off",
                        breakInSpread ? "Auto" : "Manual");
   comm += StringFormat(startLine + "Symbol: %s", Symbol());
+  // comm += StringFormat(startLine + "Leverage: %G", accountLeverage);
+  // comm += StringFormat(startLine + "Day Profit: %G", getDayProfit(1));
+  // comm += StringFormat(startLine + "Contract size: %G",
+  //                      symbolLoteSize);
+  // comm += StringFormat(
+  //     startLine + "MicroTrade (0.01): %G",
+  //     (symbolLoteSize / accountLeverage) * 0.01);
   bool spreadfloat = SymbolInfoInteger(Symbol(), SYMBOL_SPREAD_FLOAT);
   comm += StringFormat(startLine + "Spread "
                                    "%s = %I64d points, %.5f",
@@ -198,15 +209,18 @@ void SendSimbolParams() {
                        MarketInfo(Symbol(), MODE_STOPLEVEL));
   comm += StringFormat(startLine + "Stop Out: %G",
                        AccountStopoutMode() ? 50 : AccountStopoutLevel());
-  comm += StringFormat(startLine + "Swap: byu %G sell %G",
+  comm += StringFormat(startLine + "Swap: buy %G sell %G",
                        MarketInfo(Symbol(), MODE_SWAPLONG),
                        MarketInfo(Symbol(), MODE_SWAPSHORT));
-  comm += StringFormat(startLine + "Money: %f", investment);
+  comm += StringFormat(startLine + "Money: %.2f", AccountInvestment());
+  comm += StringFormat(startLine + "MaxLost: %.2f (%G)", AccountMaxLostMoney(),
+                       AccountMaxLostPips());
   comm += StringFormat(startLine + "Reference: %G", sizeOfTheRisk);
   comm += StringFormat(startLine + "Candel: %G", getCandelSize(PERIOD_D1));
+  comm += StringFormat(startLine + "Pip Value: %G", SymbolPipValue());
   comm += StringFormat(startLine + "Steps: %f",
                        NormalizeDouble((BreakEven / 3) / pareto, Digits));
-  comm += StringFormat(startLine + "Lot Size: %f",
+  comm += StringFormat(startLine + "Lot Size: %.2f",
                        NormalizeDouble(getLotSize(), 2));
   Comment(comm);
 }

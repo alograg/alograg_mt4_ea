@@ -15,12 +15,15 @@
 #include "TradeManager\ReasonableLoss.mqh"
 // Parameter
 extern double maLots = 10; // Max lots allowed
-// Constantes
 // Constants
+double symbolLoteSize = 0;
+double accountLeverage = 0;
 // Methods
 void tmInit() {
   BreakEven = breakInSpread ? getSpread() : Point * manualBreakEven;
   int eq = AccountMoneyToInvestment();
+  symbolLoteSize = MarketInfo(Symbol(), MODE_LOTSIZE);
+  accountLeverage = AccountLeverage();
   // sizeOfTheRisk = MathMax((int)(eq - (eq % (RiskSize))) / 2, RiskSize);
 }
 void tmEvent() {
