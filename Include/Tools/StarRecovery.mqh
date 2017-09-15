@@ -37,7 +37,7 @@ void StarRecovery(int ticket) {
       if (!OrderModify(OrderTicket(), OrderOpenPrice(),
                        NormalizeDouble(stop, Digits), OrderTakeProfit(), 0,
                        Yellow) &&
-          FALSE)
+          TRUE)
         ReportError("StarRecoveryModify", GetLastError());
     }
   }

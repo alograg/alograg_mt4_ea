@@ -9,17 +9,27 @@
 #property version propVersion
 #property strict
 // Includes
-#include "Strategies\DojiOperation.mqh"
-#include "Strategies\M5B3.mqh"
+//#include "Strategies\DojiOperation.mqh"
+//#include "Strategies\M5B3.mqh"
 #include "Strategies\Midnight.mqh"
 #include "Strategies\Morning.mqh"
-// Constantes
+// Parameters
+extern bool doMorning = TRUE;  // Mornging Strategie Activate
+extern bool doMidnight = TRUE; // Midnight Strategie Activate
 // Constants
+double strategiOperations = 0;
 // Methods
-void strategiesInit() {}
+void strategiesInit() {
+  if (doMorning)
+    strategiOperations += MorningOperations;
+  if (doMidnight)
+    strategiOperations += MidnightOperations;
+}
 void strategiesEvent() {
-  Morning();
-  Midnight();
+  if (doMorning)
+    Morning();
+  if (doMidnight)
+    Midnight();
   // DojiOperation();
   // M5B3();
 }

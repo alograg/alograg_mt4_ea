@@ -15,12 +15,13 @@ void DixPip() {
   int total = OrdersTotal();
   for (int position = 0; position < total; position++) {
     if (OrderSelect(position, SELECT_BY_POS)) {
-      // double profit = OrderProfit() + OrderCommission() + OrderSwap();
+      double profit = OrderProfit() + OrderCommission() + OrderSwap();
       // if (profit < 0) {
       //   StarRecovery(OrderTicket());
       //   continue;
       // }
-      TrailStops(OrderTicket());
+      if (profit > 0)
+        TrailStops(OrderTicket());
     }
   }
 }

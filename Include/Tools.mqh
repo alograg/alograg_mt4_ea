@@ -33,9 +33,13 @@ void ReportError(string from, int err) {
   if (err != ERR_NO_ERROR && sendReportErrors)
     if (IsTradeAllowed())
       SendNotification("[" + from + "] Error: " + ErrorDescription(err));
+  if (IsTesting()) {
+    Print("[" + from + "] Error: " + ErrorDescription(err));
+    die[0];
+  }
 }
 // Includes
-#include "External\TradersTech.mqh"
+//#include "External\TradersTech.mqh"
 #include "Tools\AccountExtras.mqh"
 #include "Tools\CandelSize.mqh"
 #include "Tools\OrderExtras.mqh"

@@ -1,5 +1,5 @@
 /*--------------------------+
-|            TrailStops.mqh |
+|        AccountsExtras.mqh |
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
@@ -10,7 +10,6 @@
 #property strict
 // Parameter
 extern int SpreadSize = 100; // Size of spread reference
-extern int RiskSize = 40;    // Size of risk
 // Constants
 #define INVESTMENT_TOTAL 0
 #define INVESTMENT_DEPOSIT 1
@@ -18,8 +17,8 @@ extern int RiskSize = 40;    // Size of risk
 int SpreadSampleSize = 0;
 double Spread[];
 double investment = 0, deposit = 0, withdrawal = 0;
-int sizeOfTheRisk = 40;
 // Functions
+// Datos de dinero
 double AccountInvestment(int type = INVESTMENT_TOTAL) {
   if (IsTesting()) {
     deposit = 0 == deposit ? testDeposit : deposit;
@@ -46,6 +45,7 @@ double AccountInvestment(int type = INVESTMENT_TOTAL) {
   return type ? (type == INVESTMENT_DEPOSIT ? deposit : withdrawal)
               : investment;
 }
+// Monto que se puede invertir
 int AccountMoneyToInvestment() { return (int)(AccountFreeMargin() * 0.3); }
 bool moneyOnRisk() {
   int stopOut = AccountStopoutMode() ? 50 : AccountStopoutLevel();
@@ -58,15 +58,47 @@ bool moneyOnRisk() {
            AccountFreeMargin() >= AccountBalance() / 2 ||
            MarginLevel <= stopOut * 1.5);
 }
+// Monto de dinero que se puede perder
 double AccountMaxLostMoney() { return AccountEquity() * 0.02; }
+// Pips que se pueden perder
 int AccountMaxLostPips() {
   return (int)(AccountMaxLostMoney() / SymbolPipValue());
 }
-double SymbolPipValue() {
-  double tradeSize = (symbolLoteSize / accountLeverage) * Point,
-         exchange = (Ask + Bid) / 2;
-  return NormalizeDouble((tradeSize) / exchange, Digits);
+// StopLost de oro
+double AurealStopLoss(int type, int lotSize) {
+  double aureal = AccountPercentStopPips(Symbol(), 0.02, lotSize);
+  if (OP_BUY == type)
+    return Ask - aureal;
+  if (OP_SELL == type)
+    return Bid + aureal;
+  return 0;
 }
+double AccountPercentStopPips(string symbol, double percent, double lots) {
+  double balance = AccountBalance();
+  double tickvalue = MarketInfo(symbol, MODE_TICKVALUE);
+  double spread = getSpread();
+  double stopLossPips =
+      percent * balance / (MathMax(lots, 0.01) * symbolLoteSize * tickvalue) -
+      spread;
+  // Print("stopLossPips: ", stopLossPips);
+
+  return (stopLossPips);
+}
+// TakeProfit de oro
+double AurealTakeProfits(int type, int lotSize) {
+  double aureal = AccountPercentStopPips(Symbol(), 0.01, lotSize);
+  if (OP_BUY == type)
+    return Ask + aureal;
+  if (OP_SELL == type)
+    return Bid - aureal;
+  return 0;
+}
+// Valor de Pip
+double SymbolPipValue() {
+  return NormalizeDouble(MarketInfo(Symbol(), MODE_TICKVALUE) / accountLeverage,
+                         Digits);
+}
+// Lotes que se pueden compran en base al dinero que se peude ivertir
 double getLotSize() {
   double lotSize = 0;
   if (moneyOnRisk())
@@ -75,9 +107,10 @@ double getLotSize() {
             ((symbolLoteSize / accountLeverage) * 0.01);
   lotSize *= 0.01;
   lotSize = MathMax(lotSize, 0.01);
-  lotSize = MathMin(maLots, lotSize);
-  return NormalizeDouble(lotSize, 2);
+  lotSize = MathMin(maxLotsAllowed, lotSize);
+  return MathFloor(lotSize * 100) / 100;
 }
+// Pociciones abiertas
 double AccountOpenPositions(int mode = -1) {
   double openBuyLots = 0, openSellLots = 0;
   for (int iPos = OrdersTotal() - 1; iPos >= 0; iPos--)
@@ -91,6 +124,7 @@ double AccountOpenPositions(int mode = -1) {
              ? openBuyLots
              : mode == OP_SELL ? openSellLots : openBuyLots - openSellLots;
 }
+// Spread promedio
 double getSpread(double AddValue = 0) {
   double LastValue;
   static double ArrayTotal = 0;
@@ -116,29 +150,7 @@ double getSpread(double AddValue = 0) {
   Spread[0] = AddValue;
   return NormalizeDouble(ArrayTotal / ArraySize(Spread), Digits);
 }
-double getPeriodProfit(int period = PERIOD_D1, int shift = 0) {
-  MqlDateTime startTime, endTime, orderTime;
-  TimeToStruct(iTime(Symbol(), period, shift - 1), startTime);
-  TimeToStruct(iTime(Symbol(), period, shift), endTime);
-  double profit = 0;
-  for (int position = OrdersHistoryTotal(); position >= 0; position--) {
-    if (!OrderSelect(position, SELECT_BY_POS, MODE_HISTORY))
-      continue;
-    TimeToStruct(OrderCloseTime(), orderTime);
-    bool grateThanStart =
-        orderTime.year >= startTime.year && orderTime.mon >= startTime.mon &&
-        orderTime.day >= startTime.day && orderTime.hour >= startTime.hour &&
-        orderTime.min >= startTime.min;
-    bool lowerThanStart =
-        orderTime.year <= endTime.year && orderTime.mon <= endTime.mon &&
-        orderTime.day <= endTime.day && orderTime.hour <= endTime.hour &&
-        orderTime.min <= endTime.min;
-    if (grateThanStart && lowerThanStart)
-      continue;
-    profit += OrderProfit() + OrderCommission() + OrderSwap();
-  }
-  return profit;
-}
+// Beneficios del dia 0=actual, 1=ayer, etc.
 double getDayProfit(int shift = 0) {
   MqlDateTime dayTime, orderTime;
   TimeToStruct(iTime(Symbol(), PERIOD_D1, shift), dayTime);
@@ -191,6 +203,8 @@ void SendSimbolParams() {
                 " v." + propVersion;
   comm += StringFormat(" (%s, Spread %s)\n", strategiesActivate ? "On" : "Off",
                        breakInSpread ? "Auto" : "Manual");
+  comm += StringFormat("Last Update: %s",
+                       TimeToStr(lastUpdate, TIME_DATE | TIME_SECONDS));
   comm += StringFormat(startLine + "Symbol: %s", Symbol());
   // comm += StringFormat(startLine + "Leverage: %G", accountLeverage);
   // comm += StringFormat(startLine + "Day Profit: %G", getDayProfit(1));
@@ -212,15 +226,34 @@ void SendSimbolParams() {
   comm += StringFormat(startLine + "Swap: buy %G sell %G",
                        MarketInfo(Symbol(), MODE_SWAPLONG),
                        MarketInfo(Symbol(), MODE_SWAPSHORT));
-  comm += StringFormat(startLine + "Money: %.2f", AccountInvestment());
-  comm += StringFormat(startLine + "MaxLost: %.2f (%G)", AccountMaxLostMoney(),
-                       AccountMaxLostPips());
-  comm += StringFormat(startLine + "Reference: %G", sizeOfTheRisk);
+  comm += StringFormat(startLine + "Money: $ %.2f", AccountInvestment());
+  comm +=
+      StringFormat(startLine + "MaxLots: %.2f (%.2f / %.1f)", maxLotsAllowed,
+                   expectedMoneyByDay / SymbolPipValue() / expectedMoneyByDay,
+                   MathMax(strategiOperations, 1));
+  comm += StringFormat(startLine + "Limits: $ %.2f (! %G / ¡ %G)",
+                       AccountMaxLostMoney(), AccountMaxLostPips(),
+                       AccountMaxLostPips() / strategiOperations);
   comm += StringFormat(startLine + "Candel: %G", getCandelSize(PERIOD_D1));
-  comm += StringFormat(startLine + "Pip Value: %G", SymbolPipValue());
-  comm += StringFormat(startLine + "Steps: %f",
-                       NormalizeDouble((BreakEven / 3) / pareto, Digits));
-  comm += StringFormat(startLine + "Lot Size: %.2f",
-                       NormalizeDouble(getLotSize(), 2));
+  comm += StringFormat(startLine + "MinOperations: %G", strategiOperations);
+  comm += StringFormat(startLine + "Pip Value: $ %G", SymbolPipValue());
+  comm += StringFormat(startLine + "TickValue: $ %.5f",
+                       MarketInfo(Symbol(), MODE_TICKVALUE));
+  comm +=
+      StringFormat(startLine + "Steps: %f", NormalizeDouble(useBreak, Digits));
+  comm +=
+      StringFormat(startLine + "Price:         %f | %f",
+                   NormalizeDouble(Ask, Digits), NormalizeDouble(Bid, Digits));
+  comm += StringFormat(
+      startLine + "StopLoss:     %f | %f",
+      NormalizeDouble(AurealStopLoss(OP_BUY, getLotSize()), Digits),
+      NormalizeDouble(AurealStopLoss(OP_SELL, getLotSize()), Digits));
+  comm += StringFormat(
+      startLine + "TakeProfits: %f | %f",
+      NormalizeDouble(AurealTakeProfits(OP_BUY, getLotSize()), Digits),
+      NormalizeDouble(AurealTakeProfits(OP_SELL, getLotSize()), Digits));
+  comm +=
+      StringFormat(startLine + "Steps: %f", NormalizeDouble(useBreak, Digits));
+  comm += StringFormat(startLine + "Lot Size: %.3f", getLotSize());
   Comment(comm);
 }

@@ -21,19 +21,21 @@
 // Parameters
 extern bool strategiesActivate = FALSE; // Strategies Activate
 // Constants
+datetime lastUpdate;
 /*----------------+
 | Inicialización  |
 +----------------*/
 int OnInit() {
   Print(eaName + " v." + propVersion);
+  lastUpdate = Time[0];
   if (IsTradeAllowed())
     SendNotification(eaName + " v." + propVersion + " INICIALIZADO");
   // Registro de evento
   AccountInvestment();
-  EventSetTimer(60 * 60 * 12);
+  EventSetTimer(30);
   setLatsPeriods();
   tmInit();
-  // strategiesInit();
+  strategiesInit();
   return (INIT_SUCCEEDED);
 }
 /*--------+
@@ -43,23 +45,24 @@ void OnDeinit(const int reason) { EventKillTimer(); }
 /*----------+
 | Al timer  |
 +----------*/
-void OnTimer() {}
+void OnTimer() {
+  setLatsPeriods();
+  AccountInvestment();
+}
 /*-----------+
 | Cada dato  |
 +-----------*/
 void OnTick() {
   doReport();
-  if (IsTesting())
-    doTest();
   doManagment();
   doStrategies();
-  setLatsPeriods();
+  if (IsTesting())
+    doTest();
 }
 /*----------+
 | Reporta   |
 +----------*/
 void doReport() {
-  AccountInvestment();
   if (isNewBar(PERIOD_D1))
     SendAccountReport();
   if (isNewBar(PERIOD_M1))
@@ -83,6 +86,7 @@ void doTest() {
     Print("AccountMoneyToInvestment: ", AccountMoneyToInvestment());
     Print("getLotSize: ", getLotSize());
   }
+  setLatsPeriods();
 }
 /*----------------------------+
 | Administra las operaciones  |

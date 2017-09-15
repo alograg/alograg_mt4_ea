@@ -29,17 +29,23 @@ void TrailStops(int ticket) {
         currentBreak /= 2;
         stop = MathMax(priceToEval, OrderOpenPrice()) + currentBreak;
       }
+      if (profitExpected == 0)
+        profitExpected = OrderOpenPrice() + (AccountMaxLostPips() * Point);
     } else if (mode == OP_SELL) {
       if (priceToEval - Ask > currentBreak) {
         currentBreak /= 2;
         stop = MathMin(priceToEval, OrderOpenPrice()) - currentBreak;
       }
+      if (profitExpected == 0)
+        profitExpected = OrderOpenPrice() - (AccountMaxLostPips() * Point);
     }
     if (stop && stop != OrderStopLoss())
       if (!OrderModify(OrderTicket(), OrderOpenPrice(),
                        NormalizeDouble(stop, Digits),
                        NormalizeDouble(profitExpected, Digits), 0, Yellow) &&
           FALSE)
-        ReportError("TrailStopsModify", GetLastError());
+        ReportError("TrailStopsModify " + NormalizeDouble(stop, Digits) + " " +
+                        Ask,
+                    GetLastError());
   }
 }
