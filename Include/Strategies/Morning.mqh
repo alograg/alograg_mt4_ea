@@ -10,20 +10,41 @@
 #property strict
 // Constants
 string MorningComment = eaName + ": S-Morning";
+double MorningOperations = 2;
 int morningOrderBuy = -1;
 int morningOrderSell = -1;
 void Morning() {
-  if (!isNewBar(PERIOD_D1)) {
+  bool timeToOperate = Hour() == 0 && Minute() == 1;
+  if (!timeToOperate) {
     if (morningOrderBuy > 0)
       morningOrderBuy = OrderIsOpen(morningOrderBuy);
     if (morningOrderSell > 0)
       morningOrderSell = OrderIsOpen(morningOrderSell);
-    return;
-  }
-  if (Hour() != 0 && Minute() != 0) {
-    if (IsTradeAllowed())
-      SendNotification("Not time to morning work");
-
+    bool probablyLoseBuy =
+        morningOrderBuy > 0 && morningOrderSell <= 0 && Hour() == 12;
+    bool probablyLoseSell =
+        morningOrderSell > 0 && morningOrderBuy <= 0 && Hour() == 12;
+    int age;
+    if (probablyLoseBuy) {
+      if (!OrderModify(morningOrderBuy, OrderOpenPrice(), OrderStopLoss(),
+                       NormalizeDouble(
+                           OrderOpenPrice() +
+                               ((breakInSpread ? getSpread() : BreakEven) / 3),
+                           Digits),
+                       0, Yellow) &&
+          GetLastError() > 1 && TRUE)
+        ReportError("ProbablyLoseBuySetProfit", GetLastError());
+    }
+    if (probablyLoseSell) {
+      if (!OrderModify(morningOrderSell, OrderOpenPrice(), OrderStopLoss(),
+                       NormalizeDouble(
+                           OrderOpenPrice() -
+                               ((breakInSpread ? getSpread() : BreakEven) / 3),
+                           Digits),
+                       0, Yellow) &&
+          GetLastError() > 1 && TRUE)
+        ReportError("ProbablyLoseSellSetProfit", GetLastError());
+    }
     return;
   }
   // TODO: evitar gaps
@@ -38,10 +59,12 @@ void Morning() {
     return;
   while (morningOrderBuy <= 0 || morningOrderSell <= 0) {
     if (morningOrderBuy <= 0)
-      morningOrderBuy = OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0, 0,
+      morningOrderBuy = OrderSend(Symbol(), OP_BUY, lotSize, Ask, 0, 0,
+                                  AurealTakeProfits(OP_BUY, lotSize),
                                   MorningComment, MagicNumber, 0, Blue);
     if (morningOrderSell <= 0)
-      morningOrderSell = OrderSend(Symbol(), OP_SELL, lotSize, Bid, 0, 0, 0,
+      morningOrderSell = OrderSend(Symbol(), OP_SELL, lotSize, Bid, 0, 0,
+                                   AurealTakeProfits(OP_SELL, lotSize),
                                    MorningComment, MagicNumber, 0, Red);
     if (AccountFreeMargin() < 40)
       break;

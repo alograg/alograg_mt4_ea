@@ -24,6 +24,7 @@ void TrailStops(int ticket) {
            profitExpected = OrderTakeProfit();
     int differenceInDays = OrderAge();
     // currentBreak += OrderSwap() * differenceInDays;
+    RefreshRates();
     if (mode == OP_BUY) {
       if (Bid - priceToEval > currentBreak) {
         currentBreak /= 2;

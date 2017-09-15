@@ -14,20 +14,20 @@
 #include "Strategies\Midnight.mqh"
 #include "Strategies\Morning.mqh"
 // Parameters
-extern bool doMorning = TRUE;  // Mornging Strategie Activate
+// extern bool doMorning = TRUE;  // Mornging Strategie Activate
 extern bool doMidnight = TRUE; // Midnight Strategie Activate
 // Constants
 double strategiOperations = 0;
 // Methods
 void strategiesInit() {
-  if (doMorning)
-    strategiOperations += MorningOperations;
+  // if (doMorning)
+  //   strategiOperations += MorningOperations;
   if (doMidnight)
     strategiOperations += MidnightOperations;
 }
 void strategiesEvent() {
-  if (doMorning)
-    Morning();
+  // if (doMorning)
+  //   Morning();
   if (doMidnight)
     Midnight();
   // DojiOperation();

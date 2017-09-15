@@ -33,6 +33,7 @@ int OrderProfitPips() {
 bool OrderOptimizeClose(int ticket) {
   if (!OrderSelect(ticket, SELECT_BY_TICKET))
     return false;
+  RefreshRates();
   int mode = OrderType();
   double lostClose = NormalizeDouble(mode ? Ask : Bid, Digits),
          currentBreak = breakInSpread ? getSpread() : BreakEven;
@@ -41,7 +42,8 @@ bool OrderOptimizeClose(int ticket) {
   else if (mode == OP_BUY)
     lostClose -= currentBreak * 1.5;
   if (!OrderModify(OrderTicket(), OrderOpenPrice(), lostClose,
-                   OrderTakeProfit(), 0, Yellow))
-    ReportError("MidnightOrderModify", GetLastError());
+                   OrderTakeProfit(), 0, Yellow) &&
+      GetLastError() > 1)
+    ReportError("OrderOptimizeClose", GetLastError());
   return true;
 }
