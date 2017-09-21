@@ -86,7 +86,7 @@ double AccountPercentStopPips(string symbol, double percent, double lots) {
 }
 // TakeProfit de oro
 double AurealTakeProfits(int type, int lotSize) {
-  double aureal = AccountPercentStopPips(Symbol(), 0.01, lotSize);
+  double aureal; // = AccountPercentStopPips(Symbol(), 0.01, lotSize);
   double realMinimal = (breakInSpread ? getSpread() : BreakEven) / pareto;
   realMinimal *= 1.6;
   aureal = NormalizeDouble(realMinimal, Digits);

@@ -20,7 +20,8 @@ void TrailStops(int ticket) {
     int mode = OrderType();
     double stop = 0,
            priceToEval = OrderStopLoss() ? OrderStopLoss() : OrderOpenPrice(),
-           currentBreak = (breakInSpread ? getSpread() : BreakEven) / pareto,
+           currentBreak = NormalizeDouble(
+               (breakInSpread ? getSpread() : BreakEven) / pareto, Digits),
            profitExpected = OrderTakeProfit();
     int differenceInDays = OrderAge();
     // currentBreak += OrderSwap() * differenceInDays;
@@ -30,14 +31,16 @@ void TrailStops(int ticket) {
         profitExpected = OrderOpenPrice() + (currentBreak * 1.6);
       if (Bid - priceToEval > currentBreak) {
         currentBreak /= 2;
-        stop = MathMax(priceToEval, OrderOpenPrice()) + currentBreak;
+        stop = MathMax(priceToEval, OrderOpenPrice()) +
+               NormalizeDouble(currentBreak, Digits);
       }
     } else if (mode == OP_SELL) {
       if (profitExpected == 0)
         profitExpected = OrderOpenPrice() - (currentBreak * 1.6);
       if (priceToEval - Ask > currentBreak) {
         currentBreak /= 2;
-        stop = MathMin(priceToEval, OrderOpenPrice()) - currentBreak;
+        stop = MathMin(priceToEval, OrderOpenPrice()) -
+               NormalizeDouble(currentBreak, Digits);
       }
     }
     if (stop && stop != OrderStopLoss())
