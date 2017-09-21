@@ -87,6 +87,9 @@ double AccountPercentStopPips(string symbol, double percent, double lots) {
 // TakeProfit de oro
 double AurealTakeProfits(int type, int lotSize) {
   double aureal = AccountPercentStopPips(Symbol(), 0.01, lotSize);
+  double realMinimal = (breakInSpread ? getSpread() : BreakEven) / pareto;
+  realMinimal *= 1.6;
+  aureal = NormalizeDouble(realMinimal, Digits);
   if (OP_BUY == type)
     return Ask + aureal;
   if (OP_SELL == type)
@@ -154,7 +157,7 @@ double getSpread(double AddValue = 0) {
 double getDayProfit(int shift = 0) {
   MqlDateTime dayTime, orderTime;
   TimeToStruct(iTime(Symbol(), PERIOD_D1, shift), dayTime);
-  Print("Dia: ", dayTime.year, "-", dayTime.day_of_year);
+  // Print("Dia: ", dayTime.year, "-", dayTime.day_of_year);
   double profit = 0;
   for (int position = OrdersHistoryTotal(); position >= 0; position--) {
     if (!OrderSelect(position, SELECT_BY_POS, MODE_HISTORY))

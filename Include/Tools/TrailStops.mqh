@@ -26,25 +26,25 @@ void TrailStops(int ticket) {
     // currentBreak += OrderSwap() * differenceInDays;
     RefreshRates();
     if (mode == OP_BUY) {
+      if (profitExpected == 0)
+        profitExpected = OrderOpenPrice() + (currentBreak * 1.6);
       if (Bid - priceToEval > currentBreak) {
         currentBreak /= 2;
         stop = MathMax(priceToEval, OrderOpenPrice()) + currentBreak;
       }
-      if (profitExpected == 0)
-        profitExpected = OrderOpenPrice() + (AccountMaxLostPips() * Point);
     } else if (mode == OP_SELL) {
+      if (profitExpected == 0)
+        profitExpected = OrderOpenPrice() - (currentBreak * 1.6);
       if (priceToEval - Ask > currentBreak) {
         currentBreak /= 2;
         stop = MathMin(priceToEval, OrderOpenPrice()) - currentBreak;
       }
-      if (profitExpected == 0)
-        profitExpected = OrderOpenPrice() - (AccountMaxLostPips() * Point);
     }
     if (stop && stop != OrderStopLoss())
       if (!OrderModify(OrderTicket(), OrderOpenPrice(),
                        NormalizeDouble(stop, Digits),
                        NormalizeDouble(profitExpected, Digits), 0, Yellow) &&
-          FALSE)
+          TRUE)
         ReportError("TrailStopsModify " + NormalizeDouble(stop, Digits) + " " +
                         Ask,
                     GetLastError());

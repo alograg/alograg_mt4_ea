@@ -3,7 +3,7 @@
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
-#define propVersion "4.22"
+#define propVersion "4.23"
 #define eaName "Alograg"
 #define MagicNumber 17808160
 // Properties
@@ -45,10 +45,7 @@ void OnDeinit(const int reason) { EventKillTimer(); }
 /*----------+
 | Al timer  |
 +----------*/
-void OnTimer() {
-  setLatsPeriods();
-  AccountInvestment();
-}
+void OnTimer() { AccountInvestment(); }
 /*-----------+
 | Cada dato  |
 +-----------*/
@@ -58,6 +55,7 @@ void OnTick() {
   doStrategies();
   if (IsTesting())
     doTest();
+  setLatsPeriods();
 }
 /*----------+
 | Reporta   |
@@ -72,7 +70,7 @@ void doReport() {
 | Para pruebas  |
 +--------------*/
 void doTest() {
-  // orderOn(StringToTime("2017.03.24 18:20"), getLotSize());
+  orderOn(StringToTime("2017.09.12 00:01"), 0.01);
   // closeOrderOn(StringToTime("2017.02.24 08:40"), 104);
   if (isNewBar(PERIOD_D1)) {
     // doWithdrawal(10);
@@ -86,7 +84,6 @@ void doTest() {
     Print("AccountMoneyToInvestment: ", AccountMoneyToInvestment());
     Print("getLotSize: ", getLotSize());
   }
-  setLatsPeriods();
 }
 /*----------------------------+
 | Administra las operaciones  |

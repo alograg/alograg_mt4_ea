@@ -13,7 +13,6 @@ string MidnightComment = eaName + ": S-Midnight";
 double MidnightOperations = 1.25;
 int MidnightOrderSell = -1;
 void Midnight() {
-  bool temp;
   if (!isNewBar(PERIOD_M1)) {
     if (MidnightOrderSell) {
       MidnightOrderSell = OrderIsOpen(MidnightOrderSell);
