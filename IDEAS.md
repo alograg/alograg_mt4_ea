@@ -18,6 +18,11 @@ comprar cada minuto si el valor se encuentra entre el mayor y el menor de las ú
 el modo de compra debe de ir de acuerdo al dirección en direccional somatic
 la compra debe de hacerse antes de las 7:45 de cada día y después de las 23 horas antes de las 23:30
 
+#Scalpel
+Comprar una decima parte de la regla de oro
+El 20% van a ser perdidas, el 80% ganancias
+La perdida maxima es el 80% de las ganancias esperadas
+
 
 REGLAS de ORO
 Invertir solo el 30% del total del capital
