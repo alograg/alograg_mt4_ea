@@ -183,8 +183,9 @@ void SendAccountReport() {
                    AccountInfoString(ACCOUNT_CURRENCY));
   balanceReport += "\nDate " + TimeToString(Time[0]);
   balanceReport += StringFormat("|Profit: %G ", getDayProfit(1));
-  balanceReport += StringFormat("\nFlag: %.5f %s", getFlagSize(PERIOD_D1) * Point,
-                                isBlackCandel(PERIOD_D1) ? "!" : "¡");
+  balanceReport +=
+      StringFormat("\nFlag: %.5f %s", getFlagSize(PERIOD_D1) * Point,
+                   isBlackCandel(PERIOD_D1) ? "!" : "¡");
   balanceReport += StringFormat("\nDeposit: %.2f (%s)", AccountInvestment(),
                                 moneyOnRisk() ? "Riesgo" : "Tranquilo");
   balanceReport += StringFormat("|MaxLost: %.2f (%G)", AccountMaxLostMoney(),
