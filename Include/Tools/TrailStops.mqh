@@ -25,10 +25,11 @@ void TrailStops(int ticket) {
            profitExpected = OrderTakeProfit();
     int differenceInDays = OrderAge();
     // currentBreak += OrderSwap() * differenceInDays;
+    double tp = currentBreak * 1.6;
     RefreshRates();
     if (mode == OP_BUY) {
       if (profitExpected == 0)
-        profitExpected = OrderOpenPrice() + (currentBreak * 1.6);
+        profitExpected = OrderOpenPrice() + (tp);
       if (Bid - priceToEval > currentBreak) {
         currentBreak /= 2;
         stop = MathMax(priceToEval, OrderOpenPrice()) +
@@ -36,7 +37,7 @@ void TrailStops(int ticket) {
       }
     } else if (mode == OP_SELL) {
       if (profitExpected == 0)
-        profitExpected = OrderOpenPrice() - (currentBreak * 1.6);
+        profitExpected = OrderOpenPrice() - (tp);
       if (priceToEval - Ask > currentBreak) {
         currentBreak /= 2;
         stop = MathMin(priceToEval, OrderOpenPrice()) -
