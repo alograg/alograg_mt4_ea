@@ -17,10 +17,8 @@ void Midnight() {
     if (MidnightOrderSell) {
       MidnightOrderSell = OrderIsOpen(MidnightOrderSell);
       if (MidnightOrderSell && !OrderStopLoss()) {
-        double tp =
-            NormalizeDouble(MathMin(OrderOpenPrice(), Ask) -
-                                ((breakInSpread ? getSpread() : BreakEven) / 3),
-                            Digits);
+        double tp = NormalizeDouble(
+            MathMin(OrderOpenPrice(), Ask) - (10 * Point), Digits);
         if (Hour() == 3 && OrderTakeProfit() < tp) {
           if (!OrderModify(MidnightOrderSell, OrderOpenPrice(), OrderStopLoss(),
                            tp, 0, Yellow) &&

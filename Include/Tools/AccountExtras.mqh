@@ -90,7 +90,7 @@ double AurealTakeProfits(int type, int lotSize) {
   double realMinimal = (breakInSpread ? getSpread() : BreakEven) / pareto;
   realMinimal *= 1.6;
   aureal = NormalizeDouble(realMinimal, Digits);
-  aureal = 10 * Point;
+  // aureal = 10 * Point;
   if (OP_BUY == type)
     return Ask + aureal;
   if (OP_SELL == type)
