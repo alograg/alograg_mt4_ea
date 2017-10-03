@@ -18,17 +18,32 @@ comprar cada minuto si el valor se encuentra entre el mayor y el menor de las ú
 el modo de compra debe de ir de acuerdo al dirección en direccional somatic
 la compra debe de hacerse antes de las 7:45 de cada día y después de las 23 horas antes de las 23:30
 
-#Scalpel
+# Scalpel
 Comprar una decima parte de la regla de oro
 El 20% van a ser perdidas, el 80% ganancias
 La perdida maxima es el 80% de las ganancias esperadas
 
+# optimización de tailingstop
+Mover el tailingstop para que evalue:
+A.- lo mas optino entre stoplost y orderprice
+B.- el valor de ticks entre A y el takeproft
+C.- la mitad de B
+D.- un tercio de B
+E.- A + D
+Si el precio supera C colocar stoplost a E
 
-REGLAS de ORO
+# descrito en 50 pips per day
+Fijarce solo en la posible perdida
+fijar la ganancia al doble/triple de la posible perdida
+No utilizar mas del 2% de monto disponible de inversión
+Usar solo estadisticas de grafica 4h y 1d
+
+# REGLAS de ORO
 Invertir solo el 30% del total del capital
 Perdida solo del 2% del capital
 Ganancia maxima igual al calculo de la perdida inverso
 
+# Objetivos
 PerdidaMaxima: Equidad * 0.02
 
 Tamaño Trade: lote * tamaño de contrato
