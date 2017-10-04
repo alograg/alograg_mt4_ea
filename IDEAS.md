@@ -46,6 +46,8 @@ Fijarce solo en la posible perdida
 fijar la ganancia al doble/triple de la posible perdida
 No utilizar mas del 2% de monto disponible de inversión
 Usar solo estadisticas de grafica 4h y 1d
+Revisar para aplicar http://forextradingstrategies4u.com/breakout-forex-trading-strategy-for-gbpusd/
+
 
 ## REGLAS de ORO
 
