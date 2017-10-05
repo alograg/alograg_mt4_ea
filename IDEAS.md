@@ -28,7 +28,7 @@ La perdida maxima es el 80% de las ganancias esperadas
 Las horas que recomiendan para scalpeling son:
 
 * 7 a 11 hrs de Guadalajara
-* 13 a 14 hrs de Guadalajara
+* 13 a 17 hrs de Londres
 
 ## optimización de tailingstop
 
