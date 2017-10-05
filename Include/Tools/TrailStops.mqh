@@ -20,26 +20,22 @@ void TrailStops(int ticket) {
     int mode = OrderType();
     double stop = 0,
            priceToEval = OrderStopLoss() ? OrderStopLoss() : OrderOpenPrice(),
-           currentBreak = NormalizeDouble(
-               (breakInSpread ? getSpread() : BreakEven) / pareto, Digits),
+           currentBreak = NormalizeDouble(getSpread() * 3, Digits),
            profitExpected = OrderTakeProfit();
-    int differenceInDays = OrderAge();
-    // currentBreak += OrderSwap() * differenceInDays;
-    double tp = currentBreak * 1.6;
+    if (profitExpected != 0) {
+      double tailingBase = MathAbs(priceToEval - profitExpected);
+      currentBreak = MathMax(tailingBase, currentBreak);
+    }
     RefreshRates();
     if (mode == OP_BUY) {
-      if (profitExpected == 0)
-        profitExpected = OrderOpenPrice() + (tp);
-      if (Bid - priceToEval > currentBreak) {
-        currentBreak /= 2;
+      if (Bid - priceToEval > currentBreak / 2) {
+        currentBreak /= 3;
         stop = MathMax(priceToEval, OrderOpenPrice()) +
                NormalizeDouble(currentBreak, Digits);
       }
     } else if (mode == OP_SELL) {
-      if (profitExpected == 0)
-        profitExpected = OrderOpenPrice() - (tp);
-      if (priceToEval - Ask > currentBreak) {
-        currentBreak /= 2;
+      if (priceToEval - Ask > currentBreak / 2) {
+        currentBreak /= 3;
         stop = MathMin(priceToEval, OrderOpenPrice()) -
                NormalizeDouble(currentBreak, Digits);
       }
@@ -48,9 +44,9 @@ void TrailStops(int ticket) {
       if (!OrderModify(OrderTicket(), OrderOpenPrice(),
                        NormalizeDouble(stop, Digits),
                        NormalizeDouble(profitExpected, Digits), 0, Yellow) &&
-          TRUE)
-        ReportError("TrailStopsModify " + NormalizeDouble(stop, Digits) + " " +
-                        Ask,
+          FALSE)
+        ReportError("TrailStopsModify; stop " + NormalizeDouble(stop, Digits) +
+                        ", Ask " + NormalizeDouble(Ask, Digits),
                     GetLastError());
   }
 }

@@ -33,10 +33,10 @@ Las horas que recomiendan para scalpeling son:
 ## optimización de tailingstop
 
 Mover el tailingstop para que evalue:
-A.- lo mas optino entre stoplost y orderprice
-B.- el valor de ticks entre A y el takeproft
-C.- la mitad de B
-D.- un tercio de B
+A.- lo mas optino entre stoplost y orderprice = base
+B.- el valor de ticks entre A y el takeproft = tailingBase
+C.- la mitad de tailingBase = 
+D.- un tercio de tailingBase
 E.- A + D
 Si el precio supera C colocar stoplost a E
 
@@ -47,7 +47,6 @@ fijar la ganancia al doble/triple de la posible perdida
 No utilizar mas del 2% de monto disponible de inversión
 Usar solo estadisticas de grafica 4h y 1d
 Revisar para aplicar http://forextradingstrategies4u.com/breakout-forex-trading-strategy-for-gbpusd/
-
 
 ## REGLAS de ORO
 

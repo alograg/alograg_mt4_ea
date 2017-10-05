@@ -17,13 +17,20 @@ void Midnight() {
     if (MidnightOrderSell) {
       MidnightOrderSell = OrderIsOpen(MidnightOrderSell);
       if (MidnightOrderSell && !OrderStopLoss()) {
-        double tp = NormalizeDouble(
-            MathMin(OrderOpenPrice(), Ask) - (10 * Point), Digits);
-        if (Hour() == 3 && OrderTakeProfit() < tp) {
-          if (!OrderModify(MidnightOrderSell, OrderOpenPrice(), OrderStopLoss(),
-                           tp, 0, Yellow) &&
+        double max = MathMax(iHigh(Symbol(), PERIOD_H1, 1),
+                             iHigh(Symbol(), PERIOD_H1, 2)) +
+                     getSpread();
+        double min =
+            MathMin(iLow(Symbol(), PERIOD_H1, 1), iLow(Symbol(), PERIOD_H1, 2));
+        double tp = min - ((max - min) * 3);
+        if (Hour() == 3 && OrderTakeProfit() != tp) {
+          if (!OrderModify(MidnightOrderSell, OrderOpenPrice(), max, tp, 0,
+                           Yellow) &&
               TRUE) {
-            ReportError("MidnightModify 3am " + tp + " " + Ask, GetLastError());
+            ReportError(
+                StringFormat("MidnightModify 3am: %f | %f | %f | %f | %f", max,
+                             min, tp, Bid, Ask),
+                GetLastError());
           }
         }
       }
@@ -46,17 +53,6 @@ void Midnight() {
         MagicNumber, 0, Red);
     if (MidnightOrderSell < 0)
       ReportError("MidnightOrderSell", GetLastError());
-  } else {
-    int age = OrderAge(MidnightOrderSell);
-    if (age >= 1) {
-      if (!OrderModify(MidnightOrderSell, OrderOpenPrice(),
-                       AurealStopLoss(OP_SELL, OrderLots()), OrderTakeProfit(),
-                       0, Yellow) &&
-          TRUE)
-        ReportError("MidnightModify next day " +
-                        AurealStopLoss(OP_SELL, OrderLots()) + " " + Ask,
-                    GetLastError());
-    }
   }
   // if (MidnightOrderSell > 0 &&
   //     OrderSelect(MidnightOrderSell, SELECT_BY_TICKET)) {
