@@ -40,13 +40,18 @@ void TrailStops(int ticket) {
                NormalizeDouble(currentBreak, Digits);
       }
     }
-    if (stop && stop != OrderStopLoss())
+    if (stop && stop != OrderStopLoss()) {
+      // Print();
       if (!OrderModify(OrderTicket(), OrderOpenPrice(),
                        NormalizeDouble(stop, Digits),
                        NormalizeDouble(profitExpected, Digits), 0, Yellow) &&
-          FALSE)
-        ReportError("TrailStopsModify; stop " + NormalizeDouble(stop, Digits) +
-                        ", Ask " + NormalizeDouble(Ask, Digits),
+          TRUE)
+        ReportError("TrailStopsModify; " +
+                        NormalizeDouble(currentBreak, Digits) + "|" +
+                        NormalizeDouble(stop, Digits) + "|" +
+                        NormalizeDouble(Ask, Digits) + "|" +
+                        NormalizeDouble(Bid, Digits),
                     GetLastError());
+    }
   }
 }

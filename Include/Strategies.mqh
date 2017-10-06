@@ -11,8 +11,8 @@
 // Includes
 //#include "Strategies\DojiOperation.mqh"
 //#include "Strategies\M5B3.mqh"
-#include "Strategies\Midnight.mqh"
-#include "Strategies\Morning.mqh"
+//#include "Strategies\Midnight.mqh"
+//#include "Strategies\Morning.mqh"
 // Parameters
 // extern bool doMorning = TRUE;  // Mornging Strategie Activate
 extern bool doMidnight = TRUE; // Midnight Strategie Activate
@@ -22,14 +22,14 @@ double strategiOperations = 0;
 void strategiesInit() {
   // if (doMorning)
   //   strategiOperations += MorningOperations;
-  if (doMidnight)
-    strategiOperations += MidnightOperations;
+  // if (doMidnight)
+  //   strategiOperations += MidnightOperations;
 }
 void strategiesEvent() {
   // if (doMorning)
   //   Morning();
-  if (doMidnight)
-    Midnight();
+  // if (doMidnight)
+  //   Midnight();
   // DojiOperation();
   // M5B3();
 }

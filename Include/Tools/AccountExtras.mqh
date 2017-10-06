@@ -185,10 +185,11 @@ void SendAccountReport() {
   balanceReport += "\nDate " + TimeToString(Time[0]);
   balanceReport += StringFormat("|Profit: %G ", getDayProfit(1));
   balanceReport +=
-      StringFormat("\nFlag: %.5f %s", getFlagSize(PERIOD_D1) * Point,
-                   isBlackCandel(PERIOD_D1) ? "!" : "¡");
-  balanceReport += StringFormat("\nDeposit: %.2f (%s)", AccountInvestment(),
-                                moneyOnRisk() ? "Riesgo" : "Tranquilo");
+      StringFormat("\nFlag: %.5f %s", getFlagSize(PERIOD_D1, 1) * Point,
+                   isBlackCandel(PERIOD_D1, 1) ? "!" : "¡");
+  // balanceReport += StringFormat("\nDeposit: %.2f (%s)", AccountInvestment(),
+  //                               moneyOnRisk() ? "Riesgo" : "Tranquilo");
+  balanceReport += StringFormat("\nTrade: %.2f lots", getLotSize());
   balanceReport += StringFormat("|MaxLost: %.2f (%G)", AccountMaxLostMoney(),
                                 AccountMaxLostPips());
   balanceReport += StringFormat("\nB: %G", AccountBalance());
@@ -238,7 +239,7 @@ void SendSimbolParams() {
                    MathMax(strategiOperations, 1));
   comm += StringFormat(startLine + "Limits: $ %.2f (! %G / ¡ %G)",
                        AccountMaxLostMoney(), AccountMaxLostPips(),
-                       AccountMaxLostPips() / strategiOperations);
+                       AccountMaxLostPips() / MathMax(strategiOperations, 1));
   comm += StringFormat(startLine + "Candel: %G", getCandelSize(PERIOD_D1));
   comm += StringFormat(startLine + "MinOperations: %G", strategiOperations);
   comm += StringFormat(startLine + "Pip Value: $ %G", SymbolPipValue());

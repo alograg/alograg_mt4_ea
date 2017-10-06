@@ -3,7 +3,7 @@
 | Copyright © 2017, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
-#define propVersion "4.24"
+#define propVersion "4.25"
 #define eaName "Alograg"
 #define MagicNumber 17808160
 // Properties
@@ -70,9 +70,9 @@ void doReport() {
 | Para pruebas  |
 +--------------*/
 void doTest() {
-  // orderOn(StringToTime("2017.09.12 00:01"), 0.01);
+  orderOn(StringToTime("2017.08.01 17:45"), 0.01);
   // closeOrderOn(StringToTime("2017.02.24 08:40"), 104);
-  if (isNewBar(PERIOD_D1)) {
+  if (isNewBar(PERIOD_W1)) {
     // doWithdrawal(10);
     Print("deposit: ", deposit);
     Print("withdrawal: ", withdrawal);
