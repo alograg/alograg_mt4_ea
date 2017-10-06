@@ -28,12 +28,14 @@ void TrailStops(int ticket) {
     }
     RefreshRates();
     if (mode == OP_BUY) {
+      priceToEval = MathMax(OrderStopLoss(), OrderOpenPrice());
       if (Bid - priceToEval > currentBreak / 2) {
         currentBreak /= 3;
         stop = MathMax(priceToEval, OrderOpenPrice()) +
                NormalizeDouble(currentBreak, Digits);
       }
     } else if (mode == OP_SELL) {
+      priceToEval = MathMin(OrderStopLoss(), OrderOpenPrice());
       if (priceToEval - Ask > currentBreak / 2) {
         currentBreak /= 3;
         stop = MathMin(priceToEval, OrderOpenPrice()) -
@@ -44,7 +46,7 @@ void TrailStops(int ticket) {
       // Print();
       if (!OrderModify(OrderTicket(), OrderOpenPrice(),
                        NormalizeDouble(stop, Digits),
-                       NormalizeDouble(profitExpected, Digits), 0, Yellow) &&
+                       NormalizeDouble(profitExpected, Digits), 0, Blue) &&
           TRUE)
         ReportError("TrailStopsModify; " +
                         NormalizeDouble(currentBreak, Digits) + "|" +
