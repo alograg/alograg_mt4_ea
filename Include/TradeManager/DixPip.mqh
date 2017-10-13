@@ -21,20 +21,20 @@ void DixPip() {
       double profit = OrderProfit() + OrderCommission() + OrderSwap();
       if (profit > 0)
         TrailStops(OrderTicket());
-      // else if (!OrderMagicNumber() && OrderTakeProfit() == 0) {
-      //   int mode = OrderType();
-      //   if (mode == OP_SELL || mode == OP_BUY) {
-      //     double tp = 10 * Point;
-      //     if (mode == OP_SELL)
-      //       tp = OrderOpenPrice() - tp;
-      //     else
-      //       tp += OrderOpenPrice();
-      //     if (!OrderModify(OrderTicket(), OrderOpenPrice(), OrderStopLoss(),
-      //                      NormalizeDouble(tp, Digits), 0, Yellow) &&
-      //         TRUE)
-      //       ReportError("DixPipModify", GetLastError());
-      //   }
-      // }
+      else if (!OrderMagicNumber() && OrderTakeProfit() == 0) {
+         int mode = OrderType();
+         if (mode == OP_SELL || mode == OP_BUY) {
+         double tp = MathMax(_Period, 10) * Point;
+        if (mode == OP_SELL)
+          tp = OrderOpenPrice() - tp;
+         else
+         tp += OrderOpenPrice();
+        if (!OrderModify(OrderTicket(), OrderOpenPrice(), OrderStopLoss(),
+                         NormalizeDouble(tp, Digits), 0, Yellow) &&
+            TRUE)
+         ReportError("DixPipModify", GetLastError());
+         }
+       }
     }
   }
 }
