@@ -141,8 +141,12 @@ FROM spreads s1
   WHERE week >= $lastInitialization
 GROUP BY s1.symbol;
 SQL;
-
-$analisis->execute();
+$analisis = $pdo->prepare($evaluation);
+if (!$analisis) {
+    cmdPrint("PDO::errorInfo():");
+    print_r($pdo->errorInfo());
+    die('no pudo analizar');
+}
 if (!$analisis->execute()) {
     cmdPrint("PDOStatement::errorInfo():");
     print_r($object);
