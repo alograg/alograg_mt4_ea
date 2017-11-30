@@ -52,9 +52,7 @@ fputcsv(
     ]
 );
 $dir = 'sqlite:spreads.sqlite';
-//https://raw.githubusercontent.com/clipo/RHX/master/RequiredFiles/libsqlitefunctions.so
 $pdo  = new PDO($dir) or die("cannot open the database");
-$pdo->query("SELECT load_extension('/libsqlitefunctions.so');");
 $pdo->beginTransaction();
 $pdo->exec("DROP IF EXIST spreads");
 $slqCreate = <<<SQL
@@ -109,8 +107,8 @@ foreach ($files as $file) {
             "description"=>trim($line["description"]),
             "details"=>trim($line["details"]),
         ];
-        if ('initialized' == $object['details'] && $object['details'] > $lastInitialization) {
-            $lastInitialization = $object['details'];
+        if ('initialized' == $object['details']) {
+            $lastInitialization = max($object['week'], $lastInitialization);
         }
         fputcsv($logFile, $object);
         if (preg_match($spreadAtributtes, $fileLine, $line)) {
@@ -138,10 +136,15 @@ SELECT
   median(s1.spread)        AS mediaSpread,
   AVG(s1.spread)           AS avgSpread
 FROM spreads s1
-  WHERE week >= $lastInitialization
+  WHERE week >= '$lastInitialization'
 GROUP BY s1.symbol;
 SQL;
-$analisis = $pdo->prepare($evaluation);
+print $evaluation;
+die();
+//$pdo->query("SELECT load_extension('libextensionfunctions.dll');");
+$bd = new SQLite3('spreads.sqlite');
+//$bd->loadExtension('libextensionfunctions.dll');
+$analisis = $bd->prepare($evaluation);
 if (!$analisis) {
     cmdPrint("PDO::errorInfo():");
     print_r($pdo->errorInfo());
@@ -149,8 +152,6 @@ if (!$analisis) {
 }
 if (!$analisis->execute()) {
     cmdPrint("PDOStatement::errorInfo():");
-    print_r($object);
-    print_r($insert_sql);
     print_r($analisis->errorInfo());
     die('no pudo consultar');
 }
