@@ -9,60 +9,64 @@
 #property version propVersion
 #property strict
 // Parameter
-extern bool breakInSpread = FALSE;  // Use spread as break
-extern double manualBreakEven = 12; // Manual Break (pips)
+extern int moneyPerOrder = 50;             // Minumun profit (centims)
+extern ENUM_TIMEFRAMES review = PERIOD_M5; // Last Price Of
 // Constants
-double BreakEven = 12;
 // Function
 void TrailStops(int ticket)
 {
-  int current = OrderSelect(ticket, SELECT_BY_TICKET);
-  if (OrderSymbol() == Symbol())
-  {
-    int mode = OrderType();
-    double stop = 0,
-           priceToEval = OrderStopLoss() ? OrderStopLoss() : OrderOpenPrice(),
-           currentBreak = NormalizeDouble(getSpread() * 3, Digits),
-           profitExpected = OrderTakeProfit();
-    if (profitExpected != 0)
-    {
-      double tailingBase = MathAbs(priceToEval - profitExpected);
-      currentBreak = MathMax(tailingBase, currentBreak);
-    }
+    if (!OrderSelect(ticket, SELECT_BY_TICKET))
+        return;
     RefreshRates();
-    if (mode == OP_BUY)
+    int mode = OrderType();
+    double sBid = MarketInfo(OrderSymbol(), MODE_BID);
+    double sAsk = MarketInfo(OrderSymbol(), MODE_ASK);
+    double sPoint = MarketInfo(OrderSymbol(), MODE_POINT);
+    int sDigits = (int)MarketInfo(OrderSymbol(), MODE_DIGITS);
+    int sSpread = (int)MarketInfo(OrderSymbol(), MODE_SPREAD);
+    double currentPrice = NormalizeDouble(mode ? sAsk : sBid, sDigits),
+           lostClose = OrderStopLoss(),
+           newStopLoss = 0;
+    if (lostClose == 0)
+        lostClose = OrderOpenPrice();
+    double midWay = NormalizeDouble(MathAbs(currentPrice - lostClose) / 2, sDigits),
+           lastClose = iClose(OrderSymbol(), review, 1);
+    if (mode == OP_SELL)
     {
-      priceToEval = MathMax(OrderStopLoss(), OrderOpenPrice());
-      if (Bid - priceToEval > currentBreak / 2)
-      {
-        currentBreak /= 3;
-        stop = MathMax(priceToEval, OrderOpenPrice()) +
-               NormalizeDouble(currentBreak, Digits);
-      }
+        newStopLoss = MathMin(lostClose, currentPrice + midWay);
+        if (lastClose < newStopLoss && lastClose > currentPrice)
+            newStopLoss = lastClose;
+        //        if (newStopLoss > currentPrice)
+        //            return;
     }
-    else if (mode == OP_SELL)
+    else if (mode == OP_BUY)
     {
-      priceToEval = MathMin(OrderStopLoss(), OrderOpenPrice());
-      if (priceToEval - Ask > currentBreak / 2)
-      {
-        currentBreak /= 3;
-        stop = MathMin(priceToEval, OrderOpenPrice()) -
-               NormalizeDouble(currentBreak, Digits);
-      }
+        newStopLoss = MathMax(lostClose, currentPrice - midWay);
+        if (lastClose > newStopLoss && lastClose < currentPrice)
+            newStopLoss = lastClose;
+        //        if (newStopLoss < currentPrice)
+        //            return;
     }
-    if (stop && stop != OrderStopLoss())
+    newStopLoss = NormalizeDouble(newStopLoss, sDigits);
+    if (newStopLoss == OrderStopLoss())
+        return;
+    RefreshRates();
+    if (!OrderModify(OrderTicket(), OrderOpenPrice(), newStopLoss,
+                     OrderTakeProfit(), 0, Yellow) &&
+        GetLastError() > 0)
     {
-      // Print();
-      if (!OrderModify(OrderTicket(), OrderOpenPrice(),
-                       NormalizeDouble(stop, Digits),
-                       NormalizeDouble(profitExpected, Digits), 0, Blue) &&
-          TRUE)
-        ReportError("TrailStopsModify; " +
-                        NormalizeDouble(currentBreak, Digits) + "|" +
-                        NormalizeDouble(stop, Digits) + "|" +
-                        NormalizeDouble(Ask, Digits) + "|" +
-                        NormalizeDouble(Bid, Digits),
-                    GetLastError());
+        Print("mode", mode);
+        Print("sBid", sBid);
+        Print("sAsk", sAsk);
+        Print("currentPrice", currentPrice);
+        Print("newStopLoss", newStopLoss);
+        Print("lostClose", lostClose);
+        Print("midWay", midWay);
+        Print("lastClose", lastClose);
+        Print("OrderOpenPrice()", OrderOpenPrice());
+        Print("OrderStopLoss()", OrderStopLoss());
+        Print("OrderTakeProfit()", OrderTakeProfit());
+        ReportError("TrailStops", GetLastError());
     }
-  }
+    return;
 }

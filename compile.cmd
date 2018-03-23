@@ -1,6 +1,6 @@
 @echo off
 REM call format-code.cmd
-call "C:\Program Files (x86)\MetaTrader 4 IC Markets\metaeditor.exe" /compile:"C:\Users\Henry\AppData\Roaming\MetaQuotes\Terminal\C000232C5F64AA0BDA95D52B828AF160\MQL4\Projects\Alograg\Experts\Alograg_v4.mq4"
-call "C:\Program Files (x86)\MetaTrader 4 IC Markets\metaeditor.exe" /compile:"C:\Users\Henry\AppData\Roaming\MetaQuotes\Terminal\C000232C5F64AA0BDA95D52B828AF160\MQL4\Projects\Alograg\Experts\Alograg_v4.mq4" /log:.\compilation.log /s
+call "C:\Program Files (x86)\MetaTrader 4 IC Markets\metaeditor.exe" /compile:"C:\Users\alogr\AppData\Roaming\MetaQuotes\Terminal\1DAFD9A7C67DC84FE37EAA1FC1E5CF75\MQL4\Projects\alograg_mt4_ea\Experts\Alograg_v5.mq4"
+call "C:\Program Files (x86)\MetaTrader 4 IC Markets\metaeditor.exe" /compile:"C:\Users\alogr\AppData\Roaming\MetaQuotes\Terminal\1DAFD9A7C67DC84FE37EAA1FC1E5CF75\MQL4\Projects\alograg_mt4_ea\Experts\Alograg_v5.mq4" /log:.\compilation.log /s
 type .\compilation.log
 del .\compilation.log

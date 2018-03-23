@@ -9,7 +9,7 @@
 #property version propVersion
 #property strict
 // Parameters
-extern bool sendReportErrors = TRUE; // Send Report Errors
+extern bool sendReportErrors = FALSE; // Send Report Errors
 // Definitions
 template <typename E>
 int EnumToArray(E dummy, int &values[], const int start = INT_MIN,

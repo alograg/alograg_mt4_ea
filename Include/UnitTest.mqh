@@ -9,8 +9,6 @@
 #property version propVersion
 #property strict
 // Parameter
-extern double testDeposit = 100;  // Deposit for test
-extern double testWithdrawal = 0; // Withdrawal for test
 // Constants
 int die[];
 string TestComment = eaName + ": Manual test";
@@ -62,11 +60,7 @@ void orderOn(datetime dateTime, double lotSize = 0, bool onlyOnece = true)
     RefreshRates();
     manualOrder = OrderSend(
         Symbol(), lotSize > 0 ? OP_BUY : OP_SELL,
-        NormalizeDouble(MathAbs(lotSize), 2), lotSize > 0 ? Ask : Bid, 0,
-        (lotSize > 0 ? Bid : Ask) +
-            NormalizeDouble(100 * (lotSize < 0 ? 3 : -3) * Point, Digits),
-        (lotSize > 0 ? Ask : Bid) +
-            NormalizeDouble(300 * (lotSize > 0 ? 3 : -3) * Point, Digits),
+        NormalizeDouble(MathAbs(lotSize), 2), lotSize > 0 ? Ask : Bid, 0, 0, 0,
         TestComment, 0, 0, White);
     // die[0];
   }

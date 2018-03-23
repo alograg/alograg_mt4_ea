@@ -11,6 +11,7 @@
 // Includes
 //#include "TradeManager\.mqh"
 // Parameter
+extern ENUM_TIMEFRAMES trailStopsEach = PERIOD_H1; // Trail Stops each
 // Constants
 // Methods
 void tmInit()
@@ -18,4 +19,19 @@ void tmInit()
 }
 void tmEvent()
 {
+    int total = OrdersTotal();
+    if (isNewBar(trailStopsEach))
+    {
+        for (int position = 0; position < total; position++)
+        {
+            if (OrderSelect(position, SELECT_BY_POS))
+            {
+                double profit = OrderProfit() + OrderCommission() + OrderSwap();
+                if (profit >= (moneyPerOrder * OrderLots()))
+                {
+                    TrailStops(OrderTicket());
+                }
+            }
+        }
+    }
 }

@@ -19,7 +19,6 @@
 #include "..\Include\TradeManager.mqh"
 #include "..\Include\UnitTest.mqh"
 // Parameters
-extern bool strategiesActivate = FALSE; // Strategies Activate
 // Constants
 datetime lastUpdate;
 /*----------------+
@@ -63,31 +62,16 @@ void OnTick()
 +----------*/
 void doReport()
 {
-  if (isNewBar(PERIOD_D1))
-    SendAccountReport();
-  if (isNewBar(PERIOD_M1))
-    SendSimbolParams();
 }
 /*--------------+
 | Para pruebas  |
 +--------------*/
 void doTest()
 {
-  orderOn(StringToTime("2017.08.01 17:45"), 0.01);
+  orderOn(StringToTime("2018.01.03 19:37"), 0.1);
+  orderOn(StringToTime("2018.01.03 17:40"), -0.01);
+  //dieOn("2018.01.03 17:47");
   // closeOrderOn(StringToTime("2017.02.24 08:40"), 104);
-  if (isNewBar(PERIOD_W1))
-  {
-    // doWithdrawal(10);
-    Print("deposit: ", deposit);
-    Print("withdrawal: ", withdrawal);
-    Print("investment: ", investment);
-    Print("AccountInvestment: ", AccountInvestment());
-    Print("AccountEquity: ", AccountEquity());
-    Print("AccountBalance: ", AccountBalance());
-    Print("AccountMargin: ", AccountMargin());
-    Print("AccountMoneyToInvestment: ", AccountMoneyToInvestment());
-    Print("getLotSize: ", getLotSize());
-  }
 }
 /*----------------------------+
 | Administra las operaciones  |
@@ -98,8 +82,6 @@ void doManagment() { tmEvent(); }
 +-------------------------*/
 void doStrategies()
 {
-  if (!strategiesActivate || moneyOnRisk())
-    return;
   if (IsTradeAllowed())
     strategiesEvent();
 }
