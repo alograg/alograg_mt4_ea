@@ -1,10 +1,10 @@
 /*--------------------------+
 |              isNewBar.mqh |
-| Copyright © 2017, Alograg |
+| Copyright © 2018, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
 // Properties
-#property copyright "Copyright © 2017, " + eaName
+#property copyright "Copyright © 2018, " + eaName
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict
@@ -16,9 +16,11 @@ datetime LAST_PERIOD_M1, LAST_PERIOD_M5, LAST_PERIOD_M15, LAST_PERIOD_M30,
     LAST_PERIOD_H1, LAST_PERIOD_H4, LAST_PERIOD_D1, LAST_PERIOD_W1,
     LAST_PERIOD_MN1;
 // Function
-bool isNewBar(int period = 0) {
+bool isNewBar(int period = 0)
+{
   datetime lastPeriod;
-  switch (period) {
+  switch (period)
+  {
   case PERIOD_M1:
     lastPeriod = LAST_PERIOD_M1;
     break;
@@ -52,7 +54,8 @@ bool isNewBar(int period = 0) {
 
   return lastPeriod != iTime(Symbol(), period, 0);
 }
-void setLatsPeriods(int period = 0) {
+void setLatsPeriods(int period = 0)
+{
   LAST_PERIOD_M1 = iTime(Symbol(), PERIOD_M1, period);
   LAST_PERIOD_M5 = iTime(Symbol(), PERIOD_M5, period);
   LAST_PERIOD_M15 = iTime(Symbol(), PERIOD_M15, period);

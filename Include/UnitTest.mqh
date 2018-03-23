@@ -1,10 +1,10 @@
 /*--------------------------+
 |              UnitTest.mqh |
-| Copyright © 2017, Alograg |
+| Copyright © 2018, Alograg |
 |    https://www.alograg.me |
 +--------------------------*/
 // Properties
-#property copyright "Copyright © 2017, " + eaName
+#property copyright "Copyright © 2018, " + eaName
 #property link "https://www.alograg.me"
 #property version propVersion
 #property strict
@@ -18,7 +18,8 @@ int manualOrder = 0;
 bool canWithdrawal = false;
 bool canDeposit = false;
 // Functions
-void dieOn(datetime dateTime) {
+void dieOn(datetime dateTime)
+{
   MqlDateTime dayTime, inTime;
   TimeToStruct(iTime(Symbol(), PERIOD_M1, 0), dayTime);
   TimeToStruct(dateTime, inTime);
@@ -27,14 +28,17 @@ void dieOn(datetime dateTime) {
       dayTime.min == inTime.min)
     die[1];
 }
-void closeOrderOn(datetime dateTime, int ticket) {
+void closeOrderOn(datetime dateTime, int ticket)
+{
   MqlDateTime dayTime, inTime;
   TimeToStruct(iTime(Symbol(), PERIOD_M1, 0), dayTime);
   TimeToStruct(dateTime, inTime);
   if (dayTime.year == inTime.year && dayTime.mon == inTime.mon &&
       dayTime.day == inTime.day && dayTime.hour == inTime.hour &&
-      dayTime.min == inTime.min) {
-    if (OrderSelect(ticket, SELECT_BY_TICKET)) {
+      dayTime.min == inTime.min)
+  {
+    if (OrderSelect(ticket, SELECT_BY_TICKET))
+    {
       int mode = OrderType();
       double lostClose = NormalizeDouble(mode ? Ask : Bid, Digits);
       if (!OrderClose(ticket, OrderLots(), lostClose, 0, Yellow))
@@ -42,7 +46,8 @@ void closeOrderOn(datetime dateTime, int ticket) {
     }
   }
 }
-void orderOn(datetime dateTime, double lotSize = 0, bool onlyOnece = true) {
+void orderOn(datetime dateTime, double lotSize = 0, bool onlyOnece = true)
+{
   if (manualOrder)
     manualOrder = OrderIsOpen(manualOrder);
   if (manualOrder)
@@ -52,7 +57,8 @@ void orderOn(datetime dateTime, double lotSize = 0, bool onlyOnece = true) {
   TimeToStruct(dateTime, inTime);
   if (dayTime.year == inTime.year && dayTime.mon == inTime.mon &&
       dayTime.day == inTime.day && dayTime.hour == inTime.hour &&
-      dayTime.min == inTime.min) {
+      dayTime.min == inTime.min)
+  {
     RefreshRates();
     manualOrder = OrderSend(
         Symbol(), lotSize > 0 ? OP_BUY : OP_SELL,
@@ -66,42 +72,4 @@ void orderOn(datetime dateTime, double lotSize = 0, bool onlyOnece = true) {
   }
   if (!onlyOnece)
     manualOrder = 0;
-}
-void addFounds(double amount, datetime dateTime = NULL) {
-  if (dateTime) {
-    MqlDateTime dayTime, inTime;
-    TimeToStruct(iTime(Symbol(), PERIOD_M1, 0), dayTime);
-    TimeToStruct(dateTime, inTime);
-    if (!(dayTime.year == inTime.year && dayTime.mon == inTime.mon &&
-          dayTime.day == inTime.day && dayTime.hour == inTime.hour &&
-          dayTime.min == inTime.min)) {
-      canDeposit = true;
-      return;
-    }
-  } else {
-    canDeposit = true;
-  }
-  if (canDeposit) {
-    canDeposit = false;
-    deposit += amount;
-  }
-}
-void doWithdrawal(double amount, datetime dateTime = NULL) {
-  if (dateTime) {
-    MqlDateTime dayTime, inTime;
-    TimeToStruct(iTime(Symbol(), PERIOD_M1, 0), dayTime);
-    TimeToStruct(dateTime, inTime);
-    if (!(dayTime.year == inTime.year && dayTime.mon == inTime.mon &&
-          dayTime.day == inTime.day && dayTime.hour == inTime.hour &&
-          dayTime.min == inTime.min)) {
-      canWithdrawal = true;
-      return;
-    }
-  } else {
-    canDeposit = true;
-  }
-  if (canWithdrawal) {
-    canWithdrawal = false;
-    withdrawal -= amount;
-  }
 }
